@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://gregmoreno.github.io/atom.xml" rel="self"/>
   <link href="http://gregmoreno.github.io/"/>
-  <updated>2016-09-09T23:15:20-07:00</updated>
+  <updated>2016-09-09T23:17:27-07:00</updated>
   <id>http://gregmoreno.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,5 +12,276 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Joy Ride in Ruby's spaceship]]></title>
+    <link href="http://gregmoreno.github.io/blog/2016/02/16/joy-ride-in-rubys-spaceship/"/>
+    <updated>2016-02-16T20:52:04-08:00</updated>
+    <id>http://gregmoreno.github.io/blog/2016/02/16/joy-ride-in-rubys-spaceship</id>
+    <content type="html"><![CDATA[<p>Ruby&rsquo;s <code>&lt;=&gt;</code> operator is commonly referred to as the spaceship in the community. You may not have
+played with it directly but I bet you have relied on it a lot of times. Because, every time you use
+sort an array, you are tapping in to the spaceship operator.</p>
+
+<p>Now, why would you care? Because sometimes we need to sort things which does not have a natural ordering
+computers are accustomed to. Take for example sorting clothes that use S, M, and L to refer to their sizes.
+And to add more fun, how about putting XS, XL, and XXL into the mix.</p>
+
+<p>Let&rsquo;s start with a bare class and see what happens.</p>
+
+<pre><code>require 'minitest/autorun'
+
+class Size
+  attr_reader :size
+
+  def initialize(size)
+    @size = size.to_s.upcase
+  end
+
+  def to_s
+    @size
+  end
+end
+
+describe Size do
+  let(:sizes) { %w[L S M].map { |s| Size.new(s) } }
+  it { sizes.sort.map(&amp;:to_s).must_equal %w[S M L] }
+
+  let(:a) { Size.new('S') }
+  let(:b) { Size.new('M') }
+
+  it { (a &gt; b).must_equal false }
+  it { (a &lt; b).must_equal true }
+end
+
+$&gt; ruby size.rb                                                                                                     [2.1.2]
+Run options: --seed 37770
+
+# Running:
+
+EEE
+
+Finished in 0.001207s, 2486.1356 runs/s, 0.0000 assertions/s.
+
+  1) Error:
+Size#test_0001_anonymous:
+ArgumentError: comparison of Size with Size failed
+    size.rb:24:in `sort'
+    size.rb:24:in `block (2 levels) in &lt;main&gt;'
+
+
+  2) Error:
+Size#test_0002_anonymous:
+NoMethodError: undefined method `&gt;' for #&lt;Size:0x007f8a7bae6c50 @size="S"&gt;
+    size.rb:29:in `block (2 levels) in &lt;main&gt;'
+
+
+  3) Error:
+Size#test_0003_anonymous:
+NoMethodError: undefined method `&lt;' for #&lt;Size:0x007f8a7bae6390 @size="S"&gt;
+    size.rb:30:in `block (2 levels) in &lt;main&gt;'
+
+3 runs, 0 assertions, 0 failures, 3 errors, 0 skips
+</code></pre>
+
+<p>Our test failed and that&rsquo;s good news, isn&rsquo;t it? The first failure is because the default
+implementation of <code>&lt;=&gt;</code> doesn&rsquo;t do all the comparison required to make <code>sort</code> work. To make this
+work, we need to implement a <code>&lt;=&gt;</code> that returns the following:</p>
+
+<ul>
+<li>nil if the comparison does not makes sense</li>
+<li>-1 if left side is less than right side</li>
+<li>1 if left side is greater than right side</li>
+<li>0 if left and right are the same</li>
+</ul>
+
+
+<p>Let&rsquo;s update our code to use the spaceship.</p>
+
+<pre><code>class Size
+  attr_reader :size
+
+  SIZES = %w[S M L].freeze
+
+  def initialize(size)
+    @size = size.to_s.upcase
+  end
+
+  def to_s
+    @size
+  end
+
+  def &lt;=&gt;(other)
+    position &lt;=&gt; other.position
+  end
+
+  protected
+
+  def position
+    SIZES.index(size)
+  end
+end
+</code></pre>
+
+<p>Some things to ponder in our implementation.</p>
+
+<ul>
+<li>In Ruby, operator calls are just method calls where the left side is the receiver and right side is
+the argument. In other words, this is  <code>a &lt;=&gt; b</code> is the same as <code>a.&lt;=&gt;(b)</code></li>
+<li>It is common practice to call the argument as <code>other</code> as you know the other object :)</li>
+<li>We leverage an existing implementation of <code>&lt;=&gt;</code>. The method <code>#index</code> returns the position of an element
+in the array, which is a <code>Fixnum</code>. The <code>Fixnum</code> class already knows how to compare numbers.</li>
+<li>We use <code>protected</code> to hide an implementation detail but at the same time allow us to use it within instance
+methods of objects of the same class.</li>
+</ul>
+
+
+<p>Now, how about the other test failures? Do we need to implement the <code>&lt;</code> and <code>&gt;</code> operators as well?
+Fortunately, Ruby got our back. We just need to include the module <a href="http://ruby-doc.org/core-2.3.0/Comparable.html"><code>Comparable</code></a>
+and we&rsquo;re good. But wait, there&rsquo;s more! By including the <code>Comparable</code> module, we also get
+<code>&lt;=</code>, <code>&gt;=</code>, and <code>==</code> for free.</p>
+
+<p>Here&rsquo;s the full implementation with additional test scenarios, including a reverse sort.</p>
+
+<pre><code>require 'minitest/autorun'
+
+class Size
+  include Comparable
+
+  SIZES = %w[S M L].freeze
+
+  attr_reader :size
+
+  def initialize(size)
+    @size = size.to_s.upcase
+  end
+
+  def to_s
+    @size
+  end
+
+  def &lt;=&gt;(other)
+    position &lt;=&gt; other.position
+  end
+
+  protected
+
+  def position
+    SIZES.index(size)
+  end
+end
+
+describe Size do
+  let(:sizes) { %w[L S M].map { |s| Size.new(s) } }
+
+  it { sizes.sort.map(&amp;:to_s).must_equal %w[S M L] }
+  it { sizes.sort { |a,b| b &lt;=&gt; a }.map(&amp;:to_s).must_equal %w[L M S] }
+
+  let(:a) { Size.new('S') }
+  let(:b) { Size.new('M') }
+
+  it { (a &gt; b).must_equal false }
+  it { (a &lt; b).must_equal true }
+  it { (a &gt;= b).must_equal false }
+  it { (a &lt;= b).must_equal true }
+  it { (a == b).must_equal false }
+end
+
+$&gt; ruby size.rb                                                                                                     [2.1.2]
+Run options: --seed 44807
+
+# Running:
+
+.......
+
+Finished in 0.001490s, 4698.8003 runs/s, 4698.8003 assertions/s.
+
+7 runs, 7 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
+
+<p><em>Exercise:</em>  Software versions often follow the convention <code>major.minor.patch</code>. Create a <code>Version</code> class
+that takes a string version, e.g. &ldquo;10.10.3&rdquo; and implement the <code>&lt;=&gt;</code> operator.</p>
+
+<p>I&rsquo;m currently reading <code>Effective Ruby</code> by Peter Jones and this post is based on Item 13: Implement
+Comparison via &ldquo;&lt;=>&rdquo; and the Comparable Module.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[You can't handle the truth]]></title>
+    <link href="http://gregmoreno.github.io/blog/2016/02/15/you-cant-handle-the-truth/"/>
+    <updated>2016-02-15T16:21:58-08:00</updated>
+    <id>http://gregmoreno.github.io/blog/2016/02/15/you-cant-handle-the-truth</id>
+    <content type="html"><![CDATA[<p>Quick question. What’s the output of this code in Ruby?</p>
+
+<pre><code>amount = 0
+if amount
+  puts 'hey'
+else
+  puts ‘nah'
+end
+</code></pre>
+
+<p>If you answered <code>nah</code>, you’re wrong. But it’s fine because this is one of the biggest gotchas for developers who are new to Ruby. Heck, even seasoned developers like myself sometimes forget this. I blame my college CS professors for putting too much <code>C</code> syntax in my brain.</p>
+
+<p>Ruby has a simple rule for dealing with boolean values:  everything is true except <code>false</code> and <code>nil</code>.  This also means that every expression and object in Ruby can be evaluated against true or false. For example, you can have a method <code>find</code> that returns an object when it finds one or <code>nil</code> otherwise.</p>
+
+<pre><code>if  o = Customer.find_by(email: ‘stevej@rip.com’)
+  puts o.name
+else
+  puts ‘not found it'
+end
+</code></pre>
+
+<p>But it’s a different story when returning a numeric value because 0 evaluates to true.</p>
+
+<p><code>false</code> and <code>nil</code> can also be a common source of confusion because you have 2 values that can be false.  Consider the default behaviour of  Hash, which returns nil if the key does not exist. If you only factor in the <code>nil</code> scenario, you will have a problem when a key returns a <code>false</code> value - a common scenario with code that handles configuration or settings.
+In the case below, this will output <code>missing key</code></p>
+
+<pre><code>h = {'a' =&gt; 1, 'b' =&gt; false}
+key = ‘b'
+if h[key]
+  puts 'found a value'
+else
+  puts 'missing key'
+end
+</code></pre>
+
+<p>If that’s enough confusion for you, consider this:  <code>true</code>, <code>false</code>, and <code>nil</code> are just instances of a class.</p>
+
+<pre><code>irb&gt; true.class
+=&gt; TrueClass
+irb&gt; false.class
+=&gt; FalseClass
+irb&gt; nil.class
+=&gt; NilClass
+</code></pre>
+
+<p>They are global variables but you can’t set any value to it which is fine. Otherwise, there will be chaos!</p>
+
+<pre><code>irb&gt; true = 1
+SyntaxError: (irb):18: Can't assign to true
+true = 1
+</code></pre>
+
+<p>But, this is Ruby and we can always introduce chaos. Matz, the creator of Ruby,  has given us this much power because he trusts that we know what we are doing.</p>
+
+<pre><code>irb&gt; class Bad
+irb&gt;   def ==(other)
+irb&gt;     true
+irb&gt;   end
+irb&gt; end
+
+irb&gt; false == Bad.new
+=&gt; false
+irb&gt; Bad.new == false
+=&gt; true
+</code></pre>
+
+<p>What the heck just happened?  Well, <code>==</code> is just another method call - the first is for the <code>FalseClass</code> instance while the second is for the <code>Bad</code> instance.</p>
+
+<p>If you have been using Ruby for a while and wants to become better at it, I suggest you
+get a copy of <code>Effective Ruby</code> by Peter Jones.</p>
+]]></content>
+  </entry>
   
 </feed>

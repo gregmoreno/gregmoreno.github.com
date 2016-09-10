@@ -5,11 +5,11 @@
 	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<meta charset="utf-8">
-	<title>My Octopress Blog</title>
+	<title>Joy Ride in Ruby's spaceship | My Octopress Blog</title>
 
 	<meta name="author" content="Your Name">
 	
-	<meta name="description" content="16 Feb 2016 Joy Ride in Ruby's Spaceship Ruby&rsquo;s &lt;=&gt; operator is commonly referred to as the spaceship in the community. You may not have &hellip;">
+	<meta name="description" content="My Octopress Blog 16 Feb 2016 Joy Ride in Ruby's Spaceship Ruby&rsquo;s &lt;=&gt; operator is commonly referred to as the spaceship in the community &hellip;">
 
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="MobileOptimized" content="320" />
@@ -25,36 +25,16 @@
 </head>
 
 
-<body class="home-template">
-  <header id="site-head">
-  <div class="vertical">
-    <div id="site-head-content" class="inner">
-      <h1 class="blog-title"><a class="no-rollover" href="/">My Octopress Blog</a></h1>
-      <h2 class="blog-description">A blogging framework for hackers.</h2>
-    </div>
-  </div>
-</header>
-  <main class="content" role="main">
-    
-
-
-
+<body class="post-template">
+  <main class="content" role="main"><article class="post">
   
-    <article class="post">
-      
-	
-		
-	
 	<header class="post-header">
-		<span class="post-meta">16 Feb 2016</span>
-		<h2 class="post-title">
-			
-			<a href="/blog/2016/02/16/joy-ride-in-rubys-spaceship/">
-			
-				Joy Ride in Ruby's Spaceship</a>
-		</h2>
+		<a id="blog-logo" href="/">My Octopress Blog</a>
 	</header>
-	<section class="post-excerpt">
+	<span class="post-meta">16 Feb 2016</span>
+	<h1 class="post-title">Joy Ride in Ruby's Spaceship</h1>
+
+	<section class="post-content">
 		<p>Ruby&rsquo;s <code>&lt;=&gt;</code> operator is commonly referred to as the spaceship in the community. You may not have
 played with it directly but I bet you have relied on it a lot of times. Because, every time you use
 sort an array, you are tapping in to the spaceship operator.</p>
@@ -243,110 +223,32 @@ Comparison via &ldquo;&lt;=>&rdquo; and the Comparable Module.</p>
 
 	</section>
 
-    </article>
+  <footer class="post-footer">
+  <section class="author">
+    <h4>Your Name</h4>
+    <p></p>
+  </section>
+  <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=Joy Ride in Ruby's spaceship&amp;url=http://gregmoreno.github.io/blog/2016/02/16/joy-ride-in-rubys-spaceship/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+      <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.github.io/blog/2016/02/16/joy-ride-in-rubys-spaceship/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.github.io/blog/2016/02/16/joy-ride-in-rubys-spaceship/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+      <span class="hidden">Google+</span>
+    </a>
+  </section>
+</footer>
+  <hr>
+  
+    <div class="share">
+</div>
 
   
-    <article class="post">
-      
-	
-	<header class="post-header">
-		<span class="post-meta">15 Feb 2016</span>
-		<h2 class="post-title">
-			
-			<a href="/blog/2016/02/15/you-cant-handle-the-truth/">
-			
-				You Can't Handle the Truth</a>
-		</h2>
-	</header>
-	<section class="post-excerpt">
-		<p>Quick question. What’s the output of this code in Ruby?</p>
-
-<pre><code>amount = 0
-if amount
-  puts 'hey'
-else
-  puts ‘nah'
-end
-</code></pre>
-
-<p>If you answered <code>nah</code>, you’re wrong. But it’s fine because this is one of the biggest gotchas for developers who are new to Ruby. Heck, even seasoned developers like myself sometimes forget this. I blame my college CS professors for putting too much <code>C</code> syntax in my brain.</p>
-
-<p>Ruby has a simple rule for dealing with boolean values:  everything is true except <code>false</code> and <code>nil</code>.  This also means that every expression and object in Ruby can be evaluated against true or false. For example, you can have a method <code>find</code> that returns an object when it finds one or <code>nil</code> otherwise.</p>
-
-<pre><code>if  o = Customer.find_by(email: ‘stevej@rip.com’)
-  puts o.name
-else
-  puts ‘not found it'
-end
-</code></pre>
-
-<p>But it’s a different story when returning a numeric value because 0 evaluates to true.</p>
-
-<p><code>false</code> and <code>nil</code> can also be a common source of confusion because you have 2 values that can be false.  Consider the default behaviour of  Hash, which returns nil if the key does not exist. If you only factor in the <code>nil</code> scenario, you will have a problem when a key returns a <code>false</code> value - a common scenario with code that handles configuration or settings.
-In the case below, this will output <code>missing key</code></p>
-
-<pre><code>h = {'a' =&gt; 1, 'b' =&gt; false}
-key = ‘b'
-if h[key]
-  puts 'found a value'
-else
-  puts 'missing key'
-end
-</code></pre>
-
-<p>If that’s enough confusion for you, consider this:  <code>true</code>, <code>false</code>, and <code>nil</code> are just instances of a class.</p>
-
-<pre><code>irb&gt; true.class
-=&gt; TrueClass
-irb&gt; false.class
-=&gt; FalseClass
-irb&gt; nil.class
-=&gt; NilClass
-</code></pre>
-
-<p>They are global variables but you can’t set any value to it which is fine. Otherwise, there will be chaos!</p>
-
-<pre><code>irb&gt; true = 1
-SyntaxError: (irb):18: Can't assign to true
-true = 1
-</code></pre>
-
-<p>But, this is Ruby and we can always introduce chaos. Matz, the creator of Ruby,  has given us this much power because he trusts that we know what we are doing.</p>
-
-<pre><code>irb&gt; class Bad
-irb&gt;   def ==(other)
-irb&gt;     true
-irb&gt;   end
-irb&gt; end
-
-irb&gt; false == Bad.new
-=&gt; false
-irb&gt; Bad.new == false
-=&gt; true
-</code></pre>
-
-<p>What the heck just happened?  Well, <code>==</code> is just another method call - the first is for the <code>FalseClass</code> instance while the second is for the <code>Bad</code> instance.</p>
-
-<p>If you have been using Ruby for a while and wants to become better at it, I suggest you
-get a copy of <code>Effective Ruby</code> by Peter Jones.</p>
-
-	</section>
-
-    </article>
-
-
-<nav class="pagination" role="pagination">
   
-
-  <span class="page-number">
-    Page 1 of 1
-  </span>
-
-  
-</nav>
-
-
-  </main>
+</article></main>
   <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.github.io/atom.xml"><span class="tooltip">Subscribe!</span></a>
 
 
