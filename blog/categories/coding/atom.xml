@@ -4,7 +4,7 @@
   <title><![CDATA[Category: coding | Greg Moreno]]></title>
   <link href="http://gregmoreno.ca/blog/categories/coding/atom.xml" rel="self"/>
   <link href="http://gregmoreno.ca/"/>
-  <updated>2016-09-09T23:23:33-07:00</updated>
+  <updated>2016-09-09T23:25:58-07:00</updated>
   <id>http://gregmoreno.ca/</id>
   <author>
     <name><![CDATA[Greg Moreno]]></name>
@@ -315,83 +315,72 @@ end
     <link href="http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3/"/>
     <updated>2014-11-20T00:00:00-08:00</updated>
     <id>http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3</id>
-    <content type="html"><![CDATA[<p></p>
-
-<p>Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
+    <content type="html"><![CDATA[<p>Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
 by assuming a <code>controller/action</code> path format and only support <code>GET</code> request.</p>
 
 <p>We adjust our <code>.call</code> implementation to handle the new path format. We also introduce
 another method <code>#render_controller_action</code> that inspects the <code>path_info</code>
 and instantiates the right controller using Rails <code>NameController</code> convention.</p>
 
-<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+<pre><code># lib/tracks.rb
+def self.call(env)
+  path_info = env["PATH_INFO"]
+  if  path_info == "/"
+    text = Tracks::Controller.render_default_root
+  else
+    text = Tracks::Controller.render_controller_action(env)
+  end
 
-<span class="sr">&lt;h1&gt;lib/</span><span class="n">tracks</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+  [200, {"Content-Type" =&gt; "text/html"}, [text] ]
+end
 
-<span class="sr">&lt;p&gt;def self.call(env)</span>
-<span class="sr">  path_info = env[&amp;ldquo;PATH_INFO&amp;rdquo;]</span>
-<span class="sr">  if  path_info == &amp;ldquo;/</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Controller</span><span class="o">.</span><span class="n">render_default_root</span>
-  <span class="k">else</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Controller</span><span class="o">.</span><span class="n">render_controller_action</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-  <span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+# lib/tracks/controller.rb
+def self.render_controller_action(env)
+  path_info = env["PATH_INFO"]
+  _, controller, action, after = path_info.split("/")
 
-<span class="sr">&lt;p&gt;  [200, {&amp;ldquo;Content-Type&amp;rdquo; =&gt; &amp;ldquo;text/</span><span class="n">html</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;},</span> <span class="o">[</span><span class="n">text</span><span class="o">]</span> <span class="o">]</span>
-<span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+  controller_class_name = controller.capitalize + "Controller"
+  controller_class = Object.const_get(controller_class_name)
+  controller_class.new.send(action)
+end
 
-<span class="sr">&lt;h1&gt;lib/</span><span class="n">tracks</span><span class="o">/</span><span class="n">controller</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+$ ruby spec/application_spec.rb
+Run options: --seed 55835
+# Running:
 
-<span class="sr">&lt;p&gt;def self.render_controller_action(env)</span>
-<span class="sr">  path_info = env[&amp;ldquo;PATH_INFO&amp;rdquo;]</span>
-<span class="sr">  _, controller, action, after = path_info.split(&amp;ldquo;/</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;)</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+.E
 
-<span class="sr">&lt;p&gt;  controller_class_name = controller.capitalize + &amp;ldquo;Controller&amp;rdquo;</span>
-<span class="sr">  controller_class = Object.const_get(controller_class_name)</span>
-<span class="sr">  controller_class.new.send(action)</span>
-<span class="sr">end</span></code></pre></div></p>
+Finished in 0.015837s, 126.2865 runs/s, 126.2865 assertions/s.
 
-<p><div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby spec/application_spec.rb
-Run options: <span class="p">&amp;</span>ndash<span class="p">;</span>seed 55835&lt;/p&gt;
-
-&lt;h1&gt;Running:&lt;/h1&gt;
-
-&lt;p&gt;.E&lt;/p&gt;
-
-&lt;p&gt;Finished in 0.015837s, 126.2865 runs/s, 126.2865 assertions/s.&lt;/p&gt;
-
-&lt;p&gt;  1<span class="o">)</span> Error:
+  1) Error:
 CrazyApp::Application#test_0002_should respond with different path:
 NameError: uninitialized constant PostsController
-    /code/crazy/lib/tracks/controller.rb:13:in <span class="sb">`</span>const_get<span class="err">&#39;</span></code></pre></div></p>
+    /code/crazy/lib/tracks/controller.rb:13:in `const_get'
+</code></pre>
 
 <p>When we run the test, you see it failed on <code>PostsController</code> which is what
 we expect since we haven&rsquo;t implemented <code>PostsController</code> yet. Let&rsquo;s add the
 controller now.</p>
 
-<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+<p>  # app/controllers/posts_controller.rb
+  class PostsController &lt; Tracks::Controller
+    def index
+      &ldquo;hello from tracks /posts/index&rdquo;
+    end
+  end</p>
 
-<span class="sr">&lt;h1&gt;app/</span><span class="n">controllers</span><span class="o">/</span><span class="n">posts_controller</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+<p>  # config/application.rb
+  require &ldquo;./app/controllers/posts_controller&rdquo;</p>
 
-<span class="sr">&lt;p&gt;class PostsController &amp;lt; Tracks::Controller</span>
-<span class="sr">  def index</span>
-<span class="sr">    &amp;ldquo;hello from tracks /</span><span class="n">posts</span><span class="o">/</span><span class="n">index</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
-  <span class="k">end</span>
-<span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+<p>  $ ruby spec/application_spec.rb
+  Run options: &ndash;seed 2475</p>
 
-<span class="sr">&lt;h1&gt;config/</span><span class="n">application</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+<p>  # Running:
+  ..</p>
 
-<span class="sr">&lt;p&gt;require &amp;ldquo;./</span><span class="n">app</span><span class="o">/</span><span class="n">controllers</span><span class="o">/</span><span class="n">posts_controller</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span></code></pre></div></p>
+<p>  Finished in 0.019152s, 104.4277 runs/s, 208.8555 assertions/s.</p>
 
-<p><div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby spec/application_spec.rb
-Run options: <span class="p">&amp;</span>ndash<span class="p">;</span>seed 2475&lt;/p&gt;
-
-&lt;h1&gt;Running:&lt;/h1&gt;
-
-&lt;p&gt;..&lt;/p&gt;
-
-&lt;p&gt;Finished in 0.019152s, 104.4277 runs/s, 208.8555 assertions/s.&lt;/p&gt;
-
-&lt;p&gt;2 runs, <span class="m">4</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips</code></pre></div></p>
+<p>  2 runs, 4 assertions, 0 failures, 0 errors, 0 skips</p>
 
 <h1>Automatic loading</h1>
 
@@ -411,70 +400,67 @@ know if a class has been used but not yet loaded.</p>
 <p>We also update the <code>$LOAD_PATH</code> to include <code>app/controllers</code> folder so Ruby knows
 where to look.</p>
 
-<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+<pre><code># lib/tracks.rb
+require File.expand_path("../tracks/helper", __FILE__)
+require File.expand_path("../tracks/object", __FILE__)
 
-<span class="sr">&lt;h1&gt;lib/</span><span class="n">tracks</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+# config/application.rb
+require './lib/tracks'
+$LOAD_PATH &lt;&lt; File.expand_path("../../app/controllers", __FILE__)
 
-<span class="sr">&lt;p&gt;require File.expand_path(&amp;ldquo;../</span><span class="n">tracks</span><span class="o">/</span><span class="n">helper</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;,</span> <span class="o">&lt;</span><span class="n">strong</span><span class="o">&gt;</span><span class="no">FILE</span><span class="o">&lt;</span><span class="sr">/strong&gt;)</span>
-<span class="sr">require File.expand_path(&amp;ldquo;../</span><span class="n">tracks</span><span class="o">/</span><span class="n">object</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;,</span> <span class="o">&lt;</span><span class="n">strong</span><span class="o">&gt;</span><span class="no">FILE</span><span class="o">&lt;</span><span class="sr">/strong&gt;)&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+module CrazyApp
+  class Application &lt; Tracks::Application
+  end
+end
 
-<span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">config</span><span class="o">/</span><span class="n">application</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+# lib/tracks/helper.rb
+module Tracks
+  module Helper
+    def self.to_underscore(string)
+      string.scan(/[A-Z][a-z]+/).
+      join('_').
+      downcase
+    end
+  end
+end
 
-<span class="sr">&lt;p&gt;require &amp;lsquo;./</span><span class="n">lib</span><span class="o">/</span><span class="n">tracks</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;</span>
-<span class="vg">$LOAD_PATH</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="o">.</span><span class="n">.</span><span class="o">/.</span><span class="n">.</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">controllers</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;,</span> <span class="o">&lt;</span><span class="n">strong</span><span class="o">&gt;</span><span class="no">FILE</span><span class="o">&lt;</span><span class="sr">/strong&gt;)&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
-
-<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="k">module</span> <span class="nn">CrazyApp</span>
-  <span class="k">class</span> <span class="nc">Application</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Application</span>
-  <span class="k">end</span>
-<span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-
-<span class="sr">&lt;h1&gt;lib/</span><span class="n">tracks</span><span class="o">/</span><span class="n">helper</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
-
-<span class="sr">&lt;p&gt;module Tracks</span>
-<span class="sr">  module Helper</span>
-<span class="sr">    def self.to_underscore(string)</span>
-<span class="sr">      string.scan(/</span><span class="o">[</span><span class="n">A</span><span class="o">-</span><span class="n">Z</span><span class="o">][</span><span class="n">a</span><span class="o">-</span><span class="n">z</span><span class="o">]+/</span><span class="p">)</span><span class="o">.</span>
-      <span class="n">join</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">_</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;)</span><span class="o">.</span>
-      <span class="n">downcase</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-
-<span class="sr">&lt;h1&gt;lib/</span><span class="n">tracks</span><span class="o">/</span><span class="n">object</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
-
-<span class="sr">&lt;p&gt;class Object</span>
-<span class="sr">  def self.const_missing&amp;copy;</span>
-<span class="sr">    require Tracks::Helper.to_underscore(c.to_s)</span>
-<span class="sr">    const_get&amp;copy;</span>
-<span class="sr">  end</span>
-<span class="sr">end</span></code></pre></div></p>
+# lib/tracks/object.rb
+class Object
+  def self.const_missing(c)
+    require Tracks::Helper.to_underscore(c.to_s)
+    const_get(c)
+  end
+end
+</code></pre>
 
 <p>Our implementation of <code>.to_underscore</code> is limited compared to what&rsquo;s supported in Rails.</p>
 
-<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">01</span><span class="mi">9</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="no">PostsController</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
-<span class="o">=&gt;</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="no">PostsController</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
-<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">020</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/[A-Z][a-z]+/</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">_</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;)</span><span class="o">.</span><span class="n">downcase</span>
-<span class="o">=&gt;</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">posts_controller</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span></code></pre></div></p>
+<pre><code>irb(main):019:0&gt; s = "PostsController"
+=&gt; "PostsController"
+irb(main):020:0&gt; s.scan(/[A-Z][a-z]+/).join('_').downcase
+=&gt; "posts_controller"
+</code></pre>
 
 <p>Also, since we call <code>const_get</code> inside <code>const_missing</code>, you will run into serious
 trouble if your file does not contain the expected class. Try changing the name of the
 class inside <code>app/controllers/posts_controller.rb</code> into something else and you will get this
 error.</p>
 
-<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="err">$</span> <span class="n">ruby</span> <span class="n">spec</span><span class="o">/</span><span class="n">application_spec</span><span class="o">.</span><span class="n">rb</span>
-<span class="no">Run</span> <span class="ss">options</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">ndash</span><span class="p">;</span><span class="n">seed</span> <span class="mi">60433</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+<pre><code>$ ruby spec/application_spec.rb
+Run options: --seed 60433
 
-<span class="sr">&lt;h1&gt;Running:&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+# Running:
 
-<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;.</span><span class="n">E</span>
-<span class="no">Finished</span> <span class="k">in</span> <span class="mi">0</span><span class="o">.</span><span class="mo">043152</span><span class="n">s</span><span class="p">,</span> <span class="mi">46</span><span class="o">.</span><span class="mi">3478</span> <span class="n">runs</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">46</span><span class="o">.</span><span class="mi">3478</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="o">.</span><span class="n">&lt;</span><span class="sr">/p&gt;</span>
+.E
+Finished in 0.043152s, 46.3478 runs/s, 46.3478 assertions/s.
 
-<span class="sr">&lt;p&gt;  1) Error:</span>
-<span class="sr">CrazyApp::Application#test_0002_should respond with different path:</span>
-<span class="sr">SystemStackError: stack level too deep</span>
-<span class="sr">    /</span><span class="no">Users</span><span class="o">/</span><span class="n">greg</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">p247</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">forwardable</span><span class="o">.</span><span class="n">rb</span><span class="p">:</span><span class="mi">174</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+  1) Error:
+CrazyApp::Application#test_0002_should respond with different path:
+SystemStackError: stack level too deep
+    /Users/greg/.rbenv/versions/2.0.0-p247/lib/ruby/2.0.0/forwardable.rb:174
 
-<span class="sr">&lt;p&gt;2 runs, 2 assertions, 0 failures, 1 errors, 0 skips</span></code></pre></div></p>
+2 runs, 2 assertions, 0 failures, 1 errors, 0 skips
+</code></pre>
 ]]></content>
   </entry>
   
