@@ -7,7 +7,7 @@
 	<meta charset="utf-8">
 	<title>Greg Moreno</title>
 
-	<meta name="author" content="Greg">
+	<meta name="author" content="Greg Moreno">
 	
 	<meta name="description" content="16 Feb 2016 Joy Ride in Ruby's Spaceship Ruby&rsquo;s &lt;=&gt; operator is commonly referred to as the spaceship in the community. You may not have &hellip;">
 
@@ -1061,70 +1061,65 @@ Both <code>Rails::Application</code> and <code>proc</code> provides a <code>call
 a gem for our framework that we shall call <code>Tracks</code>. From here on, we shall follow Rails conventions
 and build our gem from there.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config.ru</span>
-<span class="nb">require</span> <span class="s1">&#39;./config/application&#39;</span>
-<span class="n">run</span> <span class="no">CrazyApp</span><span class="o">::</span><span class="no">Application</span>
+<pre><code># config.ru
+require './config/application'
+run CrazyApp::Application
 
-<span class="c1"># config/application.rb</span>
-<span class="nb">require</span> <span class="s1">&#39;./lib/tracks&#39;</span>
+# config/application.rb
+require './lib/tracks'
 
-<span class="k">module</span> <span class="nn">CrazyApp</span>
-  <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Application</span>
-  <span class="k">end</span>
-<span class="k">end</span>
+module CrazyApp
+  class Application &lt; Tracks::Application
+  end
+end
 
-<span class="c1"># lib/tracks.rb</span>
-<span class="k">module</span> <span class="nn">Tracks</span>
-  <span class="k">class</span> <span class="nc">Application</span>
-    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-      <span class="o">[</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;text/html&#39;</span><span class="p">},</span> <span class="o">[</span><span class="s2">&quot;hello from tracks&quot;</span><span class="o">]</span> <span class="o">]</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
-
-
-<p><img src="/assets/rebuild-2.png" alt="rebuild2" /></p>
+# lib/tracks.rb
+module Tracks
+  class Application
+    def self.call(env)
+      [200, {'Content-Type' =&gt; 'text/html'}, ["hello from tracks"] ]
+    end
+  end
+end
+</code></pre>
 
 <p>Exit from your rackup process and re-run it because we are not supporting auto-reloading. This time you will see a message from our <code>Tracks</code> - the super awesome Rails-like framework.</p>
 
-<h1>Render a default page</h1>
+<h3>Render a default page</h3>
 
 <p>We now introduce a very simple root controller and use it to render a default index page. We also modify our route handling
 by inspecting the value in <code>env</code> object that Rack passed to our framework. The <code>env</code> packs a lot of information about
 a request and for our routing, we are interested in <code>PATH_INFO</code> which is the url after the domain minus the query parameters.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># lib/tracks/controlle.rb</span>
-<span class="k">module</span> <span class="nn">Tracks</span>
-  <span class="k">class</span> <span class="nc">Controller</span>
-    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">render_default_root</span>
-      <span class="n">filename</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;public&#39;</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
-      <span class="no">File</span><span class="o">.</span><span class="n">read</span> <span class="n">filename</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
+<pre><code># lib/tracks/controlle.rb
+module Tracks
+  class Controller
+    def self.render_default_root
+      filename = File.join('public', 'index.html')
+      File.read filename
+    end
+  end
+end
 
 
-<span class="c1"># lib/tracks.rb</span>
-<span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">&#39;../tracks/controller&#39;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+# lib/tracks.rb
+require File.expand_path('../tracks/controller', __FILE__)
 
-<span class="k">module</span> <span class="nn">Tracks</span>
-  <span class="k">class</span> <span class="nc">Application</span>
-    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-      <span class="n">path_info</span> <span class="o">=</span> <span class="n">env</span><span class="o">[</span><span class="s1">&#39;PATH_INFO&#39;</span><span class="o">]</span>
-      <span class="k">if</span>  <span class="n">path_info</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Controller</span><span class="o">.</span><span class="n">render_default_root</span>
-      <span class="k">else</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;hello from tracks </span><span class="si">#{</span><span class="n">path_info</span><span class="si">}</span><span class="s2">&quot;</span>
-      <span class="k">end</span>
+module Tracks
+  class Application
+    def self.call(env)
+      path_info = env['PATH_INFO']
+      if  path_info == '/'
+        text = Tracks::Controller.render_default_root
+      else
+        text = "hello from tracks #{path_info}"
+      end
 
-      <span class="o">[</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;text/html&#39;</span><span class="p">},</span> <span class="o">[</span><span class="n">text</span><span class="o">]</span> <span class="o">]</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
-
-
-<p><img src="/assets/rebuild-3.png" alt="rebuild3" />
-<img src="/assets/rebuild-4.png" alt="rebuild4" /></p>
+      [200, {'Content-Type' =&gt; 'text/html'}, [text] ]
+    end
+  end
+end
+</code></pre>
 
 <p>That&rsquo;s it for now. Next time, we will create our own controllers, action, and dynamic pages using ERB.</p>
 
@@ -1152,28 +1147,28 @@ a request and for our routing, we are interested in <code>PATH_INFO</code> which
 
 <p>Here&rsquo;s my ruby solution:</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
+<pre><code>  require 'minitest/autorun'
 
-<span class="k">def</span> <span class="nf">vowel_count</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-  <span class="n">vowels</span> <span class="o">=</span> <span class="sx">%w[a e i o u]</span>
-  <span class="n">s</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/\w/</span><span class="p">)</span><span class="o">.</span><span class="n">select</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">i</span> <span class="k">if</span> <span class="n">vowels</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">downcase</span><span class="p">)</span> <span class="p">}</span><span class="o">.</span><span class="n">count</span>
-<span class="k">end</span>
+  def vowel_count(s)
+    vowels = %w[a e i o u]
+    s.to_s.scan(/\w/).select { |i| i if vowels.include?(i.downcase) }.count
+  end
 
-<span class="n">describe</span> <span class="s2">&quot;#vowel_count&quot;</span> <span class="k">do</span>
-  <span class="n">it</span> <span class="s2">&quot;should count upcase lowercase&quot;</span> <span class="k">do</span>
-    <span class="nb">test</span> <span class="o">=</span> <span class="s2">&quot;I wanted to be an astronaut&quot;</span>
-    <span class="n">vowel_count</span><span class="p">(</span><span class="nb">test</span><span class="p">)</span><span class="o">.</span><span class="n">must_equal</span> <span class="mi">10</span>
-  <span class="k">end</span>
+  describe "#vowel_count" do
+    it "should count upcase lowercase" do
+      test = "I wanted to be an astronaut"
+      vowel_count(test).must_equal 10
+    end
 
-  <span class="n">it</span> <span class="s2">&quot;should be zero for empty string&quot;</span> <span class="k">do</span>
-    <span class="n">vowel_count</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">must_equal</span> <span class="mi">0</span>
-  <span class="k">end</span>
+    it "should be zero for empty string" do
+      vowel_count("").must_equal 0
+    end
 
-  <span class="n">it</span> <span class="s2">&quot;should be zero for nil&quot;</span> <span class="k">do</span>
-    <span class="n">vowel_count</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span><span class="o">.</span><span class="n">must_equal</span> <span class="mi">0</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
-
+    it "should be zero for nil" do
+      vowel_count(nil).must_equal 0
+    end
+  end
+</code></pre>
 
 <p>Sounds simple, right? But there are subtle things you should watch out for.</p>
 
@@ -1195,7 +1190,7 @@ if the passed parameter is not a string.</li>
 </ul>
 
 
-<h1>Minimalist testing</h1>
+<h3>Minimalist testing</h3>
 
 <p>If you are working with Rails' for a while, you probably been pampered with Rails seamless
 integration with testing frameworks you&rsquo;ll be forgiven if you think these support
@@ -1204,19 +1199,17 @@ are only available within Rails.</p>
 <p>Ruby comes with <code>minitest/autorun</code> that supports a minimalist testing framework. Just require in your code and you are
 good to go with rspec-style testing right off the bat.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby vowelcount.rb
+<pre><code>$ ruby vowelcount.rb
 Run options: --seed 47907
 
-<span class="c"># Running:</span>
+# Running:
 
 ...
 
 Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
 
-<span class="m">3</span> runs, <span class="m">3</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips</code></pre></div>
-
-
-
+3 runs, 3 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
 
 	</section>
 
@@ -1240,7 +1233,7 @@ Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
 
 
   </main>
-  <footer class="site-footer"><a class="subscribe icon-feed" href="http:///atom.xml"><span class="tooltip">Subscribe!</span></a>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
 
 
 <div class="inner">
@@ -1253,7 +1246,7 @@ Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
 
 
 
-<section class="copyright">All content copyright <a href="/">Greg</a> © 2016 • All rights reserved.</section>
+<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
 
 <section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
 

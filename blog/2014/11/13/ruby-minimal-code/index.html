@@ -7,7 +7,7 @@
 	<meta charset="utf-8">
 	<title>#ruby Counting Vowels | Greg Moreno</title>
 
-	<meta name="author" content="Greg">
+	<meta name="author" content="Greg Moreno">
 	
 	<meta name="description" content="Greg Moreno 13 Nov 2014 #ruby Counting Vowels Just saw a simple exercise in my Facebook feed and I thought I give it a shot. The problem is simple: &hellip;">
 
@@ -41,28 +41,28 @@
 
 <p>Here&rsquo;s my ruby solution:</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
+<pre><code>  require 'minitest/autorun'
 
-<span class="k">def</span> <span class="nf">vowel_count</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-  <span class="n">vowels</span> <span class="o">=</span> <span class="sx">%w[a e i o u]</span>
-  <span class="n">s</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/\w/</span><span class="p">)</span><span class="o">.</span><span class="n">select</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">i</span> <span class="k">if</span> <span class="n">vowels</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">downcase</span><span class="p">)</span> <span class="p">}</span><span class="o">.</span><span class="n">count</span>
-<span class="k">end</span>
+  def vowel_count(s)
+    vowels = %w[a e i o u]
+    s.to_s.scan(/\w/).select { |i| i if vowels.include?(i.downcase) }.count
+  end
 
-<span class="n">describe</span> <span class="s2">&quot;#vowel_count&quot;</span> <span class="k">do</span>
-  <span class="n">it</span> <span class="s2">&quot;should count upcase lowercase&quot;</span> <span class="k">do</span>
-    <span class="nb">test</span> <span class="o">=</span> <span class="s2">&quot;I wanted to be an astronaut&quot;</span>
-    <span class="n">vowel_count</span><span class="p">(</span><span class="nb">test</span><span class="p">)</span><span class="o">.</span><span class="n">must_equal</span> <span class="mi">10</span>
-  <span class="k">end</span>
+  describe "#vowel_count" do
+    it "should count upcase lowercase" do
+      test = "I wanted to be an astronaut"
+      vowel_count(test).must_equal 10
+    end
 
-  <span class="n">it</span> <span class="s2">&quot;should be zero for empty string&quot;</span> <span class="k">do</span>
-    <span class="n">vowel_count</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">must_equal</span> <span class="mi">0</span>
-  <span class="k">end</span>
+    it "should be zero for empty string" do
+      vowel_count("").must_equal 0
+    end
 
-  <span class="n">it</span> <span class="s2">&quot;should be zero for nil&quot;</span> <span class="k">do</span>
-    <span class="n">vowel_count</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span><span class="o">.</span><span class="n">must_equal</span> <span class="mi">0</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
-
+    it "should be zero for nil" do
+      vowel_count(nil).must_equal 0
+    end
+  end
+</code></pre>
 
 <p>Sounds simple, right? But there are subtle things you should watch out for.</p>
 
@@ -84,7 +84,7 @@ if the passed parameter is not a string.</li>
 </ul>
 
 
-<h1>Minimalist testing</h1>
+<h3>Minimalist testing</h3>
 
 <p>If you are working with Rails' for a while, you probably been pampered with Rails seamless
 integration with testing frameworks you&rsquo;ll be forgiven if you think these support
@@ -93,36 +93,34 @@ are only available within Rails.</p>
 <p>Ruby comes with <code>minitest/autorun</code> that supports a minimalist testing framework. Just require in your code and you are
 good to go with rspec-style testing right off the bat.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby vowelcount.rb
+<pre><code>$ ruby vowelcount.rb
 Run options: --seed 47907
 
-<span class="c"># Running:</span>
+# Running:
 
 ...
 
 Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
 
-<span class="m">3</span> runs, <span class="m">3</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips</code></pre></div>
-
-
-
+3 runs, 3 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
 
 	</section>
 
   <footer class="post-footer">
   <section class="author">
-    <h4>Greg</h4>
+    <h4>Greg Moreno</h4>
     <p></p>
   </section>
   <section class="share">
     <h4>Share this post</h4>
-    <a class="icon-twitter" href="http://twitter.com/share?text=#ruby Counting Vowels&amp;url=http:///blog/2014/11/13/ruby-minimal-code/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+    <a class="icon-twitter" href="http://twitter.com/share?text=#ruby Counting Vowels&amp;url=http://gregmoreno.ca/blog/2014/11/13/ruby-minimal-code/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
       <span class="hidden">Twitter</span>
     </a>
-    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http:///blog/2014/11/13/ruby-minimal-code/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/blog/2014/11/13/ruby-minimal-code/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
       <span class="hidden">Facebook</span>
     </a>
-    <a class="icon-google-plus" href="https://plus.google.com/share?url=http:///blog/2014/11/13/ruby-minimal-code/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/blog/2014/11/13/ruby-minimal-code/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
       <span class="hidden">Google+</span>
     </a>
   </section>
@@ -135,7 +133,7 @@ Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
   
   
 </article></main>
-  <footer class="site-footer"><a class="subscribe icon-feed" href="http:///atom.xml"><span class="tooltip">Subscribe!</span></a>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
 
 
 <div class="inner">
@@ -148,7 +146,7 @@ Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
 
 
 
-<section class="copyright">All content copyright <a href="/">Greg</a> © 2016 • All rights reserved.</section>
+<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
 
 <section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
 

@@ -7,7 +7,7 @@
 	<meta charset="utf-8">
 	<title>#hacking  Ansible | Greg Moreno</title>
 
-	<meta name="author" content="Greg">
+	<meta name="author" content="Greg Moreno">
 	
 	<meta name="description" content="Greg Moreno 17 Oct 2014 #hacking Ansible Before you continue, let me congratulate myself. It’s been years since I’ve written a post. Hooray! Also, &hellip;">
 
@@ -39,68 +39,68 @@
 
 <p>There are tons of posts about Ansible already so this is more about gotchas I learned along the way.</p>
 
-<h1>Variables</h1>
+<h3>Variables</h3>
 
 <p>Just like good coding, you should isolate things that will change. Store variables in vars/defaults.yml for things like initial database password, deployment directory, ruby version, and whatnot. I started out with using snake format but I later learned you can have a hierarchy for your variables as well, for example:</p>
 
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">app</span><span class="p-Indicator">:</span>
-  <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">google.app</span></code></pre></div>
-
+<pre><code>app:
+  name: google.app
+</code></pre>
 
 <p>Inside your tasks, you can reference it with . Of course, nothing prevents you from just simply naming your variable as app_name and use it as</p>
 
-<h1>Hosts and groups</h1>
+<h3>Hosts and groups</h3>
 
 <p>You can use ansible to work on 1 or more servers at a time. These servers are specified in the hosts file (see hosts in the example). You can also group servers by using [groupname]. In the example below, you can have ansible target qa only (using the —limit option) and it will update the 2 servers you listed under the [qa] group.</p>
 
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="p-Indicator">[</span><span class="nv">local</span><span class="p-Indicator">]</span>
-<span class="l-Scalar-Plain">localhost ansible_python_interpreter=/usr/local/bin/python</span>
+<pre><code>[local]
+localhost ansible_python_interpreter=/usr/local/bin/python
 
-<span class="l-Scalar-Plain">[www]</span>
-<span class="l-Scalar-Plain">www.yourapp.com</span>
+[www]
+www.yourapp.com
 
-<span class="l-Scalar-Plain">[staging]</span>
-<span class="l-Scalar-Plain">staging.yourapp.com</span>
+[staging]
+staging.yourapp.com
 
-<span class="l-Scalar-Plain">[qa]</span>
-<span class="l-Scalar-Plain">qa1.yourapp.com</span>
-<span class="l-Scalar-Plain">qa2.yourapp.com</span></code></pre></div>
+[qa]
+qa1.yourapp.com
+qa2.yourapp.com
+</code></pre>
 
-
-<h1>Use roles</h1>
+<h3>Use roles</h3>
 
 <p>Roles allow you to separate common tasks into sort of like modules giving you flexibility. Some use roles to group common tasks like ‘db’, ‘web’, etc. For starters like me and if you are playing with combining different software, I used roles to define specific software. I have a role named ‘mysql’, a role ‘nginx-puma’, or a role ‘nginx-passenger’. Over time, you may split the roles into functional distinctions like web, db, etc.</p>
 
-<h1>Creating an EC2 instance</h1>
+<h3>Creating an EC2 instance</h3>
 
 <p>In my example, just update the variables below (included in vars/defaults.yml) to suit your requirements.</p>
 
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">ec2_keypair</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">yourapp-www</span>
-<span class="l-Scalar-Plain">ec2_instance_type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">t1.micro</span>
-<span class="l-Scalar-Plain">ec2_security_group</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">web-security-group</span>
-<span class="l-Scalar-Plain">ec2_region</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">us-west-1</span>
-<span class="l-Scalar-Plain">ec2_zone</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">us-west-1c</span>
-<span class="l-Scalar-Plain">ec2_image</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">ami-f1fdfeb4</span> <span class="c1"># Ubuntu Server 14.04 LTS (PV) 64-bit</span>
-<span class="l-Scalar-Plain">ec2_instance_count</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1</span></code></pre></div>
-
+<pre><code>ec2_keypair: yourapp-www
+ec2_instance_type: t1.micro
+ec2_security_group: web-security-group
+ec2_region: us-west-1
+ec2_zone: us-west-1c
+ec2_image: ami-f1fdfeb4 # Ubuntu Server 14.04 LTS (PV) 64-bit
+ec2_instance_count: 1
+</code></pre>
 
 <p>You need your AWS_ACCESS_KEY, AWS_SECRET_KEY, and PEM file to create an instance. Creating the AWS access keys requires access to the IAM (Identity and Access Management).</p>
 
 <p>When you’re ready, run the command:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">AWS_ACCESS_KEY</span><span class="o">=</span><span class="s2">&quot;access&quot;</span> <span class="nv">AWS_SECRET_KEY</span><span class="o">=</span><span class="s2">&quot;secret&quot;</span> ansible-playbook -i hosts ec2.yml</code></pre></div>
-
+<pre><code>AWS_ACCESS_KEY="access" AWS_SECRET_KEY="secret" ansible-playbook -i hosts ec2.yml
+</code></pre>
 
 <p>I have set ec2.yml to run against ‘local’ group (specified in the ’hosts’ file) because you don’t have a host yet. The Ansible EC2 module is smart enough to know that you are still creating an instance at this point.</p>
 
 <p>After running the playbook, notice that it creates a new entry in the [launched] group in your hosts file. The new entry points to the EC2 instance you just created. At this point, you now have a server to run the rest of the playbooks.</p>
 
-<h1>Creating the deploy user</h1>
+<h3>Creating the deploy user</h3>
 
 <p>When the instance is created, it would create a new user. In my project where I use Ubuntu, it creates an ‘ubuntu’ user. In other cases, it might only create ‘root’ user. Regardless, your next step is to create a ‘deploy’ user because it is not a good idea to keep using root. You can change the name of the deploy user (see vars/defaults.yml) but I prefer using ‘deploy’ because it is also the default user in capistrano and I’m a Rails guy.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">ansible-playbook -i hosts create-user.yml --user root --limit launched --private-key ~/.ssh/yourapp.pem</code></pre></div>
-
+<pre><code>ansible-playbook -i hosts create-user.yml --user root --limit launched --private-key ~/.ssh/yourapp.pem
+</code></pre>
 
 <p>This playbook does several things:</p>
 
@@ -114,22 +114,22 @@
 
 <p>Note that I specified in the initial user ‘root’. Depending on the instance you just created it might be ‘ubuntu’ or some other initial user</p>
 
-<h1>Creating an instance in other providers</h1>
+<h3>Creating an instance in other providers</h3>
 
 <p>In Digital Ocean (and other similar providers), you can create an instance using their admin interface. The initial user is ‘root’ and you can specify a password and/or public key. If you forgot the public key, you must add it before you continue.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">scp ~/.ssh/id_rsa.pub root@yourapp.com:~/uploaded_key.pub
+<pre><code>scp ~/.ssh/id_rsa.pub root@yourapp.com:~/uploaded_key.pub
 ssh root@staging.app.com
 mkdir -m og-rwx .ssh
-cat ~/uploaded_key.pub &gt;&gt; ~/.ssh/authorized_keys</code></pre></div>
+cat ~/uploaded_key.pub &gt;&gt; ~/.ssh/authorized_keys
+</code></pre>
 
-
-<h1>Bootstrapping</h1>
+<h3>Bootstrapping</h3>
 
 <p>Now that you have your deploy user, just run the command below, take a coffee, and come back after 30 mins. That’s how awesome ansible is.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">ansible-playbook -i hosts bootstrap.yml --limit launched</code></pre></div>
-
+<pre><code>ansible-playbook -i hosts bootstrap.yml --limit launched
+</code></pre>
 
 <p>You may need to tweak the roles or update a specific server. For example, you’re testing an upgrade on a staging server. In that case, make sure you specify the corect host group in the —limit parameter</p>
 
@@ -146,18 +146,18 @@ cat ~/uploaded_key.pub &gt;&gt; ~/.ssh/authorized_keys</code></pre></div>
 
   <footer class="post-footer">
   <section class="author">
-    <h4>Greg</h4>
+    <h4>Greg Moreno</h4>
     <p></p>
   </section>
   <section class="share">
     <h4>Share this post</h4>
-    <a class="icon-twitter" href="http://twitter.com/share?text=#hacking  Ansible&amp;url=http:///blog/2014/10/17/hacking-ansible/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+    <a class="icon-twitter" href="http://twitter.com/share?text=#hacking  Ansible&amp;url=http://gregmoreno.ca/blog/2014/10/17/hacking-ansible/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
       <span class="hidden">Twitter</span>
     </a>
-    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http:///blog/2014/10/17/hacking-ansible/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/blog/2014/10/17/hacking-ansible/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
       <span class="hidden">Facebook</span>
     </a>
-    <a class="icon-google-plus" href="https://plus.google.com/share?url=http:///blog/2014/10/17/hacking-ansible/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/blog/2014/10/17/hacking-ansible/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
       <span class="hidden">Google+</span>
     </a>
   </section>
@@ -170,7 +170,7 @@ cat ~/uploaded_key.pub &gt;&gt; ~/.ssh/authorized_keys</code></pre></div>
   
   
 </article></main>
-  <footer class="site-footer"><a class="subscribe icon-feed" href="http:///atom.xml"><span class="tooltip">Subscribe!</span></a>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
 
 
 <div class="inner">
@@ -183,7 +183,7 @@ cat ~/uploaded_key.pub &gt;&gt; ~/.ssh/authorized_keys</code></pre></div>
 
 
 
-<section class="copyright">All content copyright <a href="/">Greg</a> © 2016 • All rights reserved.</section>
+<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
 
 <section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
 

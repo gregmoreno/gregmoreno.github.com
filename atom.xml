@@ -2,12 +2,12 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Greg Moreno]]></title>
-  <link href="http:///atom.xml" rel="self"/>
-  <link href="http:///"/>
-  <updated>2016-09-09T23:30:56-07:00</updated>
-  <id>http:///</id>
+  <link href="http://gregmoreno.ca/atom.xml" rel="self"/>
+  <link href="http://gregmoreno.ca/"/>
+  <updated>2016-09-09T23:35:21-07:00</updated>
+  <id>http://gregmoreno.ca/</id>
   <author>
-    <name><![CDATA[Greg]]></name>
+    <name><![CDATA[Greg Moreno]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Joy Ride in Ruby's spaceship]]></title>
-    <link href="http:///blog/2016/02/16/joy-ride-in-rubys-spaceship/"/>
+    <link href="http://gregmoreno.ca/blog/2016/02/16/joy-ride-in-rubys-spaceship/"/>
     <updated>2016-02-16T20:52:04-08:00</updated>
-    <id>http:///blog/2016/02/16/joy-ride-in-rubys-spaceship</id>
+    <id>http://gregmoreno.ca/blog/2016/02/16/joy-ride-in-rubys-spaceship</id>
     <content type="html"><![CDATA[<p>Ruby&rsquo;s <code>&lt;=&gt;</code> operator is commonly referred to as the spaceship in the community. You may not have
 played with it directly but I bet you have relied on it a lot of times. Because, every time you use
 sort an array, you are tapping in to the spaceship operator.</p>
@@ -208,9 +208,9 @@ Comparison via &ldquo;&lt;=>&rdquo; and the Comparable Module.</p>
   
   <entry>
     <title type="html"><![CDATA[You can't handle the truth]]></title>
-    <link href="http:///blog/2016/02/15/you-cant-handle-the-truth/"/>
+    <link href="http://gregmoreno.ca/blog/2016/02/15/you-cant-handle-the-truth/"/>
     <updated>2016-02-15T16:21:58-08:00</updated>
-    <id>http:///blog/2016/02/15/you-cant-handle-the-truth</id>
+    <id>http://gregmoreno.ca/blog/2016/02/15/you-cant-handle-the-truth</id>
     <content type="html"><![CDATA[<p>Quick question. What’s the output of this code in Ruby?</p>
 
 <pre><code>amount = 0
@@ -286,9 +286,9 @@ get a copy of <code>Effective Ruby</code> by Peter Jones.</p>
   
   <entry>
     <title type="html"><![CDATA[Rails #permitted]]></title>
-    <link href="http:///blog/2015/08/21/rails-permitted/"/>
+    <link href="http://gregmoreno.ca/blog/2015/08/21/rails-permitted/"/>
     <updated>2015-08-21T00:00:00-07:00</updated>
-    <id>http:///blog/2015/08/21/rails-permitted</id>
+    <id>http://gregmoreno.ca/blog/2015/08/21/rails-permitted</id>
     <content type="html"><![CDATA[<p>I recently upgraded a personal app I use for learning new things in Rails. But when I upgraded from
 4.1.4 to 4.1.12 I encountered this familiar error.</p>
 
@@ -376,9 +376,9 @@ NoMethodError: undefined method `permitted?' for {:provider=&gt;"facebook", :uid
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 4]]></title>
-    <link href="http:///blog/2014/11/24/rebuild-rails-part4/"/>
+    <link href="http://gregmoreno.ca/blog/2014/11/24/rebuild-rails-part4/"/>
     <updated>2014-11-24T00:00:00-08:00</updated>
-    <id>http:///blog/2014/11/24/rebuild-rails-part4</id>
+    <id>http://gregmoreno.ca/blog/2014/11/24/rebuild-rails-part4</id>
     <content type="html"><![CDATA[<p>Now, it is time to build real pages in our super duper Tracks framework. We will support ERB and to do that
 we need the <a href="https://rubygems.org/gems/erubis">erubis</a> gem.</p>
 
@@ -583,9 +583,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 3]]></title>
-    <link href="http:///blog/2014/11/20/rebuild-rails-part3/"/>
+    <link href="http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3/"/>
     <updated>2014-11-20T00:00:00-08:00</updated>
-    <id>http:///blog/2014/11/20/rebuild-rails-part3</id>
+    <id>http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3</id>
     <content type="html"><![CDATA[<p>Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
 by assuming a <code>controller/action</code> path format and only support <code>GET</code> request.</p>
 
@@ -738,9 +738,9 @@ SystemStackError: stack level too deep
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 2]]></title>
-    <link href="http:///blog/2014/11/19/rebuild-rails-part2/"/>
+    <link href="http://gregmoreno.ca/blog/2014/11/19/rebuild-rails-part2/"/>
     <updated>2014-11-19T00:00:00-08:00</updated>
-    <id>http:///blog/2014/11/19/rebuild-rails-part2</id>
+    <id>http://gregmoreno.ca/blog/2014/11/19/rebuild-rails-part2</id>
     <content type="html"><![CDATA[<p>Before we continue with out rebuilding series, we should write some tests first :)</p>
 
 <pre><code># spec/spec_helper.rb
@@ -798,9 +798,9 @@ Finished in 0.015864s, 126.0716 runs/s, 252.1432 assertions/s.
   
   <entry>
     <title type="html"><![CDATA[#ruby Array of hashes quiz]]></title>
-    <link href="http:///blog/2014/11/17/ruby-array-of-hashes-quiz/"/>
+    <link href="http://gregmoreno.ca/blog/2014/11/17/ruby-array-of-hashes-quiz/"/>
     <updated>2014-11-17T00:00:00-08:00</updated>
-    <id>http:///blog/2014/11/17/ruby-array-of-hashes-quiz</id>
+    <id>http://gregmoreno.ca/blog/2014/11/17/ruby-array-of-hashes-quiz</id>
     <content type="html"><![CDATA[<p>Found this interesting ruby quiz from <a href="http://www.alphasights.com/careers/experienced/positions/new-york/6-ruby-on-rails-developer/apply">AlphaSights</a>.
 Given an array of hashes, collapse into an array of hashes containing one entry per day.
 And you can only reference the <code>:time</code> key and not the rest.</p>
@@ -869,9 +869,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[To the crazy ones]]></title>
-    <link href="http:///blog/2014/11/16/to-the-crazy-ones/"/>
+    <link href="http://gregmoreno.ca/blog/2014/11/16/to-the-crazy-ones/"/>
     <updated>2014-11-16T00:00:00-08:00</updated>
-    <id>http:///blog/2014/11/16/to-the-crazy-ones</id>
+    <id>http://gregmoreno.ca/blog/2014/11/16/to-the-crazy-ones</id>
     <content type="html"><![CDATA[<p>Though I&rsquo;ve seen this video a gazillion times, I still find it fresh and inspiring.</p>
 
 <iframe width="420" height="315" src="http://www.youtube.com/embed/tjgtLSHhTPg" frameborder="0" allowfullscreen></iframe>
@@ -881,9 +881,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 1]]></title>
-    <link href="http:///blog/2014/11/16/rebuild-rails-part1/"/>
+    <link href="http://gregmoreno.ca/blog/2014/11/16/rebuild-rails-part1/"/>
     <updated>2014-11-16T00:00:00-08:00</updated>
-    <id>http:///blog/2014/11/16/rebuild-rails-part1</id>
+    <id>http://gregmoreno.ca/blog/2014/11/16/rebuild-rails-part1</id>
     <content type="html"><![CDATA[<p>I have no plans to build another Rails-clone. Let&rsquo;s leave that work to other smarter people with more time.
 But wouldn&rsquo;t it be fun if we can learn how Rails work under the hood and find out what makes it &ldquo;magical&rdquo;?
 In this post I will only cover what happens when you typed that url until you get an HTML page. We&rsquo;ll simplify further by not using any database
@@ -936,70 +936,65 @@ Both <code>Rails::Application</code> and <code>proc</code> provides a <code>call
 a gem for our framework that we shall call <code>Tracks</code>. From here on, we shall follow Rails conventions
 and build our gem from there.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config.ru</span>
-<span class="nb">require</span> <span class="s1">&#39;./config/application&#39;</span>
-<span class="n">run</span> <span class="no">CrazyApp</span><span class="o">::</span><span class="no">Application</span>
+<pre><code># config.ru
+require './config/application'
+run CrazyApp::Application
 
-<span class="c1"># config/application.rb</span>
-<span class="nb">require</span> <span class="s1">&#39;./lib/tracks&#39;</span>
+# config/application.rb
+require './lib/tracks'
 
-<span class="k">module</span> <span class="nn">CrazyApp</span>
-  <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Application</span>
-  <span class="k">end</span>
-<span class="k">end</span>
+module CrazyApp
+  class Application &lt; Tracks::Application
+  end
+end
 
-<span class="c1"># lib/tracks.rb</span>
-<span class="k">module</span> <span class="nn">Tracks</span>
-  <span class="k">class</span> <span class="nc">Application</span>
-    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-      <span class="o">[</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;text/html&#39;</span><span class="p">},</span> <span class="o">[</span><span class="s2">&quot;hello from tracks&quot;</span><span class="o">]</span> <span class="o">]</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
-
-
-<p><img src="http:///assets/rebuild-2.png" alt="rebuild2" /></p>
+# lib/tracks.rb
+module Tracks
+  class Application
+    def self.call(env)
+      [200, {'Content-Type' =&gt; 'text/html'}, ["hello from tracks"] ]
+    end
+  end
+end
+</code></pre>
 
 <p>Exit from your rackup process and re-run it because we are not supporting auto-reloading. This time you will see a message from our <code>Tracks</code> - the super awesome Rails-like framework.</p>
 
-<h1>Render a default page</h1>
+<h3>Render a default page</h3>
 
 <p>We now introduce a very simple root controller and use it to render a default index page. We also modify our route handling
 by inspecting the value in <code>env</code> object that Rack passed to our framework. The <code>env</code> packs a lot of information about
 a request and for our routing, we are interested in <code>PATH_INFO</code> which is the url after the domain minus the query parameters.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># lib/tracks/controlle.rb</span>
-<span class="k">module</span> <span class="nn">Tracks</span>
-  <span class="k">class</span> <span class="nc">Controller</span>
-    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">render_default_root</span>
-      <span class="n">filename</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;public&#39;</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
-      <span class="no">File</span><span class="o">.</span><span class="n">read</span> <span class="n">filename</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
+<pre><code># lib/tracks/controlle.rb
+module Tracks
+  class Controller
+    def self.render_default_root
+      filename = File.join('public', 'index.html')
+      File.read filename
+    end
+  end
+end
 
 
-<span class="c1"># lib/tracks.rb</span>
-<span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">&#39;../tracks/controller&#39;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+# lib/tracks.rb
+require File.expand_path('../tracks/controller', __FILE__)
 
-<span class="k">module</span> <span class="nn">Tracks</span>
-  <span class="k">class</span> <span class="nc">Application</span>
-    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-      <span class="n">path_info</span> <span class="o">=</span> <span class="n">env</span><span class="o">[</span><span class="s1">&#39;PATH_INFO&#39;</span><span class="o">]</span>
-      <span class="k">if</span>  <span class="n">path_info</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Controller</span><span class="o">.</span><span class="n">render_default_root</span>
-      <span class="k">else</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;hello from tracks </span><span class="si">#{</span><span class="n">path_info</span><span class="si">}</span><span class="s2">&quot;</span>
-      <span class="k">end</span>
+module Tracks
+  class Application
+    def self.call(env)
+      path_info = env['PATH_INFO']
+      if  path_info == '/'
+        text = Tracks::Controller.render_default_root
+      else
+        text = "hello from tracks #{path_info}"
+      end
 
-      <span class="o">[</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;text/html&#39;</span><span class="p">},</span> <span class="o">[</span><span class="n">text</span><span class="o">]</span> <span class="o">]</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
-
-
-<p><img src="http:///assets/rebuild-3.png" alt="rebuild3" />
-<img src="http:///assets/rebuild-4.png" alt="rebuild4" /></p>
+      [200, {'Content-Type' =&gt; 'text/html'}, [text] ]
+    end
+  end
+end
+</code></pre>
 
 <p>That&rsquo;s it for now. Next time, we will create our own controllers, action, and dynamic pages using ERB.</p>
 ]]></content>
@@ -1007,37 +1002,37 @@ a request and for our routing, we are interested in <code>PATH_INFO</code> which
   
   <entry>
     <title type="html"><![CDATA[#ruby Counting Vowels]]></title>
-    <link href="http:///blog/2014/11/13/ruby-minimal-code/"/>
+    <link href="http://gregmoreno.ca/blog/2014/11/13/ruby-minimal-code/"/>
     <updated>2014-11-13T00:00:00-08:00</updated>
-    <id>http:///blog/2014/11/13/ruby-minimal-code</id>
+    <id>http://gregmoreno.ca/blog/2014/11/13/ruby-minimal-code</id>
     <content type="html"><![CDATA[<p>Just saw a simple exercise in my Facebook feed and I thought I give it a shot. The problem is simple:</p>
 
 <blockquote><p>Write a function that returns the number of vowels in the string.</p></blockquote>
 
 <p>Here&rsquo;s my ruby solution:</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
+<pre><code>  require 'minitest/autorun'
 
-<span class="k">def</span> <span class="nf">vowel_count</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-  <span class="n">vowels</span> <span class="o">=</span> <span class="sx">%w[a e i o u]</span>
-  <span class="n">s</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/\w/</span><span class="p">)</span><span class="o">.</span><span class="n">select</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">i</span> <span class="k">if</span> <span class="n">vowels</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">downcase</span><span class="p">)</span> <span class="p">}</span><span class="o">.</span><span class="n">count</span>
-<span class="k">end</span>
+  def vowel_count(s)
+    vowels = %w[a e i o u]
+    s.to_s.scan(/\w/).select { |i| i if vowels.include?(i.downcase) }.count
+  end
 
-<span class="n">describe</span> <span class="s2">&quot;#vowel_count&quot;</span> <span class="k">do</span>
-  <span class="n">it</span> <span class="s2">&quot;should count upcase lowercase&quot;</span> <span class="k">do</span>
-    <span class="nb">test</span> <span class="o">=</span> <span class="s2">&quot;I wanted to be an astronaut&quot;</span>
-    <span class="n">vowel_count</span><span class="p">(</span><span class="nb">test</span><span class="p">)</span><span class="o">.</span><span class="n">must_equal</span> <span class="mi">10</span>
-  <span class="k">end</span>
+  describe "#vowel_count" do
+    it "should count upcase lowercase" do
+      test = "I wanted to be an astronaut"
+      vowel_count(test).must_equal 10
+    end
 
-  <span class="n">it</span> <span class="s2">&quot;should be zero for empty string&quot;</span> <span class="k">do</span>
-    <span class="n">vowel_count</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">must_equal</span> <span class="mi">0</span>
-  <span class="k">end</span>
+    it "should be zero for empty string" do
+      vowel_count("").must_equal 0
+    end
 
-  <span class="n">it</span> <span class="s2">&quot;should be zero for nil&quot;</span> <span class="k">do</span>
-    <span class="n">vowel_count</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span><span class="o">.</span><span class="n">must_equal</span> <span class="mi">0</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
-
+    it "should be zero for nil" do
+      vowel_count(nil).must_equal 0
+    end
+  end
+</code></pre>
 
 <p>Sounds simple, right? But there are subtle things you should watch out for.</p>
 
@@ -1059,7 +1054,7 @@ if the passed parameter is not a string.</li>
 </ul>
 
 
-<h1>Minimalist testing</h1>
+<h3>Minimalist testing</h3>
 
 <p>If you are working with Rails' for a while, you probably been pampered with Rails seamless
 integration with testing frameworks you&rsquo;ll be forgiven if you think these support
@@ -1068,93 +1063,91 @@ are only available within Rails.</p>
 <p>Ruby comes with <code>minitest/autorun</code> that supports a minimalist testing framework. Just require in your code and you are
 good to go with rspec-style testing right off the bat.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby vowelcount.rb
+<pre><code>$ ruby vowelcount.rb
 Run options: --seed 47907
 
-<span class="c"># Running:</span>
+# Running:
 
 ...
 
 Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
 
-<span class="m">3</span> runs, <span class="m">3</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips</code></pre></div>
-
-
-
+3 runs, 3 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[#hacking  Ansible]]></title>
-    <link href="http:///blog/2014/10/17/hacking-ansible/"/>
+    <link href="http://gregmoreno.ca/blog/2014/10/17/hacking-ansible/"/>
     <updated>2014-10-17T21:02:43-07:00</updated>
-    <id>http:///blog/2014/10/17/hacking-ansible</id>
+    <id>http://gregmoreno.ca/blog/2014/10/17/hacking-ansible</id>
     <content type="html"><![CDATA[<p>Before you continue, let me congratulate myself. It’s been years since I’ve written a post. Hooray! Also, thank you to <a href="https://github.com/radamanthus/ansible-rails">Rad</a> for guiding me on my Ansible adventure. The ansible code I reference here are <a href="https://github.com/gregmoreno/ansible-rails">available in github</a>.</p>
 
 <p>There are tons of posts about Ansible already so this is more about gotchas I learned along the way.</p>
 
-<h1>Variables</h1>
+<h3>Variables</h3>
 
 <p>Just like good coding, you should isolate things that will change. Store variables in vars/defaults.yml for things like initial database password, deployment directory, ruby version, and whatnot. I started out with using snake format but I later learned you can have a hierarchy for your variables as well, for example:</p>
 
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">app</span><span class="p-Indicator">:</span>
-  <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">google.app</span></code></pre></div>
-
+<pre><code>app:
+  name: google.app
+</code></pre>
 
 <p>Inside your tasks, you can reference it with . Of course, nothing prevents you from just simply naming your variable as app_name and use it as</p>
 
-<h1>Hosts and groups</h1>
+<h3>Hosts and groups</h3>
 
 <p>You can use ansible to work on 1 or more servers at a time. These servers are specified in the hosts file (see hosts in the example). You can also group servers by using [groupname]. In the example below, you can have ansible target qa only (using the —limit option) and it will update the 2 servers you listed under the [qa] group.</p>
 
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="p-Indicator">[</span><span class="nv">local</span><span class="p-Indicator">]</span>
-<span class="l-Scalar-Plain">localhost ansible_python_interpreter=/usr/local/bin/python</span>
+<pre><code>[local]
+localhost ansible_python_interpreter=/usr/local/bin/python
 
-<span class="l-Scalar-Plain">[www]</span>
-<span class="l-Scalar-Plain">www.yourapp.com</span>
+[www]
+www.yourapp.com
 
-<span class="l-Scalar-Plain">[staging]</span>
-<span class="l-Scalar-Plain">staging.yourapp.com</span>
+[staging]
+staging.yourapp.com
 
-<span class="l-Scalar-Plain">[qa]</span>
-<span class="l-Scalar-Plain">qa1.yourapp.com</span>
-<span class="l-Scalar-Plain">qa2.yourapp.com</span></code></pre></div>
+[qa]
+qa1.yourapp.com
+qa2.yourapp.com
+</code></pre>
 
-
-<h1>Use roles</h1>
+<h3>Use roles</h3>
 
 <p>Roles allow you to separate common tasks into sort of like modules giving you flexibility. Some use roles to group common tasks like ‘db’, ‘web’, etc. For starters like me and if you are playing with combining different software, I used roles to define specific software. I have a role named ‘mysql’, a role ‘nginx-puma’, or a role ‘nginx-passenger’. Over time, you may split the roles into functional distinctions like web, db, etc.</p>
 
-<h1>Creating an EC2 instance</h1>
+<h3>Creating an EC2 instance</h3>
 
 <p>In my example, just update the variables below (included in vars/defaults.yml) to suit your requirements.</p>
 
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">ec2_keypair</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">yourapp-www</span>
-<span class="l-Scalar-Plain">ec2_instance_type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">t1.micro</span>
-<span class="l-Scalar-Plain">ec2_security_group</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">web-security-group</span>
-<span class="l-Scalar-Plain">ec2_region</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">us-west-1</span>
-<span class="l-Scalar-Plain">ec2_zone</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">us-west-1c</span>
-<span class="l-Scalar-Plain">ec2_image</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">ami-f1fdfeb4</span> <span class="c1"># Ubuntu Server 14.04 LTS (PV) 64-bit</span>
-<span class="l-Scalar-Plain">ec2_instance_count</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1</span></code></pre></div>
-
+<pre><code>ec2_keypair: yourapp-www
+ec2_instance_type: t1.micro
+ec2_security_group: web-security-group
+ec2_region: us-west-1
+ec2_zone: us-west-1c
+ec2_image: ami-f1fdfeb4 # Ubuntu Server 14.04 LTS (PV) 64-bit
+ec2_instance_count: 1
+</code></pre>
 
 <p>You need your AWS_ACCESS_KEY, AWS_SECRET_KEY, and PEM file to create an instance. Creating the AWS access keys requires access to the IAM (Identity and Access Management).</p>
 
 <p>When you’re ready, run the command:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">AWS_ACCESS_KEY</span><span class="o">=</span><span class="s2">&quot;access&quot;</span> <span class="nv">AWS_SECRET_KEY</span><span class="o">=</span><span class="s2">&quot;secret&quot;</span> ansible-playbook -i hosts ec2.yml</code></pre></div>
-
+<pre><code>AWS_ACCESS_KEY="access" AWS_SECRET_KEY="secret" ansible-playbook -i hosts ec2.yml
+</code></pre>
 
 <p>I have set ec2.yml to run against ‘local’ group (specified in the ’hosts’ file) because you don’t have a host yet. The Ansible EC2 module is smart enough to know that you are still creating an instance at this point.</p>
 
 <p>After running the playbook, notice that it creates a new entry in the [launched] group in your hosts file. The new entry points to the EC2 instance you just created. At this point, you now have a server to run the rest of the playbooks.</p>
 
-<h1>Creating the deploy user</h1>
+<h3>Creating the deploy user</h3>
 
 <p>When the instance is created, it would create a new user. In my project where I use Ubuntu, it creates an ‘ubuntu’ user. In other cases, it might only create ‘root’ user. Regardless, your next step is to create a ‘deploy’ user because it is not a good idea to keep using root. You can change the name of the deploy user (see vars/defaults.yml) but I prefer using ‘deploy’ because it is also the default user in capistrano and I’m a Rails guy.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">ansible-playbook -i hosts create-user.yml --user root --limit launched --private-key ~/.ssh/yourapp.pem</code></pre></div>
-
+<pre><code>ansible-playbook -i hosts create-user.yml --user root --limit launched --private-key ~/.ssh/yourapp.pem
+</code></pre>
 
 <p>This playbook does several things:</p>
 
@@ -1168,22 +1161,22 @@ Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
 
 <p>Note that I specified in the initial user ‘root’. Depending on the instance you just created it might be ‘ubuntu’ or some other initial user</p>
 
-<h1>Creating an instance in other providers</h1>
+<h3>Creating an instance in other providers</h3>
 
 <p>In Digital Ocean (and other similar providers), you can create an instance using their admin interface. The initial user is ‘root’ and you can specify a password and/or public key. If you forgot the public key, you must add it before you continue.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">scp ~/.ssh/id_rsa.pub root@yourapp.com:~/uploaded_key.pub
+<pre><code>scp ~/.ssh/id_rsa.pub root@yourapp.com:~/uploaded_key.pub
 ssh root@staging.app.com
 mkdir -m og-rwx .ssh
-cat ~/uploaded_key.pub &gt;&gt; ~/.ssh/authorized_keys</code></pre></div>
+cat ~/uploaded_key.pub &gt;&gt; ~/.ssh/authorized_keys
+</code></pre>
 
-
-<h1>Bootstrapping</h1>
+<h3>Bootstrapping</h3>
 
 <p>Now that you have your deploy user, just run the command below, take a coffee, and come back after 30 mins. That’s how awesome ansible is.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">ansible-playbook -i hosts bootstrap.yml --limit launched</code></pre></div>
-
+<pre><code>ansible-playbook -i hosts bootstrap.yml --limit launched
+</code></pre>
 
 <p>You may need to tweak the roles or update a specific server. For example, you’re testing an upgrade on a staging server. In that case, make sure you specify the corect host group in the —limit parameter</p>
 
