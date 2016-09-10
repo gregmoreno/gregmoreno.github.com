@@ -2,12 +2,12 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: coding | Greg Moreno]]></title>
-  <link href="http:///blog/categories/coding/atom.xml" rel="self"/>
-  <link href="http:///"/>
-  <updated>2016-09-09T23:17:18-07:00</updated>
-  <id>http:///</id>
+  <link href="http://gregmoreno.ca/blog/categories/coding/atom.xml" rel="self"/>
+  <link href="http://gregmoreno.ca/"/>
+  <updated>2016-09-09T23:23:33-07:00</updated>
+  <id>http://gregmoreno.ca/</id>
   <author>
-    <name><![CDATA[Greg]]></name>
+    <name><![CDATA[Greg Moreno]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Rails #permitted]]></title>
-    <link href="http:///blog/2015/08/21/rails-permitted/"/>
+    <link href="http://gregmoreno.ca/blog/2015/08/21/rails-permitted/"/>
     <updated>2015-08-21T00:00:00-07:00</updated>
-    <id>http:///blog/2015/08/21/rails-permitted</id>
+    <id>http://gregmoreno.ca/blog/2015/08/21/rails-permitted</id>
     <content type="html"><![CDATA[<p>I recently upgraded a personal app I use for learning new things in Rails. But when I upgraded from
 4.1.4 to 4.1.12 I encountered this familiar error.</p>
 
@@ -100,6 +100,518 @@ NoMethodError: undefined method `permitted?' for {:provider=&gt;"facebook", :uid
 </code></pre>
 
 <p>OmniAuth::AuthHash does not even allow it. Plain Hash works because it doesn&rsquo;t even respond to #permitted.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rebuild Rails Part 4]]></title>
+    <link href="http://gregmoreno.ca/blog/2014/11/24/rebuild-rails-part4/"/>
+    <updated>2014-11-24T00:00:00-08:00</updated>
+    <id>http://gregmoreno.ca/blog/2014/11/24/rebuild-rails-part4</id>
+    <content type="html"><![CDATA[<p>Now, it is time to build real pages in our super duper Tracks framework. We will support ERB and to do that
+we need the <a href="https://rubygems.org/gems/erubis">erubis</a> gem.</p>
+
+<pre><code># app/controllers/posts_controller.rb
+class PostsController &lt; Tracks::Controller
+  def index
+    locals = { title: "/posts/index" }
+    render template: "posts/index", locals: locals
+  end
+end
+
+# app/views/posts/index.html.erb
+hello from tracks &lt;%= title %&gt;
+
+# lib/tracks/controller.rb
+def render(options)
+  template_name = options.fetch(:template)
+  locals = options.fetch(:locals)
+
+  filename = File.join "app/views", "#{template_name}.html.erb"
+  template = File.read(filename)
+  erb = Erubis::Eruby.new(template)
+  erb.result locals
+end
+
+$ ruby spec/application_spec.rb
+Run options: --seed 12593
+
+# Running:
+
+..
+
+Finished in 0.020498s, 97.5705 runs/s, 195.1410 assertions/s.
+
+2 runs, 4 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
+
+<p>Our tests show we are good but it&rsquo;s not even close to Rails' &ldquo;magic&rdquo;. First, let&rsquo;s
+use the <code>controller/action</code> convention, i.e. if no template is passed to the <code>render</code> method,
+we should use the <code>app/views/posts/index.html.erb</code> template. We also modify our <code>Controller</code> to save
+the <code>env</code> data passed by <code>Rack</code> because we need to check the path.</p>
+
+<pre><code># lib/tracks/controller.rb
+module Tracks
+  class Controller
+    attr_reader :env, :controller_name, :action_name
+
+    def initialize(env)
+      @env = env
+      extract_env_info
+    end
+
+    def extract_env_info
+      _, @controller_name, @action_name, after = path_info.split("/")
+    end
+
+    def path_info
+      env["PATH_INFO"]
+    end
+
+    def extract_template_name
+      "#{controller_name}/#{action_name}"
+    end
+  end
+end
+</code></pre>
+
+<p>We then update our <code>render</code> method to check for the template if it is not passed.</p>
+
+<pre><code># lib/tracks/controller.rb
+     def render(options)
+-      template_name = options.fetch(:template)
++      template_name = options.fetch(:template) { extract_template_name }
+       locals = options.fetch(:locals)
+
+       filename = File.join "app/views", "#{template_name}.html.erb"
+@@ -29,6 +43,5 @@ module Tracks
+       erb.result locals
+     end
+</code></pre>
+
+<p>Our next modification involves using the @instance_variables to pass values from the
+controller to the view files. To do that, we just need to pass the current <code>binding</code> to
+the <code>eruby</code> instance and it should pickup the instance variables we have in the controller.</p>
+
+<p>In Rails, it is a bit more involved. There is a concept of <a href="https://github.com/rails/rails/blob/0c5552a3dd28e35cce64462765cc41c5355db0f1/actionpack/lib/abstract_controller/rendering.rb#L84-L86">view context</a>. Rails
+collects the instance variables from the controller, then duplicates the values into the view context.
+The Ruby methods <code>#instance_variables</code>, <code>#instance_variable_get</code>, <code>#instance_variable_set</code> allow
+Rails to accomplish that.</p>
+
+<pre><code>def render(options={})
+  template_name = options.fetch(:template) { extract_template_name }
+  filename = File.join "app/views", "#{template_name}.html.erb"
+  template = File.read(filename)
+  erb = Erubis::Eruby.new(template)
+  erb.result(binding)
+end
+</code></pre>
+
+<p>We also update our <code>render</code> method and controller because we do not need the <code>locals</code> parameter.</p>
+
+<pre><code># app/controllers/posts_controller.rb
+class PostsController &lt; Tracks::Controller
+  def index
+    @title = "/posts/index"
+    render
+  end
+end
+
+# app/views/posts/index.html.erb
+hello from tracks &lt;%= @title %&gt;
+</code></pre>
+
+<p>We still have the extra <code>render</code> call in our controller. To remove it, we keep track of the call
+to render and if there&rsquo;s no rendered result yet, we call <code>render</code>.</p>
+
+<pre><code>diff --git i/app/controllers/posts_controller.rb w/app/controllers/posts_controller.rb
+index f7883e3..d7aa012 100644
+--- i/app/controllers/posts_controller.rb
++++ w/app/controllers/posts_controller.rb
+@@ -1,6 +1,5 @@
+ class PostsController &lt; Tracks::Controller
+   def index
+     @title = "/posts/index"
+-    render
+   end
+ end
+diff --git i/lib/tracks/controller.rb w/lib/tracks/controller.rb
+index 0119c1b..3d5d75a 100644
+--- i/lib/tracks/controller.rb
++++ w/lib/tracks/controller.rb
+@@ -30,7 +30,12 @@ module Tracks
+
+       controller_class_name = controller.capitalize + "Controller"
+       controller_class = Object.const_get(controller_class_name)
+-      controller_class.new(env).send(action)
++      controller_context = controller_class.new(env)
++      controller_context.send(action)
++
++      if controller_context.rendered_string.nil?
++        controller_context.render
++      end
++
++      controller_context.rendered_string
+     end
+
+     def render(options={})
+@@ -38,7 +43,7 @@ module Tracks
+       filename = File.join "app/views", "#{template_name}.html.erb"
+       template = File.read(filename)
+       erb = Erubis::Eruby.new(template)
+-      erb.result(binding)
++      @rendered_string = erb.result(binding)
+     end
+</code></pre>
+
+<p>We also update our controller and tests to cover the case of using <code>render</code> explicitly.</p>
+
+<pre><code># app/controllers/posts_controller.rb
+class PostsController &lt; Tracks::Controller
+  def index
+    @title = "/posts/index"
+  end
+
+  def show
+    @title = "/posts/index"
+    render template: "posts/index"
+  end
+end
+
+# spec/application_spec.rb
+require_relative "spec_helper"
+
+describe CrazyApp::Application do
+  include Rack::Test::Methods
+
+  def app
+    CrazyApp::Application
+  end
+
+  it "should respond with /" do
+    get "/"
+    last_response.ok?.must_equal true
+    last_response.body.strip.must_equal "hello from index.html"
+  end
+
+  it "should respond with different path" do
+    get "/posts/index"
+    last_response.ok?.must_equal true
+    last_response.body.strip.must_equal "hello from tracks /posts/index"
+  end
+
+  it "should respond with different template" do
+    get "/posts/show"
+    last_response.ok?.must_equal true
+    last_response.body.strip.must_equal "hello from tracks /posts/index"
+  end
+end
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rebuild Rails Part 3]]></title>
+    <link href="http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3/"/>
+    <updated>2014-11-20T00:00:00-08:00</updated>
+    <id>http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3</id>
+    <content type="html"><![CDATA[<p></p>
+
+<p>Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
+by assuming a <code>controller/action</code> path format and only support <code>GET</code> request.</p>
+
+<p>We adjust our <code>.call</code> implementation to handle the new path format. We also introduce
+another method <code>#render_controller_action</code> that inspects the <code>path_info</code>
+and instantiates the right controller using Rails <code>NameController</code> convention.</p>
+
+<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;h1&gt;lib/</span><span class="n">tracks</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+
+<span class="sr">&lt;p&gt;def self.call(env)</span>
+<span class="sr">  path_info = env[&amp;ldquo;PATH_INFO&amp;rdquo;]</span>
+<span class="sr">  if  path_info == &amp;ldquo;/</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Controller</span><span class="o">.</span><span class="n">render_default_root</span>
+  <span class="k">else</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Controller</span><span class="o">.</span><span class="n">render_controller_action</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+  <span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;  [200, {&amp;ldquo;Content-Type&amp;rdquo; =&gt; &amp;ldquo;text/</span><span class="n">html</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;},</span> <span class="o">[</span><span class="n">text</span><span class="o">]</span> <span class="o">]</span>
+<span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;h1&gt;lib/</span><span class="n">tracks</span><span class="o">/</span><span class="n">controller</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+
+<span class="sr">&lt;p&gt;def self.render_controller_action(env)</span>
+<span class="sr">  path_info = env[&amp;ldquo;PATH_INFO&amp;rdquo;]</span>
+<span class="sr">  _, controller, action, after = path_info.split(&amp;ldquo;/</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;)</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;  controller_class_name = controller.capitalize + &amp;ldquo;Controller&amp;rdquo;</span>
+<span class="sr">  controller_class = Object.const_get(controller_class_name)</span>
+<span class="sr">  controller_class.new.send(action)</span>
+<span class="sr">end</span></code></pre></div></p>
+
+<p><div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby spec/application_spec.rb
+Run options: <span class="p">&amp;</span>ndash<span class="p">;</span>seed 55835&lt;/p&gt;
+
+&lt;h1&gt;Running:&lt;/h1&gt;
+
+&lt;p&gt;.E&lt;/p&gt;
+
+&lt;p&gt;Finished in 0.015837s, 126.2865 runs/s, 126.2865 assertions/s.&lt;/p&gt;
+
+&lt;p&gt;  1<span class="o">)</span> Error:
+CrazyApp::Application#test_0002_should respond with different path:
+NameError: uninitialized constant PostsController
+    /code/crazy/lib/tracks/controller.rb:13:in <span class="sb">`</span>const_get<span class="err">&#39;</span></code></pre></div></p>
+
+<p>When we run the test, you see it failed on <code>PostsController</code> which is what
+we expect since we haven&rsquo;t implemented <code>PostsController</code> yet. Let&rsquo;s add the
+controller now.</p>
+
+<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;h1&gt;app/</span><span class="n">controllers</span><span class="o">/</span><span class="n">posts_controller</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+
+<span class="sr">&lt;p&gt;class PostsController &amp;lt; Tracks::Controller</span>
+<span class="sr">  def index</span>
+<span class="sr">    &amp;ldquo;hello from tracks /</span><span class="n">posts</span><span class="o">/</span><span class="n">index</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
+  <span class="k">end</span>
+<span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;h1&gt;config/</span><span class="n">application</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+
+<span class="sr">&lt;p&gt;require &amp;ldquo;./</span><span class="n">app</span><span class="o">/</span><span class="n">controllers</span><span class="o">/</span><span class="n">posts_controller</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span></code></pre></div></p>
+
+<p><div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby spec/application_spec.rb
+Run options: <span class="p">&amp;</span>ndash<span class="p">;</span>seed 2475&lt;/p&gt;
+
+&lt;h1&gt;Running:&lt;/h1&gt;
+
+&lt;p&gt;..&lt;/p&gt;
+
+&lt;p&gt;Finished in 0.019152s, 104.4277 runs/s, 208.8555 assertions/s.&lt;/p&gt;
+
+&lt;p&gt;2 runs, <span class="m">4</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips</code></pre></div></p>
+
+<h1>Automatic loading</h1>
+
+<p>Our tests pass but something&rsquo;s not right. In Rails, there is no need to require
+every controller (or pretty much anything) to make it work. To support this feature in
+our framework, we need 2 things:</p>
+
+<ul>
+<li>convert PostsController to posts_controller.rb; and</li>
+<li>auto-require &lsquo;posts_controller&rsquo;</li>
+</ul>
+
+
+<p>To tie these 2 together, we tap into <code>Object.const_missing</code> so our framework would
+know if a class has been used but not yet loaded.</p>
+
+<p>We also update the <code>$LOAD_PATH</code> to include <code>app/controllers</code> folder so Ruby knows
+where to look.</p>
+
+<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;h1&gt;lib/</span><span class="n">tracks</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+
+<span class="sr">&lt;p&gt;require File.expand_path(&amp;ldquo;../</span><span class="n">tracks</span><span class="o">/</span><span class="n">helper</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;,</span> <span class="o">&lt;</span><span class="n">strong</span><span class="o">&gt;</span><span class="no">FILE</span><span class="o">&lt;</span><span class="sr">/strong&gt;)</span>
+<span class="sr">require File.expand_path(&amp;ldquo;../</span><span class="n">tracks</span><span class="o">/</span><span class="n">object</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;,</span> <span class="o">&lt;</span><span class="n">strong</span><span class="o">&gt;</span><span class="no">FILE</span><span class="o">&lt;</span><span class="sr">/strong&gt;)&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">config</span><span class="o">/</span><span class="n">application</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+
+<span class="sr">&lt;p&gt;require &amp;lsquo;./</span><span class="n">lib</span><span class="o">/</span><span class="n">tracks</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;</span>
+<span class="vg">$LOAD_PATH</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="o">.</span><span class="n">.</span><span class="o">/.</span><span class="n">.</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">controllers</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;,</span> <span class="o">&lt;</span><span class="n">strong</span><span class="o">&gt;</span><span class="no">FILE</span><span class="o">&lt;</span><span class="sr">/strong&gt;)&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="k">module</span> <span class="nn">CrazyApp</span>
+  <span class="k">class</span> <span class="nc">Application</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Application</span>
+  <span class="k">end</span>
+<span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;h1&gt;lib/</span><span class="n">tracks</span><span class="o">/</span><span class="n">helper</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+
+<span class="sr">&lt;p&gt;module Tracks</span>
+<span class="sr">  module Helper</span>
+<span class="sr">    def self.to_underscore(string)</span>
+<span class="sr">      string.scan(/</span><span class="o">[</span><span class="n">A</span><span class="o">-</span><span class="n">Z</span><span class="o">][</span><span class="n">a</span><span class="o">-</span><span class="n">z</span><span class="o">]+/</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">join</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">_</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;)</span><span class="o">.</span>
+      <span class="n">downcase</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;h1&gt;lib/</span><span class="n">tracks</span><span class="o">/</span><span class="n">object</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+
+<span class="sr">&lt;p&gt;class Object</span>
+<span class="sr">  def self.const_missing&amp;copy;</span>
+<span class="sr">    require Tracks::Helper.to_underscore(c.to_s)</span>
+<span class="sr">    const_get&amp;copy;</span>
+<span class="sr">  end</span>
+<span class="sr">end</span></code></pre></div></p>
+
+<p>Our implementation of <code>.to_underscore</code> is limited compared to what&rsquo;s supported in Rails.</p>
+
+<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">01</span><span class="mi">9</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="no">PostsController</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
+<span class="o">=&gt;</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="no">PostsController</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">020</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/[A-Z][a-z]+/</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">_</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;)</span><span class="o">.</span><span class="n">downcase</span>
+<span class="o">=&gt;</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">posts_controller</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span></code></pre></div></p>
+
+<p>Also, since we call <code>const_get</code> inside <code>const_missing</code>, you will run into serious
+trouble if your file does not contain the expected class. Try changing the name of the
+class inside <code>app/controllers/posts_controller.rb</code> into something else and you will get this
+error.</p>
+
+<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="err">$</span> <span class="n">ruby</span> <span class="n">spec</span><span class="o">/</span><span class="n">application_spec</span><span class="o">.</span><span class="n">rb</span>
+<span class="no">Run</span> <span class="ss">options</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">ndash</span><span class="p">;</span><span class="n">seed</span> <span class="mi">60433</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;h1&gt;Running:&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;.</span><span class="n">E</span>
+<span class="no">Finished</span> <span class="k">in</span> <span class="mi">0</span><span class="o">.</span><span class="mo">043152</span><span class="n">s</span><span class="p">,</span> <span class="mi">46</span><span class="o">.</span><span class="mi">3478</span> <span class="n">runs</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">46</span><span class="o">.</span><span class="mi">3478</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="o">.</span><span class="n">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;  1) Error:</span>
+<span class="sr">CrazyApp::Application#test_0002_should respond with different path:</span>
+<span class="sr">SystemStackError: stack level too deep</span>
+<span class="sr">    /</span><span class="no">Users</span><span class="o">/</span><span class="n">greg</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">p247</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">forwardable</span><span class="o">.</span><span class="n">rb</span><span class="p">:</span><span class="mi">174</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;2 runs, 2 assertions, 0 failures, 1 errors, 0 skips</span></code></pre></div></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rebuild Rails Part 2]]></title>
+    <link href="http://gregmoreno.ca/blog/2014/11/19/rebuild-rails-part2/"/>
+    <updated>2014-11-19T00:00:00-08:00</updated>
+    <id>http://gregmoreno.ca/blog/2014/11/19/rebuild-rails-part2</id>
+    <content type="html"><![CDATA[<p>Before we continue with out rebuilding series, we should write some tests first :)</p>
+
+<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;h1&gt;spec/s</span><span class="n">pec_helper</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+
+<span class="sr">&lt;p&gt;ENV[&amp;ldquo;RAILS_ENV&amp;rdquo;] ||= &amp;ldquo;test&amp;rdquo;&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="nb">require</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">rack</span><span class="o">/</span><span class="nb">test</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
+<span class="nb">require</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">minitest</span><span class="o">/</span><span class="n">autorun</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;require File.expand_path(&amp;ldquo;../</span><span class="o">.</span><span class="n">.</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">application</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;,</span> <span class="o">&lt;</span><span class="n">strong</span><span class="o">&gt;</span><span class="no">FILE</span><span class="o">&lt;</span><span class="sr">/strong&gt;)&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">spec</span><span class="o">/</span><span class="n">application_spec</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+
+<span class="sr">&lt;p&gt;require_relative &amp;ldquo;spec_helper&amp;rdquo;&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="n">describe</span> <span class="no">CrazyApp</span><span class="o">::</span><span class="no">Application</span> <span class="k">do</span>
+  <span class="kp">include</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Test</span><span class="o">::</span><span class="no">Methods</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;  def app</span>
+<span class="sr">    CrazyApp::Application</span>
+<span class="sr">  end&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="n">it</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">should</span> <span class="n">respond</span> <span class="n">with</span> <span class="sr">/&amp;rdquo; do</span>
+<span class="sr">    get &amp;ldquo;/</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
+    <span class="n">last_response</span><span class="o">.</span><span class="n">ok?</span><span class="o">.</span><span class="n">must_equal</span> <span class="kp">true</span>
+    <span class="n">last_response</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">strip</span><span class="o">.</span><span class="n">must_equal</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">hello</span> <span class="n">from</span> <span class="n">index</span><span class="o">.</span><span class="n">html</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
+  <span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;  it &amp;ldquo;should respond with different path&amp;rdquo; do</span>
+<span class="sr">    get &amp;ldquo;/</span><span class="n">posts</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
+    <span class="n">last_response</span><span class="o">.</span><span class="n">ok?</span><span class="o">.</span><span class="n">must_equal</span> <span class="kp">true</span>
+    <span class="n">last_response</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">strip</span><span class="o">.</span><span class="n">must_equal</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">hello</span> <span class="n">from</span> <span class="n">tracks</span> <span class="sr">/posts&amp;rdquo;</span>
+<span class="sr">  end&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;</span></code></pre></div></p>
+
+<p>Just like your typical Rails test setup, we have a common <code>spec_helper</code> file. We use <code>minitest/autorun</code> which gives us
+rspec-style DSL out of the box. For our test, we need <code>Rack::Test::Methods</code> to use <code>get</code> and other http methods. We also
+need an <code>app</code> method that returns our Rack application to make the tests work.</p>
+
+<p><div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby spec/application_spec.rb
+Run options: <span class="p">&amp;</span>ndash<span class="p">;</span>seed 57256&lt;/p&gt;
+
+&lt;h1&gt;Running:&lt;/h1&gt;
+
+&lt;p&gt;..&lt;/p&gt;
+
+&lt;p&gt;Finished in 0.015864s, 126.0716 runs/s, 252.1432 assertions/s.&lt;/p&gt;
+
+&lt;p&gt;2 runs, <span class="m">4</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips</code></pre></div></p>
+
+<p>We&rsquo;re all good. Awesome!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[#ruby Array of hashes quiz]]></title>
+    <link href="http://gregmoreno.ca/blog/2014/11/17/ruby-array-of-hashes-quiz/"/>
+    <updated>2014-11-17T00:00:00-08:00</updated>
+    <id>http://gregmoreno.ca/blog/2014/11/17/ruby-array-of-hashes-quiz</id>
+    <content type="html"><![CDATA[<p>Found this interesting ruby quiz from <a href="http://www.alphasights.com/careers/experienced/positions/new-york/6-ruby-on-rails-developer/apply">AlphaSights</a>.
+Given an array of hashes, collapse into an array of hashes containing one entry per day.
+And you can only reference the <code>:time</code> key and not the rest.</p>
+
+<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">log</span> <span class="o">=</span> <span class="o">[</span>
+  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201201</span><span class="p">,</span> <span class="ss">x</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201201</span><span class="p">,</span> <span class="ss">y</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span>
+  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201201</span><span class="p">,</span> <span class="ss">z</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201202</span><span class="p">,</span> <span class="ss">a</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201202</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span>
+  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201202</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<span class="o">]&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;h1&gt;result should be&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;[</span>
+  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201201</span><span class="p">,</span> <span class="ss">x</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">y</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="ss">z</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201202</span><span class="p">,</span> <span class="ss">a</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+<span class="o">]</span></code></pre></div></p>
+
+<p>The first thing came to mind is to use <a href="http://www.ruby-doc.org/core-2.1.1/Enumerable.html#method-i-group_by"><code>Enumerable#group_by</code></a></p>
+
+<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">grouped</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">group_by</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">i</span><span class="o">[</span><span class="ss">:time</span><span class="o">]</span> <span class="p">}</span>
+<span class="n">collapsed</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">collect</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="o">|</span>
+  <span class="n">no_time_h</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">inject</span><span class="p">({})</span> <span class="k">do</span> <span class="o">|</span><span class="n">others</span><span class="p">,</span> <span class="n">h</span><span class="o">|</span>
+    <span class="n">others</span><span class="o">.</span><span class="n">merge</span> <span class="n">h</span><span class="o">.</span><span class="n">reject</span> <span class="p">{</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">|</span> <span class="n">k</span><span class="o">.</span><span class="n">to_sym</span> <span class="o">==</span> <span class="ss">:time</span> <span class="p">}</span>
+  <span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;  {time: t}.merge(no_time_h)</span>
+<span class="sr">end&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="nb">puts</span> <span class="n">collapsed</span><span class="o">.</span><span class="n">inspect</span></code></pre></div></p>
+
+<p>However, after reading this a couple of times, I still find the solution hard to follow.
+For starter, <code>group_by</code> returns a hash where the values are an array of hashes which
+brings me back to the original problem even though it is already grouped by time.
+That I feel made the rest of the code more complicated.</p>
+
+<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;h1&gt;result of group_by&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="p">{</span><span class="mi">201201</span><span class="o">=&gt;[</span><span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201201</span><span class="p">,</span> <span class="ss">:x</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201201</span><span class="p">,</span> <span class="ss">:y</span><span class="o">=&gt;</span><span class="mi">7</span><span class="p">},</span> <span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201201</span><span class="p">,</span> <span class="ss">:z</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">}</span><span class="o">]</span><span class="p">,</span> <span class="mi">201202</span><span class="o">=&gt;[</span><span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201202</span><span class="p">,</span> <span class="ss">:a</span><span class="o">=&gt;</span><span class="mi">3</span><span class="p">},</span> <span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201202</span><span class="p">,</span> <span class="ss">:b</span><span class="o">=&gt;</span><span class="mi">4</span><span class="p">},</span> <span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201202</span><span class="p">,</span> <span class="ss">:c</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">}</span><span class="o">]</span><span class="p">}</span></code></pre></div></p>
+
+<p>For my second version, I simply loop into the array and compose the hash using <code>:time</code> as the key.
+Afterwards, use the <code>key-value</code> pair to compose the resulting array. The code may be longer but
+it is more readable. Remember, <a href="https://www.safaribooksonline.com/library/view/beautiful-code/9780596510046/ch05.html">Correct, Beautiful, Fast (in That Order)</a>.</p>
+
+<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">hash_by_time</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">log</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">h</span><span class="o">|</span>
+  <span class="n">time</span> <span class="o">=</span> <span class="n">h</span><span class="o">[</span><span class="ss">:time</span><span class="o">]</span>
+  <span class="n">others</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">reject</span> <span class="p">{</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="o">|</span> <span class="n">k</span><span class="o">.</span><span class="n">to_sym</span> <span class="o">==</span> <span class="ss">:time</span> <span class="p">}</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;  if hash_by_time[time]</span>
+<span class="sr">    hash_by_time[time].merge! others</span>
+<span class="sr">  else</span>
+<span class="sr">    hash_by_time[time] = others</span>
+<span class="sr">  end</span>
+<span class="sr">end&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="n">collapsed</span> <span class="o">=</span> <span class="n">hash_by_time</span><span class="o">.</span><span class="n">collect</span> <span class="k">do</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">|</span>
+  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="n">k</span><span class="p">}</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;</span></code></pre></div></p>
 ]]></content>
   </entry>
   

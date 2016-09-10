@@ -1,0 +1,252 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>Rebuild Rails Part 3 | Greg Moreno</title>
+
+	<meta name="author" content="Greg Moreno">
+	
+	<meta name="description" content="Greg Moreno 20 Nov 2014 Rebuild Rails Part 3 Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
+by assuming &hellip;">
+
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link href="/atom.xml" rel="alternate" title="Greg Moreno" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400" />
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css" />
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body class="post-template">
+  <main class="content" role="main"><article class="post">
+  
+	<header class="post-header">
+		<a id="blog-logo" href="/">Greg Moreno</a>
+	</header>
+	<span class="post-meta">20 Nov 2014</span>
+	<h1 class="post-title">Rebuild Rails Part 3</h1>
+
+	<section class="post-content">
+		<p>Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
+by assuming a <code>controller/action</code> path format and only support <code>GET</code> request.</p>
+
+<p>We adjust our <code>.call</code> implementation to handle the new path format. We also introduce
+another method <code>#render_controller_action</code> that inspects the <code>path_info</code>
+and instantiates the right controller using Rails <code>NameController</code> convention.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># lib/tracks.rb</span>
+<span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+  <span class="n">path_info</span> <span class="o">=</span> <span class="n">env</span><span class="o">[</span><span class="s2">&quot;PATH_INFO&quot;</span><span class="o">]</span>
+  <span class="k">if</span>  <span class="n">path_info</span> <span class="o">==</span> <span class="s2">&quot;/&quot;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Controller</span><span class="o">.</span><span class="n">render_default_root</span>
+  <span class="k">else</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Controller</span><span class="o">.</span><span class="n">render_controller_action</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="o">[</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;text/html&quot;</span><span class="p">},</span> <span class="o">[</span><span class="n">text</span><span class="o">]</span> <span class="o">]</span>
+<span class="k">end</span>
+
+<span class="c1"># lib/tracks/controller.rb</span>
+<span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">render_controller_action</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+  <span class="n">path_info</span> <span class="o">=</span> <span class="n">env</span><span class="o">[</span><span class="s2">&quot;PATH_INFO&quot;</span><span class="o">]</span>
+  <span class="n">_</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">after</span> <span class="o">=</span> <span class="n">path_info</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+
+  <span class="n">controller_class_name</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">capitalize</span> <span class="o">+</span> <span class="s2">&quot;Controller&quot;</span>
+  <span class="n">controller_class</span> <span class="o">=</span> <span class="no">Object</span><span class="o">.</span><span class="n">const_get</span><span class="p">(</span><span class="n">controller_class_name</span><span class="p">)</span>
+  <span class="n">controller_class</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+<span class="k">end</span></code></pre></div>
+
+
+
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby spec/application_spec.rb
+Run options: --seed 55835
+<span class="c"># Running:</span>
+
+.E
+
+Finished in 0.015837s, 126.2865 runs/s, 126.2865 assertions/s.
+
+  1<span class="o">)</span> Error:
+CrazyApp::Application#test_0002_should respond with different path:
+NameError: uninitialized constant PostsController
+    /code/crazy/lib/tracks/controller.rb:13:in <span class="sb">`</span>const_get<span class="err">&#39;</span></code></pre></div>
+
+
+<p>When we run the test, you see it failed on <code>PostsController</code> which is what
+we expect since we haven&rsquo;t implemented <code>PostsController</code> yet. Let&rsquo;s add the
+controller now.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># app/controllers/posts_controller.rb</span>
+<span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Controller</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="s2">&quot;hello from tracks /posts/index&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># config/application.rb</span>
+<span class="nb">require</span> <span class="s2">&quot;./app/controllers/posts_controller&quot;</span></code></pre></div>
+
+
+
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby spec/application_spec.rb
+Run options: --seed 2475
+
+<span class="c"># Running:</span>
+..
+
+Finished in 0.019152s, 104.4277 runs/s, 208.8555 assertions/s.
+
+<span class="m">2</span> runs, <span class="m">4</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips</code></pre></div>
+
+
+<h1>Automatic loading</h1>
+
+<p>Our tests pass but something&rsquo;s not right. In Rails, there is no need to require
+every controller (or pretty much anything) to make it work. To support this feature in
+our framework, we need 2 things:</p>
+
+<ul>
+<li>convert PostsController to posts_controller.rb; and</li>
+<li>auto-require &lsquo;posts_controller&rsquo;</li>
+</ul>
+
+
+<p>To tie these 2 together, we tap into <code>Object.const_missing</code> so our framework would
+know if a class has been used but not yet loaded.</p>
+
+<p>We also update the <code>$LOAD_PATH</code> to include <code>app/controllers</code> folder so Ruby knows
+where to look.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># lib/tracks.rb</span>
+<span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s2">&quot;../tracks/helper&quot;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+<span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s2">&quot;../tracks/object&quot;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+
+<span class="c1"># config/application.rb</span>
+<span class="nb">require</span> <span class="s1">&#39;./lib/tracks&#39;</span>
+<span class="vg">$LOAD_PATH</span> <span class="o">&lt;&lt;</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s2">&quot;../../app/controllers&quot;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+
+<span class="k">module</span> <span class="nn">CrazyApp</span>
+  <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Application</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># lib/tracks/helper.rb</span>
+<span class="k">module</span> <span class="nn">Tracks</span>
+  <span class="k">module</span> <span class="nn">Helper</span>
+    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">to_underscore</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+      <span class="n">string</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/[A-Z][a-z]+/</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">join</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">downcase</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># lib/tracks/object.rb</span>
+<span class="k">class</span> <span class="nc">Object</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">const_missing</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="nb">require</span> <span class="no">Tracks</span><span class="o">::</span><span class="no">Helper</span><span class="o">.</span><span class="n">to_underscore</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
+    <span class="nb">const_get</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+
+<p>Our implementation of <code>.to_underscore</code> is limited compared to what&rsquo;s supported in Rails.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">01</span><span class="mi">9</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;PostsController&quot;</span>
+<span class="o">=&gt;</span> <span class="s2">&quot;PostsController&quot;</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">020</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/[A-Z][a-z]+/</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">downcase</span>
+<span class="o">=&gt;</span> <span class="s2">&quot;posts_controller&quot;</span></code></pre></div>
+
+
+<p>Also, since we call <code>const_get</code> inside <code>const_missing</code>, you will run into serious
+trouble if your file does not contain the expected class. Try changing the name of the
+class inside <code>app/controllers/posts_controller.rb</code> into something else and you will get this
+error.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="err">$</span> <span class="n">ruby</span> <span class="n">spec</span><span class="o">/</span><span class="n">application_spec</span><span class="o">.</span><span class="n">rb</span>
+<span class="no">Run</span> <span class="ss">options</span><span class="p">:</span> <span class="o">--</span><span class="n">seed</span> <span class="mi">60433</span>
+
+<span class="c1"># Running:</span>
+
+<span class="o">.</span><span class="n">E</span>
+<span class="no">Finished</span> <span class="k">in</span> <span class="mi">0</span><span class="o">.</span><span class="mo">043152</span><span class="n">s</span><span class="p">,</span> <span class="mi">46</span><span class="o">.</span><span class="mi">3478</span> <span class="n">runs</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">46</span><span class="o">.</span><span class="mi">3478</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="o">.</span>
+
+  <span class="mi">1</span><span class="p">)</span> <span class="ss">Error</span><span class="p">:</span>
+<span class="no">CrazyApp</span><span class="o">::</span><span class="no">Application</span><span class="c1">#test_0002_should respond with different path:</span>
+<span class="ss">SystemStackError</span><span class="p">:</span> <span class="n">stack</span> <span class="n">level</span> <span class="n">too</span> <span class="n">deep</span>
+    <span class="sr">/Users/</span><span class="n">greg</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">p247</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">forwardable</span><span class="o">.</span><span class="n">rb</span><span class="p">:</span><span class="mi">174</span>
+
+<span class="mi">2</span> <span class="n">runs</span><span class="p">,</span> <span class="mi">2</span> <span class="n">assertions</span><span class="p">,</span> <span class="mi">0</span> <span class="n">failures</span><span class="p">,</span> <span class="mi">1</span> <span class="n">errors</span><span class="p">,</span> <span class="mi">0</span> <span class="n">skips</span></code></pre></div>
+
+
+
+
+	</section>
+
+  <footer class="post-footer">
+  <section class="author">
+    <h4>Greg Moreno</h4>
+    <p></p>
+  </section>
+  <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=Rebuild Rails Part 3&amp;url=http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+      <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+      <span class="hidden">Google+</span>
+    </a>
+  </section>
+</footer>
+  <hr>
+  
+    <div class="share">
+</div>
+
+  
+  
+</article></main>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
+
+
+<div class="inner">
+
+
+
+
+
+
+
+
+
+<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
+
+<section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
+
+</div>
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+
+
+</body>
+</html>
