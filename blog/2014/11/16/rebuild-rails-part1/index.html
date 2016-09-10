@@ -7,7 +7,7 @@
 	<meta charset="utf-8">
 	<title>Rebuild Rails Part 1 | Greg Moreno</title>
 
-	<meta name="author" content="Greg Moreno">
+	<meta name="author" content="Greg">
 	
 	<meta name="description" content="Greg Moreno 16 Nov 2014 Rebuild Rails Part 1 I have no plans to build another Rails-clone. Let&rsquo;s leave that work to other smarter people with &hellip;">
 
@@ -42,26 +42,21 @@ access. If you would like to go deeper and wider, there is a <a href="https://re
 
 <p>Let&rsquo;s call our application <code>CrazyApp</code> and let&rsquo;s build our first web app.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config.ru</span>
-<span class="n">app</span> <span class="o">=</span>  <span class="nb">proc</span> <span class="k">do</span> <span class="o">|</span><span class="n">env</span><span class="o">|</span>
-  <span class="o">[</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;text/html&#39;</span><span class="p">},</span> <span class="o">[</span><span class="s2">&quot;hello from crazy app&quot;</span><span class="o">]</span> <span class="o">]</span>
-<span class="k">end</span>
+<pre><code># config.ru
+app =  proc do |env|
+  [200, {'Content-Type' =&gt; 'text/html'}, ["hello from crazy app"] ]
+end
 
-<span class="n">run</span> <span class="n">app</span></code></pre></div>
+run app
 
-
-
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>rackup config.ru -p <span class="m">3000</span>                                                                       <span class="o">[</span>2.0.0-p247<span class="o">]</span>
-Thin web server <span class="o">(</span>v1.6.2 codename Doc Brown<span class="o">)</span>
-Maximum connections <span class="nb">set </span>to 1024
+$ rackup config.ru -p 3000                                                                       [2.0.0-p247]
+Thin web server (v1.6.2 codename Doc Brown)
+Maximum connections set to 1024
 Listening on 0.0.0.0:3000, CTRL+C to stop
-127.0.0.1 - - <span class="o">[</span>16/Nov/2014 20:42:02<span class="o">]</span> <span class="s2">&quot;GET / HTTP/1.1&quot;</span> <span class="m">200</span> - 0.0008</code></pre></div>
+127.0.0.1 - - [16/Nov/2014 20:42:02] "GET / HTTP/1.1" 200 - 0.0008
+</code></pre>
 
-
-<p><img src="/assets/rebuild-1.png" alt="rebuild1" /></p>
-
-<h1>It&rsquo;s all about the Rack</h1>
+<h3>It&rsquo;s all about the Rack</h3>
 
 <p>Rack is a gem that sits between your framework (e.g. Rails) and Ruby-based
 application servers like Thin, Puma, Unicorn, and WEBrick. When you type a url,
@@ -76,15 +71,13 @@ for web servers that we only have to worry about a few things to handle an HTTP 
 </ul>
 
 
-<h1></h1>
-
 <p>Let&rsquo;s look at a boilerplate <code>config.ru</code> that you get from Rails.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># This file is used by Rack-based servers to start the application.</span>
+<pre><code># This file is used by Rack-based servers to start the application.
 
-<span class="nb">require</span> <span class="o">::</span><span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">&#39;../config/environment&#39;</span><span class="p">,</span>  <span class="bp">__FILE__</span><span class="p">)</span>
-<span class="n">run</span> <span class="no">Rails</span><span class="o">.</span><span class="n">application</span></code></pre></div>
-
+require ::File.expand_path('../config/environment',  __FILE__)
+run Rails.application
+</code></pre>
 
 <p>One step in <a href="http://api.rubyonrails.org/classes/Rails/Application.html">Rails' bootup process</a> is to
 define <code>Rails.application</code> as <code>class MyApp::Application &lt; Rails::Application</code>.
@@ -165,18 +158,18 @@ a request and for our routing, we are interested in <code>PATH_INFO</code> which
 
   <footer class="post-footer">
   <section class="author">
-    <h4>Greg Moreno</h4>
+    <h4>Greg</h4>
     <p></p>
   </section>
   <section class="share">
     <h4>Share this post</h4>
-    <a class="icon-twitter" href="http://twitter.com/share?text=Rebuild Rails Part 1&amp;url=http://gregmoreno.ca/blog/2014/11/16/rebuild-rails-part1/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+    <a class="icon-twitter" href="http://twitter.com/share?text=Rebuild Rails Part 1&amp;url=http:///blog/2014/11/16/rebuild-rails-part1/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
       <span class="hidden">Twitter</span>
     </a>
-    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/blog/2014/11/16/rebuild-rails-part1/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http:///blog/2014/11/16/rebuild-rails-part1/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
       <span class="hidden">Facebook</span>
     </a>
-    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/blog/2014/11/16/rebuild-rails-part1/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http:///blog/2014/11/16/rebuild-rails-part1/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
       <span class="hidden">Google+</span>
     </a>
   </section>
@@ -189,7 +182,7 @@ a request and for our routing, we are interested in <code>PATH_INFO</code> which
   
   
 </article></main>
-  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http:///atom.xml"><span class="tooltip">Subscribe!</span></a>
 
 
 <div class="inner">
@@ -202,7 +195,7 @@ a request and for our routing, we are interested in <code>PATH_INFO</code> which
 
 
 
-<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
+<section class="copyright">All content copyright <a href="/">Greg</a> © 2016 • All rights reserved.</section>
 
 <section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
 

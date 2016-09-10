@@ -7,7 +7,7 @@
 	<meta charset="utf-8">
 	<title>Rebuild Rails Part 2 | Greg Moreno</title>
 
-	<meta name="author" content="Greg Moreno">
+	<meta name="author" content="Greg">
 	
 	<meta name="description" content="Greg Moreno 19 Nov 2014 Rebuild Rails Part 2 Before we continue with out rebuilding series, we should write some tests first :) # spec/spec_helper. &hellip;">
 
@@ -37,54 +37,54 @@
 	<section class="post-content">
 		<p>Before we continue with out rebuilding series, we should write some tests first :)</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># spec/spec_helper.rb</span>
-<span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;RAILS_ENV&quot;</span><span class="o">]</span> <span class="o">||=</span> <span class="s2">&quot;test&quot;</span>
+<pre><code># spec/spec_helper.rb
+ENV["RAILS_ENV"] ||= "test"
 
-<span class="nb">require</span> <span class="s2">&quot;rack/test&quot;</span>
-<span class="nb">require</span> <span class="s2">&quot;minitest/autorun&quot;</span>
+require "rack/test"
+require "minitest/autorun"
 
-<span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s2">&quot;../../config/application&quot;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+require File.expand_path("../../config/application", __FILE__)
 
 
-<span class="c1"># spec/application_spec.rb</span>
-<span class="n">require_relative</span> <span class="s2">&quot;spec_helper&quot;</span>
+# spec/application_spec.rb
+require_relative "spec_helper"
 
-<span class="n">describe</span> <span class="no">CrazyApp</span><span class="o">::</span><span class="no">Application</span> <span class="k">do</span>
-  <span class="kp">include</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Test</span><span class="o">::</span><span class="no">Methods</span>
+describe CrazyApp::Application do
+  include Rack::Test::Methods
 
-  <span class="k">def</span> <span class="nf">app</span>
-    <span class="no">CrazyApp</span><span class="o">::</span><span class="no">Application</span>
-  <span class="k">end</span>
+  def app
+    CrazyApp::Application
+  end
 
-  <span class="n">it</span> <span class="s2">&quot;should respond with /&quot;</span> <span class="k">do</span>
-    <span class="n">get</span> <span class="s2">&quot;/&quot;</span>
-    <span class="n">last_response</span><span class="o">.</span><span class="n">ok?</span><span class="o">.</span><span class="n">must_equal</span> <span class="kp">true</span>
-    <span class="n">last_response</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">strip</span><span class="o">.</span><span class="n">must_equal</span> <span class="s2">&quot;hello from index.html&quot;</span>
-  <span class="k">end</span>
+  it "should respond with /" do
+    get "/"
+    last_response.ok?.must_equal true
+    last_response.body.strip.must_equal "hello from index.html"
+  end
 
-  <span class="n">it</span> <span class="s2">&quot;should respond with different path&quot;</span> <span class="k">do</span>
-    <span class="n">get</span> <span class="s2">&quot;/posts&quot;</span>
-    <span class="n">last_response</span><span class="o">.</span><span class="n">ok?</span><span class="o">.</span><span class="n">must_equal</span> <span class="kp">true</span>
-    <span class="n">last_response</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">strip</span><span class="o">.</span><span class="n">must_equal</span> <span class="s2">&quot;hello from tracks /posts&quot;</span>
-  <span class="k">end</span>
+  it "should respond with different path" do
+    get "/posts"
+    last_response.ok?.must_equal true
+    last_response.body.strip.must_equal "hello from tracks /posts"
+  end
 
-<span class="k">end</span></code></pre></div>
-
+end
+</code></pre>
 
 <p>Just like your typical Rails test setup, we have a common <code>spec_helper</code> file. We use <code>minitest/autorun</code> which gives us
 rspec-style DSL out of the box. For our test, we need <code>Rack::Test::Methods</code> to use <code>get</code> and other http methods. We also
 need an <code>app</code> method that returns our Rack application to make the tests work.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby spec/application_spec.rb
+<pre><code>$ ruby spec/application_spec.rb
 Run options: --seed 57256
 
-<span class="c"># Running:</span>
+# Running:
 ..
 
 Finished in 0.015864s, 126.0716 runs/s, 252.1432 assertions/s.
 
-<span class="m">2</span> runs, <span class="m">4</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips</code></pre></div>
-
+2 runs, 4 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
 
 <p>We&rsquo;re all good. Awesome!</p>
 
@@ -92,18 +92,18 @@ Finished in 0.015864s, 126.0716 runs/s, 252.1432 assertions/s.
 
   <footer class="post-footer">
   <section class="author">
-    <h4>Greg Moreno</h4>
+    <h4>Greg</h4>
     <p></p>
   </section>
   <section class="share">
     <h4>Share this post</h4>
-    <a class="icon-twitter" href="http://twitter.com/share?text=Rebuild Rails Part 2&amp;url=http://gregmoreno.ca/blog/2014/11/19/rebuild-rails-part2/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+    <a class="icon-twitter" href="http://twitter.com/share?text=Rebuild Rails Part 2&amp;url=http:///blog/2014/11/19/rebuild-rails-part2/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
       <span class="hidden">Twitter</span>
     </a>
-    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/blog/2014/11/19/rebuild-rails-part2/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http:///blog/2014/11/19/rebuild-rails-part2/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
       <span class="hidden">Facebook</span>
     </a>
-    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/blog/2014/11/19/rebuild-rails-part2/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http:///blog/2014/11/19/rebuild-rails-part2/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
       <span class="hidden">Google+</span>
     </a>
   </section>
@@ -116,7 +116,7 @@ Finished in 0.015864s, 126.0716 runs/s, 252.1432 assertions/s.
   
   
 </article></main>
-  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http:///atom.xml"><span class="tooltip">Subscribe!</span></a>
 
 
 <div class="inner">
@@ -129,7 +129,7 @@ Finished in 0.015864s, 126.0716 runs/s, 252.1432 assertions/s.
 
 
 
-<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
+<section class="copyright">All content copyright <a href="/">Greg</a> © 2016 • All rights reserved.</section>
 
 <section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
 

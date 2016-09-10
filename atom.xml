@@ -2,12 +2,12 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Greg Moreno]]></title>
-  <link href="http://gregmoreno.ca/atom.xml" rel="self"/>
-  <link href="http://gregmoreno.ca/"/>
-  <updated>2016-09-09T23:25:58-07:00</updated>
-  <id>http://gregmoreno.ca/</id>
+  <link href="http:///atom.xml" rel="self"/>
+  <link href="http:///"/>
+  <updated>2016-09-09T23:30:56-07:00</updated>
+  <id>http:///</id>
   <author>
-    <name><![CDATA[Greg Moreno]]></name>
+    <name><![CDATA[Greg]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Joy Ride in Ruby's spaceship]]></title>
-    <link href="http://gregmoreno.ca/blog/2016/02/16/joy-ride-in-rubys-spaceship/"/>
+    <link href="http:///blog/2016/02/16/joy-ride-in-rubys-spaceship/"/>
     <updated>2016-02-16T20:52:04-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2016/02/16/joy-ride-in-rubys-spaceship</id>
+    <id>http:///blog/2016/02/16/joy-ride-in-rubys-spaceship</id>
     <content type="html"><![CDATA[<p>Ruby&rsquo;s <code>&lt;=&gt;</code> operator is commonly referred to as the spaceship in the community. You may not have
 played with it directly but I bet you have relied on it a lot of times. Because, every time you use
 sort an array, you are tapping in to the spaceship operator.</p>
@@ -208,9 +208,9 @@ Comparison via &ldquo;&lt;=>&rdquo; and the Comparable Module.</p>
   
   <entry>
     <title type="html"><![CDATA[You can't handle the truth]]></title>
-    <link href="http://gregmoreno.ca/blog/2016/02/15/you-cant-handle-the-truth/"/>
+    <link href="http:///blog/2016/02/15/you-cant-handle-the-truth/"/>
     <updated>2016-02-15T16:21:58-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2016/02/15/you-cant-handle-the-truth</id>
+    <id>http:///blog/2016/02/15/you-cant-handle-the-truth</id>
     <content type="html"><![CDATA[<p>Quick question. What’s the output of this code in Ruby?</p>
 
 <pre><code>amount = 0
@@ -286,9 +286,9 @@ get a copy of <code>Effective Ruby</code> by Peter Jones.</p>
   
   <entry>
     <title type="html"><![CDATA[Rails #permitted]]></title>
-    <link href="http://gregmoreno.ca/blog/2015/08/21/rails-permitted/"/>
+    <link href="http:///blog/2015/08/21/rails-permitted/"/>
     <updated>2015-08-21T00:00:00-07:00</updated>
-    <id>http://gregmoreno.ca/blog/2015/08/21/rails-permitted</id>
+    <id>http:///blog/2015/08/21/rails-permitted</id>
     <content type="html"><![CDATA[<p>I recently upgraded a personal app I use for learning new things in Rails. But when I upgraded from
 4.1.4 to 4.1.12 I encountered this familiar error.</p>
 
@@ -376,9 +376,9 @@ NoMethodError: undefined method `permitted?' for {:provider=&gt;"facebook", :uid
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 4]]></title>
-    <link href="http://gregmoreno.ca/blog/2014/11/24/rebuild-rails-part4/"/>
+    <link href="http:///blog/2014/11/24/rebuild-rails-part4/"/>
     <updated>2014-11-24T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2014/11/24/rebuild-rails-part4</id>
+    <id>http:///blog/2014/11/24/rebuild-rails-part4</id>
     <content type="html"><![CDATA[<p>Now, it is time to build real pages in our super duper Tracks framework. We will support ERB and to do that
 we need the <a href="https://rubygems.org/gems/erubis">erubis</a> gem.</p>
 
@@ -583,9 +583,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 3]]></title>
-    <link href="http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3/"/>
+    <link href="http:///blog/2014/11/20/rebuild-rails-part3/"/>
     <updated>2014-11-20T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3</id>
+    <id>http:///blog/2014/11/20/rebuild-rails-part3</id>
     <content type="html"><![CDATA[<p>Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
 by assuming a <code>controller/action</code> path format and only support <code>GET</code> request.</p>
 
@@ -633,27 +633,28 @@ NameError: uninitialized constant PostsController
 we expect since we haven&rsquo;t implemented <code>PostsController</code> yet. Let&rsquo;s add the
 controller now.</p>
 
-<p>  # app/controllers/posts_controller.rb
-  class PostsController &lt; Tracks::Controller
-    def index
-      &ldquo;hello from tracks /posts/index&rdquo;
-    end
-  end</p>
+<pre><code># app/controllers/posts_controller.rb
+class PostsController &lt; Tracks::Controller
+  def index
+    "hello from tracks /posts/index"
+  end
+end
 
-<p>  # config/application.rb
-  require &ldquo;./app/controllers/posts_controller&rdquo;</p>
+# config/application.rb
+require "./app/controllers/posts_controller"
 
-<p>  $ ruby spec/application_spec.rb
-  Run options: &ndash;seed 2475</p>
+$ ruby spec/application_spec.rb
+Run options: --seed 2475
 
-<p>  # Running:
-  ..</p>
+# Running:
+..
 
-<p>  Finished in 0.019152s, 104.4277 runs/s, 208.8555 assertions/s.</p>
+Finished in 0.019152s, 104.4277 runs/s, 208.8555 assertions/s.
 
-<p>  2 runs, 4 assertions, 0 failures, 0 errors, 0 skips</p>
+2 runs, 4 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
 
-<h1>Automatic loading</h1>
+<h3>Automatic loading</h3>
 
 <p>Our tests pass but something&rsquo;s not right. In Rails, there is no need to require
 every controller (or pretty much anything) to make it work. To support this feature in
@@ -737,59 +738,59 @@ SystemStackError: stack level too deep
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 2]]></title>
-    <link href="http://gregmoreno.ca/blog/2014/11/19/rebuild-rails-part2/"/>
+    <link href="http:///blog/2014/11/19/rebuild-rails-part2/"/>
     <updated>2014-11-19T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2014/11/19/rebuild-rails-part2</id>
+    <id>http:///blog/2014/11/19/rebuild-rails-part2</id>
     <content type="html"><![CDATA[<p>Before we continue with out rebuilding series, we should write some tests first :)</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># spec/spec_helper.rb</span>
-<span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;RAILS_ENV&quot;</span><span class="o">]</span> <span class="o">||=</span> <span class="s2">&quot;test&quot;</span>
+<pre><code># spec/spec_helper.rb
+ENV["RAILS_ENV"] ||= "test"
 
-<span class="nb">require</span> <span class="s2">&quot;rack/test&quot;</span>
-<span class="nb">require</span> <span class="s2">&quot;minitest/autorun&quot;</span>
+require "rack/test"
+require "minitest/autorun"
 
-<span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s2">&quot;../../config/application&quot;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+require File.expand_path("../../config/application", __FILE__)
 
 
-<span class="c1"># spec/application_spec.rb</span>
-<span class="n">require_relative</span> <span class="s2">&quot;spec_helper&quot;</span>
+# spec/application_spec.rb
+require_relative "spec_helper"
 
-<span class="n">describe</span> <span class="no">CrazyApp</span><span class="o">::</span><span class="no">Application</span> <span class="k">do</span>
-  <span class="kp">include</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Test</span><span class="o">::</span><span class="no">Methods</span>
+describe CrazyApp::Application do
+  include Rack::Test::Methods
 
-  <span class="k">def</span> <span class="nf">app</span>
-    <span class="no">CrazyApp</span><span class="o">::</span><span class="no">Application</span>
-  <span class="k">end</span>
+  def app
+    CrazyApp::Application
+  end
 
-  <span class="n">it</span> <span class="s2">&quot;should respond with /&quot;</span> <span class="k">do</span>
-    <span class="n">get</span> <span class="s2">&quot;/&quot;</span>
-    <span class="n">last_response</span><span class="o">.</span><span class="n">ok?</span><span class="o">.</span><span class="n">must_equal</span> <span class="kp">true</span>
-    <span class="n">last_response</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">strip</span><span class="o">.</span><span class="n">must_equal</span> <span class="s2">&quot;hello from index.html&quot;</span>
-  <span class="k">end</span>
+  it "should respond with /" do
+    get "/"
+    last_response.ok?.must_equal true
+    last_response.body.strip.must_equal "hello from index.html"
+  end
 
-  <span class="n">it</span> <span class="s2">&quot;should respond with different path&quot;</span> <span class="k">do</span>
-    <span class="n">get</span> <span class="s2">&quot;/posts&quot;</span>
-    <span class="n">last_response</span><span class="o">.</span><span class="n">ok?</span><span class="o">.</span><span class="n">must_equal</span> <span class="kp">true</span>
-    <span class="n">last_response</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">strip</span><span class="o">.</span><span class="n">must_equal</span> <span class="s2">&quot;hello from tracks /posts&quot;</span>
-  <span class="k">end</span>
+  it "should respond with different path" do
+    get "/posts"
+    last_response.ok?.must_equal true
+    last_response.body.strip.must_equal "hello from tracks /posts"
+  end
 
-<span class="k">end</span></code></pre></div>
-
+end
+</code></pre>
 
 <p>Just like your typical Rails test setup, we have a common <code>spec_helper</code> file. We use <code>minitest/autorun</code> which gives us
 rspec-style DSL out of the box. For our test, we need <code>Rack::Test::Methods</code> to use <code>get</code> and other http methods. We also
 need an <code>app</code> method that returns our Rack application to make the tests work.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby spec/application_spec.rb
+<pre><code>$ ruby spec/application_spec.rb
 Run options: --seed 57256
 
-<span class="c"># Running:</span>
+# Running:
 ..
 
 Finished in 0.015864s, 126.0716 runs/s, 252.1432 assertions/s.
 
-<span class="m">2</span> runs, <span class="m">4</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips</code></pre></div>
-
+2 runs, 4 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
 
 <p>We&rsquo;re all good. Awesome!</p>
 ]]></content>
@@ -797,82 +798,80 @@ Finished in 0.015864s, 126.0716 runs/s, 252.1432 assertions/s.
   
   <entry>
     <title type="html"><![CDATA[#ruby Array of hashes quiz]]></title>
-    <link href="http://gregmoreno.ca/blog/2014/11/17/ruby-array-of-hashes-quiz/"/>
+    <link href="http:///blog/2014/11/17/ruby-array-of-hashes-quiz/"/>
     <updated>2014-11-17T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2014/11/17/ruby-array-of-hashes-quiz</id>
+    <id>http:///blog/2014/11/17/ruby-array-of-hashes-quiz</id>
     <content type="html"><![CDATA[<p>Found this interesting ruby quiz from <a href="http://www.alphasights.com/careers/experienced/positions/new-york/6-ruby-on-rails-developer/apply">AlphaSights</a>.
 Given an array of hashes, collapse into an array of hashes containing one entry per day.
 And you can only reference the <code>:time</code> key and not the rest.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">log</span> <span class="o">=</span> <span class="o">[</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201201</span><span class="p">,</span> <span class="ss">x</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201201</span><span class="p">,</span> <span class="ss">y</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201201</span><span class="p">,</span> <span class="ss">z</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201202</span><span class="p">,</span> <span class="ss">a</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201202</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201202</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
-<span class="o">]</span>
+<pre><code>log = [
+  {time: 201201, x: 2},
+  {time: 201201, y: 7},
+  {time: 201201, z: 2},
+  {time: 201202, a: 3},
+  {time: 201202, b: 4},
+  {time: 201202, c: 0}
+]
 
-<span class="c1"># result should be</span>
-<span class="o">[</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201201</span><span class="p">,</span> <span class="ss">x</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">y</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="ss">z</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201202</span><span class="p">,</span> <span class="ss">a</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
-<span class="o">]</span></code></pre></div>
-
+# result should be
+[
+  {time: 201201, x: 2, y: 7, z: 2},
+  {time: 201202, a: 3, b: 4, c: 0},
+]
+</code></pre>
 
 <p>The first thing came to mind is to use <a href="http://www.ruby-doc.org/core-2.1.1/Enumerable.html#method-i-group_by"><code>Enumerable#group_by</code></a></p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">grouped</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">group_by</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">i</span><span class="o">[</span><span class="ss">:time</span><span class="o">]</span> <span class="p">}</span>
-<span class="n">collapsed</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">collect</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="o">|</span>
-  <span class="n">no_time_h</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">inject</span><span class="p">({})</span> <span class="k">do</span> <span class="o">|</span><span class="n">others</span><span class="p">,</span> <span class="n">h</span><span class="o">|</span>
-    <span class="n">others</span><span class="o">.</span><span class="n">merge</span> <span class="n">h</span><span class="o">.</span><span class="n">reject</span> <span class="p">{</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">|</span> <span class="n">k</span><span class="o">.</span><span class="n">to_sym</span> <span class="o">==</span> <span class="ss">:time</span> <span class="p">}</span>
-  <span class="k">end</span>
+<pre><code>grouped = log.group_by { |i| i[:time] }
+collapsed = grouped.collect do |t, a|
+  no_time_h = a.inject({}) do |others, h|
+    others.merge h.reject { |k, v| k.to_sym == :time }
+  end
 
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="n">t</span><span class="p">}</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">no_time_h</span><span class="p">)</span>
-<span class="k">end</span>
+  {time: t}.merge(no_time_h)
+end
 
-<span class="nb">puts</span> <span class="n">collapsed</span><span class="o">.</span><span class="n">inspect</span></code></pre></div>
-
+puts collapsed.inspect
+</code></pre>
 
 <p>However, after reading this a couple of times, I still find the solution hard to follow.
 For starter, <code>group_by</code> returns a hash where the values are an array of hashes which
 brings me back to the original problem even though it is already grouped by time.
 That I feel made the rest of the code more complicated.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># result of group_by</span>
-<span class="p">{</span><span class="mi">201201</span><span class="o">=&gt;[</span><span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201201</span><span class="p">,</span> <span class="ss">:x</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201201</span><span class="p">,</span> <span class="ss">:y</span><span class="o">=&gt;</span><span class="mi">7</span><span class="p">},</span> <span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201201</span><span class="p">,</span> <span class="ss">:z</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">}</span><span class="o">]</span><span class="p">,</span> <span class="mi">201202</span><span class="o">=&gt;[</span><span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201202</span><span class="p">,</span> <span class="ss">:a</span><span class="o">=&gt;</span><span class="mi">3</span><span class="p">},</span> <span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201202</span><span class="p">,</span> <span class="ss">:b</span><span class="o">=&gt;</span><span class="mi">4</span><span class="p">},</span> <span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201202</span><span class="p">,</span> <span class="ss">:c</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">}</span><span class="o">]</span><span class="p">}</span></code></pre></div>
-
+<pre><code># result of group_by
+{201201=&gt;[{:time=&gt;201201, :x=&gt;2}, {:time=&gt;201201, :y=&gt;7}, {:time=&gt;201201, :z=&gt;2}], 201202=&gt;[{:time=&gt;201202, :a=&gt;3}, {:time=&gt;201202, :b=&gt;4}, {:time=&gt;201202, :c=&gt;0}]}
+</code></pre>
 
 <p>For my second version, I simply loop into the array and compose the hash using <code>:time</code> as the key.
 Afterwards, use the <code>key-value</code> pair to compose the resulting array. The code may be longer but
 it is more readable. Remember, <a href="https://www.safaribooksonline.com/library/view/beautiful-code/9780596510046/ch05.html">Correct, Beautiful, Fast (in That Order)</a>.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">hash_by_time</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">log</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">h</span><span class="o">|</span>
-  <span class="n">time</span> <span class="o">=</span> <span class="n">h</span><span class="o">[</span><span class="ss">:time</span><span class="o">]</span>
-  <span class="n">others</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">reject</span> <span class="p">{</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="o">|</span> <span class="n">k</span><span class="o">.</span><span class="n">to_sym</span> <span class="o">==</span> <span class="ss">:time</span> <span class="p">}</span>
+<pre><code>hash_by_time = {}
+log.each do |h|
+  time = h[:time]
+  others = h.reject { |k,v| k.to_sym == :time }
 
-  <span class="k">if</span> <span class="n">hash_by_time</span><span class="o">[</span><span class="n">time</span><span class="o">]</span>
-    <span class="n">hash_by_time</span><span class="o">[</span><span class="n">time</span><span class="o">].</span><span class="n">merge!</span> <span class="n">others</span>
-  <span class="k">else</span>
-    <span class="n">hash_by_time</span><span class="o">[</span><span class="n">time</span><span class="o">]</span> <span class="o">=</span> <span class="n">others</span>
-  <span class="k">end</span>
-<span class="k">end</span>
+  if hash_by_time[time]
+    hash_by_time[time].merge! others
+  else
+    hash_by_time[time] = others
+  end
+end
 
-<span class="n">collapsed</span> <span class="o">=</span> <span class="n">hash_by_time</span><span class="o">.</span><span class="n">collect</span> <span class="k">do</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">|</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="n">k</span><span class="p">}</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-<span class="k">end</span></code></pre></div>
-
-
-
+collapsed = hash_by_time.collect do |k, v|
+  {time: k}.merge(v)
+end
+</code></pre>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[To the crazy ones]]></title>
-    <link href="http://gregmoreno.ca/blog/2014/11/16/to-the-crazy-ones/"/>
+    <link href="http:///blog/2014/11/16/to-the-crazy-ones/"/>
     <updated>2014-11-16T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2014/11/16/to-the-crazy-ones</id>
+    <id>http:///blog/2014/11/16/to-the-crazy-ones</id>
     <content type="html"><![CDATA[<p>Though I&rsquo;ve seen this video a gazillion times, I still find it fresh and inspiring.</p>
 
 <iframe width="420" height="315" src="http://www.youtube.com/embed/tjgtLSHhTPg" frameborder="0" allowfullscreen></iframe>
@@ -882,9 +881,9 @@ it is more readable. Remember, <a href="https://www.safaribooksonline.com/librar
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 1]]></title>
-    <link href="http://gregmoreno.ca/blog/2014/11/16/rebuild-rails-part1/"/>
+    <link href="http:///blog/2014/11/16/rebuild-rails-part1/"/>
     <updated>2014-11-16T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2014/11/16/rebuild-rails-part1</id>
+    <id>http:///blog/2014/11/16/rebuild-rails-part1</id>
     <content type="html"><![CDATA[<p>I have no plans to build another Rails-clone. Let&rsquo;s leave that work to other smarter people with more time.
 But wouldn&rsquo;t it be fun if we can learn how Rails work under the hood and find out what makes it &ldquo;magical&rdquo;?
 In this post I will only cover what happens when you typed that url until you get an HTML page. We&rsquo;ll simplify further by not using any database
@@ -892,26 +891,21 @@ access. If you would like to go deeper and wider, there is a <a href="https://re
 
 <p>Let&rsquo;s call our application <code>CrazyApp</code> and let&rsquo;s build our first web app.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config.ru</span>
-<span class="n">app</span> <span class="o">=</span>  <span class="nb">proc</span> <span class="k">do</span> <span class="o">|</span><span class="n">env</span><span class="o">|</span>
-  <span class="o">[</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;text/html&#39;</span><span class="p">},</span> <span class="o">[</span><span class="s2">&quot;hello from crazy app&quot;</span><span class="o">]</span> <span class="o">]</span>
-<span class="k">end</span>
+<pre><code># config.ru
+app =  proc do |env|
+  [200, {'Content-Type' =&gt; 'text/html'}, ["hello from crazy app"] ]
+end
 
-<span class="n">run</span> <span class="n">app</span></code></pre></div>
+run app
 
-
-
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>rackup config.ru -p <span class="m">3000</span>                                                                       <span class="o">[</span>2.0.0-p247<span class="o">]</span>
-Thin web server <span class="o">(</span>v1.6.2 codename Doc Brown<span class="o">)</span>
-Maximum connections <span class="nb">set </span>to 1024
+$ rackup config.ru -p 3000                                                                       [2.0.0-p247]
+Thin web server (v1.6.2 codename Doc Brown)
+Maximum connections set to 1024
 Listening on 0.0.0.0:3000, CTRL+C to stop
-127.0.0.1 - - <span class="o">[</span>16/Nov/2014 20:42:02<span class="o">]</span> <span class="s2">&quot;GET / HTTP/1.1&quot;</span> <span class="m">200</span> - 0.0008</code></pre></div>
+127.0.0.1 - - [16/Nov/2014 20:42:02] "GET / HTTP/1.1" 200 - 0.0008
+</code></pre>
 
-
-<p><img src="http://gregmoreno.ca/assets/rebuild-1.png" alt="rebuild1" /></p>
-
-<h1>It&rsquo;s all about the Rack</h1>
+<h3>It&rsquo;s all about the Rack</h3>
 
 <p>Rack is a gem that sits between your framework (e.g. Rails) and Ruby-based
 application servers like Thin, Puma, Unicorn, and WEBrick. When you type a url,
@@ -926,15 +920,13 @@ for web servers that we only have to worry about a few things to handle an HTTP 
 </ul>
 
 
-<h1></h1>
-
 <p>Let&rsquo;s look at a boilerplate <code>config.ru</code> that you get from Rails.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># This file is used by Rack-based servers to start the application.</span>
+<pre><code># This file is used by Rack-based servers to start the application.
 
-<span class="nb">require</span> <span class="o">::</span><span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">&#39;../config/environment&#39;</span><span class="p">,</span>  <span class="bp">__FILE__</span><span class="p">)</span>
-<span class="n">run</span> <span class="no">Rails</span><span class="o">.</span><span class="n">application</span></code></pre></div>
-
+require ::File.expand_path('../config/environment',  __FILE__)
+run Rails.application
+</code></pre>
 
 <p>One step in <a href="http://api.rubyonrails.org/classes/Rails/Application.html">Rails' bootup process</a> is to
 define <code>Rails.application</code> as <code>class MyApp::Application &lt; Rails::Application</code>.
@@ -966,7 +958,7 @@ and build our gem from there.</p>
 <span class="k">end</span></code></pre></div>
 
 
-<p><img src="http://gregmoreno.ca/assets/rebuild-2.png" alt="rebuild2" /></p>
+<p><img src="http:///assets/rebuild-2.png" alt="rebuild2" /></p>
 
 <p>Exit from your rackup process and re-run it because we are not supporting auto-reloading. This time you will see a message from our <code>Tracks</code> - the super awesome Rails-like framework.</p>
 
@@ -1006,8 +998,8 @@ a request and for our routing, we are interested in <code>PATH_INFO</code> which
 <span class="k">end</span></code></pre></div>
 
 
-<p><img src="http://gregmoreno.ca/assets/rebuild-3.png" alt="rebuild3" />
-<img src="http://gregmoreno.ca/assets/rebuild-4.png" alt="rebuild4" /></p>
+<p><img src="http:///assets/rebuild-3.png" alt="rebuild3" />
+<img src="http:///assets/rebuild-4.png" alt="rebuild4" /></p>
 
 <p>That&rsquo;s it for now. Next time, we will create our own controllers, action, and dynamic pages using ERB.</p>
 ]]></content>
@@ -1015,9 +1007,9 @@ a request and for our routing, we are interested in <code>PATH_INFO</code> which
   
   <entry>
     <title type="html"><![CDATA[#ruby Counting Vowels]]></title>
-    <link href="http://gregmoreno.ca/blog/2014/11/13/ruby-minimal-code/"/>
+    <link href="http:///blog/2014/11/13/ruby-minimal-code/"/>
     <updated>2014-11-13T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2014/11/13/ruby-minimal-code</id>
+    <id>http:///blog/2014/11/13/ruby-minimal-code</id>
     <content type="html"><![CDATA[<p>Just saw a simple exercise in my Facebook feed and I thought I give it a shot. The problem is simple:</p>
 
 <blockquote><p>Write a function that returns the number of vowels in the string.</p></blockquote>
@@ -1094,9 +1086,9 @@ Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
   
   <entry>
     <title type="html"><![CDATA[#hacking  Ansible]]></title>
-    <link href="http://gregmoreno.ca/blog/2014/10/17/hacking-ansible/"/>
+    <link href="http:///blog/2014/10/17/hacking-ansible/"/>
     <updated>2014-10-17T21:02:43-07:00</updated>
-    <id>http://gregmoreno.ca/blog/2014/10/17/hacking-ansible</id>
+    <id>http:///blog/2014/10/17/hacking-ansible</id>
     <content type="html"><![CDATA[<p>Before you continue, let me congratulate myself. It’s been years since I’ve written a post. Hooray! Also, thank you to <a href="https://github.com/radamanthus/ansible-rails">Rad</a> for guiding me on my Ansible adventure. The ansible code I reference here are <a href="https://github.com/gregmoreno/ansible-rails">available in github</a>.</p>
 
 <p>There are tons of posts about Ansible already so this is more about gotchas I learned along the way.</p>

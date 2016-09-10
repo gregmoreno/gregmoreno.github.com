@@ -7,7 +7,7 @@
 	<meta charset="utf-8">
 	<title>#ruby Array of hashes quiz | Greg Moreno</title>
 
-	<meta name="author" content="Greg Moreno">
+	<meta name="author" content="Greg">
 	
 	<meta name="description" content="Greg Moreno 17 Nov 2014 #ruby Array of Hashes Quiz Found this interesting ruby quiz from AlphaSights.
 Given an array of hashes, collapse into an &hellip;">
@@ -40,84 +40,82 @@ Given an array of hashes, collapse into an &hellip;">
 Given an array of hashes, collapse into an array of hashes containing one entry per day.
 And you can only reference the <code>:time</code> key and not the rest.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">log</span> <span class="o">=</span> <span class="o">[</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201201</span><span class="p">,</span> <span class="ss">x</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201201</span><span class="p">,</span> <span class="ss">y</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201201</span><span class="p">,</span> <span class="ss">z</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201202</span><span class="p">,</span> <span class="ss">a</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201202</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201202</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
-<span class="o">]</span>
+<pre><code>log = [
+  {time: 201201, x: 2},
+  {time: 201201, y: 7},
+  {time: 201201, z: 2},
+  {time: 201202, a: 3},
+  {time: 201202, b: 4},
+  {time: 201202, c: 0}
+]
 
-<span class="c1"># result should be</span>
-<span class="o">[</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201201</span><span class="p">,</span> <span class="ss">x</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">y</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="ss">z</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="mi">201202</span><span class="p">,</span> <span class="ss">a</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
-<span class="o">]</span></code></pre></div>
-
+# result should be
+[
+  {time: 201201, x: 2, y: 7, z: 2},
+  {time: 201202, a: 3, b: 4, c: 0},
+]
+</code></pre>
 
 <p>The first thing came to mind is to use <a href="http://www.ruby-doc.org/core-2.1.1/Enumerable.html#method-i-group_by"><code>Enumerable#group_by</code></a></p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">grouped</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">group_by</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">i</span><span class="o">[</span><span class="ss">:time</span><span class="o">]</span> <span class="p">}</span>
-<span class="n">collapsed</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">collect</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="o">|</span>
-  <span class="n">no_time_h</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">inject</span><span class="p">({})</span> <span class="k">do</span> <span class="o">|</span><span class="n">others</span><span class="p">,</span> <span class="n">h</span><span class="o">|</span>
-    <span class="n">others</span><span class="o">.</span><span class="n">merge</span> <span class="n">h</span><span class="o">.</span><span class="n">reject</span> <span class="p">{</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">|</span> <span class="n">k</span><span class="o">.</span><span class="n">to_sym</span> <span class="o">==</span> <span class="ss">:time</span> <span class="p">}</span>
-  <span class="k">end</span>
+<pre><code>grouped = log.group_by { |i| i[:time] }
+collapsed = grouped.collect do |t, a|
+  no_time_h = a.inject({}) do |others, h|
+    others.merge h.reject { |k, v| k.to_sym == :time }
+  end
 
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="n">t</span><span class="p">}</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">no_time_h</span><span class="p">)</span>
-<span class="k">end</span>
+  {time: t}.merge(no_time_h)
+end
 
-<span class="nb">puts</span> <span class="n">collapsed</span><span class="o">.</span><span class="n">inspect</span></code></pre></div>
-
+puts collapsed.inspect
+</code></pre>
 
 <p>However, after reading this a couple of times, I still find the solution hard to follow.
 For starter, <code>group_by</code> returns a hash where the values are an array of hashes which
 brings me back to the original problem even though it is already grouped by time.
 That I feel made the rest of the code more complicated.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># result of group_by</span>
-<span class="p">{</span><span class="mi">201201</span><span class="o">=&gt;[</span><span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201201</span><span class="p">,</span> <span class="ss">:x</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201201</span><span class="p">,</span> <span class="ss">:y</span><span class="o">=&gt;</span><span class="mi">7</span><span class="p">},</span> <span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201201</span><span class="p">,</span> <span class="ss">:z</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">}</span><span class="o">]</span><span class="p">,</span> <span class="mi">201202</span><span class="o">=&gt;[</span><span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201202</span><span class="p">,</span> <span class="ss">:a</span><span class="o">=&gt;</span><span class="mi">3</span><span class="p">},</span> <span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201202</span><span class="p">,</span> <span class="ss">:b</span><span class="o">=&gt;</span><span class="mi">4</span><span class="p">},</span> <span class="p">{</span><span class="ss">:time</span><span class="o">=&gt;</span><span class="mi">201202</span><span class="p">,</span> <span class="ss">:c</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">}</span><span class="o">]</span><span class="p">}</span></code></pre></div>
-
+<pre><code># result of group_by
+{201201=&gt;[{:time=&gt;201201, :x=&gt;2}, {:time=&gt;201201, :y=&gt;7}, {:time=&gt;201201, :z=&gt;2}], 201202=&gt;[{:time=&gt;201202, :a=&gt;3}, {:time=&gt;201202, :b=&gt;4}, {:time=&gt;201202, :c=&gt;0}]}
+</code></pre>
 
 <p>For my second version, I simply loop into the array and compose the hash using <code>:time</code> as the key.
 Afterwards, use the <code>key-value</code> pair to compose the resulting array. The code may be longer but
 it is more readable. Remember, <a href="https://www.safaribooksonline.com/library/view/beautiful-code/9780596510046/ch05.html">Correct, Beautiful, Fast (in That Order)</a>.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">hash_by_time</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">log</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">h</span><span class="o">|</span>
-  <span class="n">time</span> <span class="o">=</span> <span class="n">h</span><span class="o">[</span><span class="ss">:time</span><span class="o">]</span>
-  <span class="n">others</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">reject</span> <span class="p">{</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="o">|</span> <span class="n">k</span><span class="o">.</span><span class="n">to_sym</span> <span class="o">==</span> <span class="ss">:time</span> <span class="p">}</span>
+<pre><code>hash_by_time = {}
+log.each do |h|
+  time = h[:time]
+  others = h.reject { |k,v| k.to_sym == :time }
 
-  <span class="k">if</span> <span class="n">hash_by_time</span><span class="o">[</span><span class="n">time</span><span class="o">]</span>
-    <span class="n">hash_by_time</span><span class="o">[</span><span class="n">time</span><span class="o">].</span><span class="n">merge!</span> <span class="n">others</span>
-  <span class="k">else</span>
-    <span class="n">hash_by_time</span><span class="o">[</span><span class="n">time</span><span class="o">]</span> <span class="o">=</span> <span class="n">others</span>
-  <span class="k">end</span>
-<span class="k">end</span>
+  if hash_by_time[time]
+    hash_by_time[time].merge! others
+  else
+    hash_by_time[time] = others
+  end
+end
 
-<span class="n">collapsed</span> <span class="o">=</span> <span class="n">hash_by_time</span><span class="o">.</span><span class="n">collect</span> <span class="k">do</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">|</span>
-  <span class="p">{</span><span class="ss">time</span><span class="p">:</span> <span class="n">k</span><span class="p">}</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-<span class="k">end</span></code></pre></div>
-
-
-
+collapsed = hash_by_time.collect do |k, v|
+  {time: k}.merge(v)
+end
+</code></pre>
 
 	</section>
 
   <footer class="post-footer">
   <section class="author">
-    <h4>Greg Moreno</h4>
+    <h4>Greg</h4>
     <p></p>
   </section>
   <section class="share">
     <h4>Share this post</h4>
-    <a class="icon-twitter" href="http://twitter.com/share?text=#ruby Array of hashes quiz&amp;url=http://gregmoreno.ca/blog/2014/11/17/ruby-array-of-hashes-quiz/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+    <a class="icon-twitter" href="http://twitter.com/share?text=#ruby Array of hashes quiz&amp;url=http:///blog/2014/11/17/ruby-array-of-hashes-quiz/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
       <span class="hidden">Twitter</span>
     </a>
-    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/blog/2014/11/17/ruby-array-of-hashes-quiz/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http:///blog/2014/11/17/ruby-array-of-hashes-quiz/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
       <span class="hidden">Facebook</span>
     </a>
-    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/blog/2014/11/17/ruby-array-of-hashes-quiz/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http:///blog/2014/11/17/ruby-array-of-hashes-quiz/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
       <span class="hidden">Google+</span>
     </a>
   </section>
@@ -130,7 +128,7 @@ it is more readable. Remember, <a href="https://www.safaribooksonline.com/librar
   
   
 </article></main>
-  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http:///atom.xml"><span class="tooltip">Subscribe!</span></a>
 
 
 <div class="inner">
@@ -143,7 +141,7 @@ it is more readable. Remember, <a href="https://www.safaribooksonline.com/librar
 
 
 
-<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
+<section class="copyright">All content copyright <a href="/">Greg</a> © 2016 • All rights reserved.</section>
 
 <section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
 
