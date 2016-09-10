@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: coding | Greg Moreno]]></title>
+  <link href="http:///blog/categories/coding/atom.xml" rel="self"/>
+  <link href="http:///"/>
+  <updated>2016-09-09T23:17:18-07:00</updated>
+  <id>http:///</id>
+  <author>
+    <name><![CDATA[Greg]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Rails #permitted]]></title>
+    <link href="http:///blog/2015/08/21/rails-permitted/"/>
+    <updated>2015-08-21T00:00:00-07:00</updated>
+    <id>http:///blog/2015/08/21/rails-permitted</id>
+    <content type="html"><![CDATA[<p>I recently upgraded a personal app I use for learning new things in Rails. But when I upgraded from
+4.1.4 to 4.1.12 I encountered this familiar error.</p>
+
+<pre><code>Customer.where(auth.slice(:provider, :uid)).first_or_initialize
+ActiveModel::ForbiddenAttributesError: ActiveModel::ForbiddenAttributesError
+from /Users/greg/.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/activemodel-4.1.12/lib/active_model/forbidden_attributes_protection.rb:21:in `sanitize_for_mass_assignment`
+</code></pre>
+
+<p>Now I remember. It&rsquo;s one of those mass assignments where you have to specify the &lsquo;permitted&rsquo; values before you can continue. In Rails 4, it&rsquo;s good practice
+to whitelist the attributes you receive in the controller and it goes something like this:</p>
+
+<pre><code>def user_params
+  params.require(:user).permit(:username, :email, :password)
+end
+
+# somewhere in the controller
+Customer.create(user_params)
+</code></pre>
+
+<p>Now, let&rsquo;s use this idiom. It should be easy, right?</p>
+
+<pre><code>&gt; auth.permit(:provider, :uid)
+=&gt; nil
+</code></pre>
+
+<p>Wait, that didn&rsquo;t go as expected. How about just simply composing the hash?</p>
+
+<pre><code>&gt; Customer.where(provider: auth[:provider], uid: auth[:uid]).first_or_initialize
+=&gt; #&lt;Customer:0x007fd9168ffa88&gt;
+</code></pre>
+
+<p>Interesting. #permit returns nil, using plain hash works, and #slice doesn&rsquo;t.</p>
+
+<pre><code>&gt; auth.slice(:provider, :uid).class
+=&gt; OmniAuth::AuthHash &lt; Hashie::Mash
+</code></pre>
+
+<p>It shouldn&rsquo;t matter what auth is as long as it behaves like what the Customer model expects. But what
+does the Customer model expects? Actually, the error message is telling us what it expects. In Rails,
+there is this module for mass assignment protection:</p>
+
+<pre><code># https://github.com/rails/rails/blob/master/activemodel/lib/active_model/forbidden_attributes_protection.rb
+module ActiveModel
+  # Raised when forbidden attributes are used for mass assignment.
+  #
+  #   class Person &lt; ActiveRecord::Base
+  #   end
+  #
+  #   params = ActionController::Parameters.new(name: 'Bob')
+  #   Person.new(params)
+  #   # =&gt; ActiveModel::ForbiddenAttributesError
+  #
+  #   params.permit!
+  #   Person.new(params)
+  #   # =&gt; #&lt;Person id: nil, name: "Bob"&gt;
+  class ForbiddenAttributesError &lt; StandardError
+  end
+
+  module ForbiddenAttributesProtection # :nodoc:
+    protected
+      def sanitize_for_mass_assignment(attributes)
+        if attributes.respond_to?(:permitted?) &amp;&amp; !attributes.permitted?
+          raise ActiveModel::ForbiddenAttributesError
+        else
+          attributes
+        end
+      end
+      alias :sanitize_forbidden_attributes :sanitize_for_mass_assignment
+  end
+end
+</code></pre>
+
+<p>Nothing fancy here. Rails does a simple check whether to allow mass assignment or not.</p>
+
+<pre><code>&gt; auth.slice(:provider, :uid).permitted?
+=&gt; false
+
+&gt; { provider: auth[:provider], uid: auth[:uid] }.permitted?
+NoMethodError: undefined method `permitted?' for {:provider=&gt;"facebook", :uid=&gt;"123"}:Hash
+</code></pre>
+
+<p>OmniAuth::AuthHash does not even allow it. Plain Hash works because it doesn&rsquo;t even respond to #permitted.</p>
+]]></content>
+  </entry>
+  
+</feed>

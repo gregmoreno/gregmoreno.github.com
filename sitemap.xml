@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>http://gregmoreno.ca/blog/2016/02/16/joy-ride-in-rubys-spaceship/</loc>
+<loc>http:///blog/2016/02/16/joy-ride-in-rubys-spaceship/</loc>
 <lastmod>2016-02-16T20:52:04-08:00</lastmod>
 </url>
 <url>
-<loc>http://gregmoreno.ca/blog/2016/02/15/you-cant-handle-the-truth/</loc>
+<loc>http:///blog/2016/02/15/you-cant-handle-the-truth/</loc>
 <lastmod>2016-02-15T16:21:58-08:00</lastmod>
 </url>
 <url>
-<loc>http://gregmoreno.ca/blog/archives/</loc>
+<loc>http:///blog/2015/08/21/rails-permitted/</loc>
+<lastmod>2015-08-21T00:00:00-07:00</lastmod>
 </url>
 <url>
-<loc>http://gregmoreno.ca/archives/</loc>
+<loc>http:///blog/archives/</loc>
 </url>
 <url>
-<loc>http://gregmoreno.ca/blog/</loc>
+<loc>http:///archives/</loc>
 </url>
 <url>
-<loc>http://gregmoreno.ca/</loc>
+<loc>http:///blog/</loc>
+</url>
+<url>
+<loc>http:///</loc>
+</url>
+<url>
+<loc>http:///blog/categories/coding/</loc>
 </url>
 </urlset>
