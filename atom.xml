@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
-  <link href="http://gregmoreno.github.io/atom.xml" rel="self"/>
-  <link href="http://gregmoreno.github.io/"/>
-  <updated>2016-09-09T23:17:27-07:00</updated>
-  <id>http://gregmoreno.github.io/</id>
+  <title><![CDATA[Greg Moreno]]></title>
+  <link href="http://gregmoreno.ca/atom.xml" rel="self"/>
+  <link href="http://gregmoreno.ca/"/>
+  <updated>2016-09-09T23:19:42-07:00</updated>
+  <id>http://gregmoreno.ca/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Greg Moreno]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Joy Ride in Ruby's spaceship]]></title>
-    <link href="http://gregmoreno.github.io/blog/2016/02/16/joy-ride-in-rubys-spaceship/"/>
+    <link href="http://gregmoreno.ca/blog/2016/02/16/joy-ride-in-rubys-spaceship/"/>
     <updated>2016-02-16T20:52:04-08:00</updated>
-    <id>http://gregmoreno.github.io/blog/2016/02/16/joy-ride-in-rubys-spaceship</id>
+    <id>http://gregmoreno.ca/blog/2016/02/16/joy-ride-in-rubys-spaceship</id>
     <content type="html"><![CDATA[<p>Ruby&rsquo;s <code>&lt;=&gt;</code> operator is commonly referred to as the spaceship in the community. You may not have
 played with it directly but I bet you have relied on it a lot of times. Because, every time you use
 sort an array, you are tapping in to the spaceship operator.</p>
@@ -208,9 +208,9 @@ Comparison via &ldquo;&lt;=>&rdquo; and the Comparable Module.</p>
   
   <entry>
     <title type="html"><![CDATA[You can't handle the truth]]></title>
-    <link href="http://gregmoreno.github.io/blog/2016/02/15/you-cant-handle-the-truth/"/>
+    <link href="http://gregmoreno.ca/blog/2016/02/15/you-cant-handle-the-truth/"/>
     <updated>2016-02-15T16:21:58-08:00</updated>
-    <id>http://gregmoreno.github.io/blog/2016/02/15/you-cant-handle-the-truth</id>
+    <id>http://gregmoreno.ca/blog/2016/02/15/you-cant-handle-the-truth</id>
     <content type="html"><![CDATA[<p>Quick question. What’s the output of this code in Ruby?</p>
 
 <pre><code>amount = 0
