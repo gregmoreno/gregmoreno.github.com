@@ -4,7 +4,7 @@
   <title><![CDATA[Greg Moreno]]></title>
   <link href="http://gregmoreno.ca/atom.xml" rel="self"/>
   <link href="http://gregmoreno.ca/"/>
-  <updated>2016-09-09T23:35:21-07:00</updated>
+  <updated>2016-09-09T23:39:02-07:00</updated>
   <id>http://gregmoreno.ca/</id>
   <author>
     <name><![CDATA[Greg Moreno]]></name>
@@ -874,8 +874,7 @@ end
     <id>http://gregmoreno.ca/blog/2014/11/16/to-the-crazy-ones</id>
     <content type="html"><![CDATA[<p>Though I&rsquo;ve seen this video a gazillion times, I still find it fresh and inspiring.</p>
 
-<iframe width="420" height="315" src="http://www.youtube.com/embed/tjgtLSHhTPg" frameborder="0" allowfullscreen></iframe>
-
+<p><a href="http://www.youtube.com/watch?v=tjgtLSHhTPg" title="To The Crazy Ones"><img src="http://img.youtube.com/vi/tjgtLSHhTPg/0.jpg" alt="To The Crazy Ones" /></a></p>
 ]]></content>
   </entry>
   
