@@ -12,4 +12,4 @@ published: true
 
 Though I've seen this video a gazillion times, I still find it fresh and inspiring.
 
-<iframe width="420" height="315" src="http://www.youtube.com/embed/tjgtLSHhTPg" frameborder="0" allowfullscreen></iframe>
+[![To The Crazy Ones](http://img.youtube.com/vi/tjgtLSHhTPg/0.jpg)](http://www.youtube.com/watch?v=tjgtLSHhTPg "To The Crazy Ones")

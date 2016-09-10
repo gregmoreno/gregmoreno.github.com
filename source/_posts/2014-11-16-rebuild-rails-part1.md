@@ -82,6 +82,7 @@ and build our gem from there.
 
 Exit from your rackup process and re-run it because we are not supporting auto-reloading. This time you will see a message from our `Tracks` - the super awesome Rails-like framework.
 
+
 ### Render a default page
 
 We now introduce a very simple root controller and use it to render a default index page. We also modify our route handling
