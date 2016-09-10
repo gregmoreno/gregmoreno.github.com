@@ -2,10 +2,9 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://gregmoreno.github.io
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://gregmoreno.ca
+title: Greg Moreno
+author: Greg Moreno
 simple_search: https://www.google.com/search
 description:
 
@@ -99,3 +98,5 @@ google_analytics_tracking_id:
 
 # Facebook Like
 facebook_like: false
+
+highlight_js_color_theme: solarized_dark
