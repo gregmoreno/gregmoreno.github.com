@@ -57,27 +57,27 @@ When we run the test, you see it failed on `PostsController` which is what
 we expect since we haven't implemented `PostsController` yet. Let's add the
 controller now.
 
-  # app/controllers/posts_controller.rb
-  class PostsController < Tracks::Controller
-    def index
-      "hello from tracks /posts/index"
+    # app/controllers/posts_controller.rb
+    class PostsController < Tracks::Controller
+      def index
+        "hello from tracks /posts/index"
+      end
     end
-  end
 
-  # config/application.rb
-  require "./app/controllers/posts_controller"
+    # config/application.rb
+    require "./app/controllers/posts_controller"
 
-  $ ruby spec/application_spec.rb
-  Run options: --seed 2475
+    $ ruby spec/application_spec.rb
+    Run options: --seed 2475
 
-  # Running:
-  ..
+    # Running:
+    ..
 
-  Finished in 0.019152s, 104.4277 runs/s, 208.8555 assertions/s.
+    Finished in 0.019152s, 104.4277 runs/s, 208.8555 assertions/s.
 
-  2 runs, 4 assertions, 0 failures, 0 errors, 0 skips
+    2 runs, 4 assertions, 0 failures, 0 errors, 0 skips
 
-# Automatic loading
+### Automatic loading
 
 Our tests pass but something's not right. In Rails, there is no need to require
 every controller (or pretty much anything) to make it work. To support this feature in
