@@ -4,7 +4,7 @@
   <title><![CDATA[Category: coding | Greg Moreno]]></title>
   <link href="http://gregmoreno.ca/blog/categories/coding/atom.xml" rel="self"/>
   <link href="http://gregmoreno.ca/"/>
-  <updated>2016-09-09T23:44:21-07:00</updated>
+  <updated>2016-09-19T18:57:49-07:00</updated>
   <id>http://gregmoreno.ca/</id>
   <author>
     <name><![CDATA[Greg Moreno]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Rails #permitted]]></title>
-    <link href="http://gregmoreno.ca/blog/2015/08/21/rails-permitted/"/>
+    <link href="http://gregmoreno.ca/2015/08/21/rails-permitted/"/>
     <updated>2015-08-21T00:00:00-07:00</updated>
-    <id>http://gregmoreno.ca/blog/2015/08/21/rails-permitted</id>
+    <id>http://gregmoreno.ca/2015/08/21/rails-permitted</id>
     <content type="html"><![CDATA[<p>I recently upgraded a personal app I use for learning new things in Rails. But when I upgraded from
 4.1.4 to 4.1.12 I encountered this familiar error.</p>
 
@@ -105,9 +105,9 @@ NoMethodError: undefined method `permitted?' for {:provider=&gt;"facebook", :uid
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 4]]></title>
-    <link href="http://gregmoreno.ca/blog/2014/11/24/rebuild-rails-part4/"/>
+    <link href="http://gregmoreno.ca/2014/11/24/rebuild-rails-part4/"/>
     <updated>2014-11-24T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2014/11/24/rebuild-rails-part4</id>
+    <id>http://gregmoreno.ca/2014/11/24/rebuild-rails-part4</id>
     <content type="html"><![CDATA[<p>Now, it is time to build real pages in our super duper Tracks framework. We will support ERB and to do that
 we need the <a href="https://rubygems.org/gems/erubis">erubis</a> gem.</p>
 
@@ -312,9 +312,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 3]]></title>
-    <link href="http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3/"/>
+    <link href="http://gregmoreno.ca/2014/11/20/rebuild-rails-part3/"/>
     <updated>2014-11-20T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2014/11/20/rebuild-rails-part3</id>
+    <id>http://gregmoreno.ca/2014/11/20/rebuild-rails-part3</id>
     <content type="html"><![CDATA[<p>Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
 by assuming a <code>controller/action</code> path format and only support <code>GET</code> request.</p>
 
@@ -467,9 +467,9 @@ SystemStackError: stack level too deep
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 2]]></title>
-    <link href="http://gregmoreno.ca/blog/2014/11/19/rebuild-rails-part2/"/>
+    <link href="http://gregmoreno.ca/2014/11/19/rebuild-rails-part2/"/>
     <updated>2014-11-19T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2014/11/19/rebuild-rails-part2</id>
+    <id>http://gregmoreno.ca/2014/11/19/rebuild-rails-part2</id>
     <content type="html"><![CDATA[<p>Before we continue with out rebuilding series, we should write some tests first :)</p>
 
 <pre><code># spec/spec_helper.rb
@@ -527,9 +527,9 @@ Finished in 0.015864s, 126.0716 runs/s, 252.1432 assertions/s.
   
   <entry>
     <title type="html"><![CDATA[#ruby Array of hashes quiz]]></title>
-    <link href="http://gregmoreno.ca/blog/2014/11/17/ruby-array-of-hashes-quiz/"/>
+    <link href="http://gregmoreno.ca/2014/11/17/ruby-array-of-hashes-quiz/"/>
     <updated>2014-11-17T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/blog/2014/11/17/ruby-array-of-hashes-quiz</id>
+    <id>http://gregmoreno.ca/2014/11/17/ruby-array-of-hashes-quiz</id>
     <content type="html"><![CDATA[<p>Found this interesting ruby quiz from <a href="http://www.alphasights.com/careers/experienced/positions/new-york/6-ruby-on-rails-developer/apply">AlphaSights</a>.
 Given an array of hashes, collapse into an array of hashes containing one entry per day.
 And you can only reference the <code>:time</code> key and not the rest.</p>

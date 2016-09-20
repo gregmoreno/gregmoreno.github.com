@@ -49,7 +49,7 @@
 		<span class="post-meta">17 Oct 2014</span>
 		<h2 class="post-title">
 			
-			<a href="/blog/2014/10/17/hacking-ansible/">
+			<a href="/2014/10/17/hacking-ansible/">
 			
 				#hacking Ansible</a>
 		</h2>
@@ -161,6 +161,1040 @@ cat ~/uploaded_key.pub &gt;&gt; ~/.ssh/authorized_keys
 <li>I’m torn between using system ruby and chruby. On one hand, I feel like there is no need for chruby because this is a server and no need to switch rubies from time-to-time. On the other hand, why not try it and see how it works.</li>
 </ul>
 
+
+	</section>
+
+    </article>
+
+  
+    <article class="post">
+      
+	
+	<header class="post-header">
+		<span class="post-meta">11 Oct 2012</span>
+		<h2 class="post-title">
+			
+			<a href="/2012/10/11/ruby-method-missing-gotchas/">
+			
+				#ruby Method_missing Gotchas</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<h3>Forgetting &lsquo;super&rsquo; with &lsquo;method_missing&rsquo;</h3>
+
+<p>&lsquo;method_missing&rsquo; is one of Ruby&rsquo;s power that makes frameworks like Rails seem magical. When you call a method in an object (or &ldquo;send a message to the object&rdquo;), the object executes the first method it finds. If the object can&rsquo;t find the method, it complains. This is pretty much what every modern programming language does. Except in Ruby you can guard against a non-existent method call by having the method &lsquo;method_missing&rsquo; in your object. If you are using Rails, this technique enables dynamic record finders like User.find_by_first_name.</p>
+
+<pre><code>require "rspec"
+
+class RadioActive
+  def to_format(format)
+    format
+  end
+
+  def method_missing(name, *args)
+    if name.to_s =~ /^to_(\w+)$/
+      to_format($1)
+    end
+  end
+end
+
+describe RadioActive do
+  it "should respond to to_format" do
+    format = stub
+    subject.to_format(format).should == format
+  end
+
+  it "should respond to to_other_format" do
+    subject.to_other_format.should == "other_format"
+  end
+
+  it "should raise a method missing" do
+    expect do
+      subject.undefined_method
+    end.to raise_error
+  end
+end
+</code></pre>
+
+<p>However, improper use of &lsquo;method_missing&rsquo; can introduce bugs in your code that would be hard to track. To illustrate, our example code above intercepts methods whose name are in the &lsquo;to_name&rsquo; format. It works fine as our tests tell us except when we try to call an undefined method that does not follow the &ldquo;to_name&rdquo; format. The default behavior for undefined method is for the object to raise a NoMethodError exception.</p>
+
+<pre><code>$ rspec method_missing_gotcha-01.rb
+..F
+
+Failures:
+
+  1) RadioActive should raise a method missing
+     Failure/Error: expect do
+       expected Exception but nothing was raised
+     # ./method_missing_gotcha-01.rb:30:in `block (2 levels) in &lt;top (required)&gt;'
+
+Finished in 0.00448 seconds
+3 examples, 1 failure
+
+Failed examples:
+
+rspec ./method_missing_gotcha-01.rb:29 # RadioActive should raise a method missing
+</code></pre>
+
+<p>You can easily catch this bug if you have a test. It would be a different story if you just use your class straight away.</p>
+
+<pre><code>irb(main):001:0&gt; require './method_missing_gotcha-01.rb'
+=&gt; true
+irb(main):002:0&gt; r = RadioActive.new
+=&gt; #&lt;RadioActive:0x007fd232a4d8a8&gt;
+irb(main):003:0&gt; r.to_format('json')
+=&gt; "json"
+irb(main):004:0&gt; r.to_json
+=&gt; "json"
+irb(main):005:0&gt; r.undefined
+=&gt; nil
+</code></pre>
+
+<p>The undefined method just returns nil instead of raising an exception. When we defined our method_missing, we removed the default behavior accidentally. Oops!</p>
+
+<p>Fortunately, the fix is easy. There is no need to raise the &lsquo;NoMethodError&rsquo; in your code. Instead, simply call &lsquo;super&rsquo; if you are not handling the method. Whether you have your own class or inheriting from another, do not forget to call &lsquo;super&rsquo; with your &lsquo;method_missing&rsquo;. And that would make our tests happy :)</p>
+
+<pre><code>--- 1/method_missing_gotcha-01.rb
++++ 2/method_missing_gotcha-02.rb
+@@ -9,6 +9,8 @@ class RadioActive
+   def method_missing(name, *args)
+     if name.to_s =~ /^to_(\w+)$/
+       to_format($1)
++    else
++      super
+     end
+   end
+
+$ rspec method_missing_gotcha-02.rb
+...
+
+Finished in 0.00414 seconds
+3 examples, 0 failures
+</code></pre>
+
+<p>Calling &lsquo;super&rsquo; is not just for &lsquo;missing_method&rsquo;. You also need to do the same for the other hook methods like &lsquo;const_missing&rsquo;, &lsquo;append_features&rsquo;, or &lsquo;method_added&rsquo;.</p>
+
+<h3>Forgetting respond_to?</h3>
+
+<p>When we modified &lsquo;method_missing&rsquo;, we are essentially introducing ghost methods. They exist but you cannot see them. You can call them spirit methods if that suits your beliefs. In our example, we were able to use a method named &lsquo;to_json&rsquo; but if we look at the list of methods defined for RadioActive, we will not see a &lsquo;to_json&rsquo;.</p>
+
+<pre><code>irb(main):002:0&gt; RadioActive.instance_methods(false)
+=&gt; [:to_format, :method_missing]
+irb(main):003:0&gt; r = RadioActive.new
+=&gt; #&lt;RadioActive:0x007f88b2a151c0&gt;
+irb(main):004:0&gt; r.respond_to?(:to_format)
+=&gt; true
+irb(main):005:0&gt; r.respond_to?(:to_json)
+=&gt; false
+</code></pre>
+
+<p>Before we introduce a fix, let us first write a test that shows this bug. It&rsquo;s TDD time baby!</p>
+
+<pre><code>@@ -32,4 +34,8 @@ describe RadioActive do
+     end.to raise_error
+   end
+
++  it "should respond_to? to_other format" do
++    subject.respond_to?(:to_other_format).should == true
++  end
++
+ end
+
+...F
+
+Failures:
+
+  1) RadioActive should respond_to? to_other format
+     Failure/Error: subject.respond_to?(:to_other_format).should == true
+       expected: true
+            got: false (using ==)
+     # ./method_missing_gotcha-02.rb:38:in `block (2 levels) in &lt;top (required)&gt;'
+
+Finished in 0.00444 seconds
+4 examples, 1 failure
+
+Failed examples:
+
+rspec ./method_missing_gotcha-02.rb:37 # RadioActive should respond_to? to_other format
+</code></pre>
+
+<p>The fix is every time you modify &lsquo;method_missing&rsquo;, you also need to update &lsquo;respond_to?&rsquo;. And don&rsquo;t forget to include &lsquo;super&rsquo;.</p>
+
+<pre><code>+  def respond_to?(name)
++    !!(name.to_s =~ /^to_/ || super)
++  end
++
+ end
+</code></pre>
+
+<p>And with that, we are all green.</p>
+
+<pre><code>....
+
+Finished in 0.00443 seconds
+4 examples, 0 failures
+</code></pre>
+
+	</section>
+
+    </article>
+
+  
+    <article class="post">
+      
+	
+	<header class="post-header">
+		<span class="post-meta">20 Sep 2012</span>
+		<h2 class="post-title">
+			
+			<a href="/2012/09/20/mining-twitter-data-with-ruby-visualizing-user-mentions/">
+			
+				Mining Twitter Data With Ruby - Visualizing User Mentions</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<p>In my <a href="/2012/09/05/mining-twitter-data-with-ruby-mongodb-and-map-reduce/">previous post on mining twitter data with ruby</a>, we laid our foundation for collecting and analyzing Twitter updates. We stored these updates in <a href="http://www.mongodb.org/">MongoDB</a> and used map-reduce to implement a simple counting of tweets.  In this post, we&rsquo;ll show relationships between users based on mentions inside the tweet.  Fortunately for us, there is no need to parse each tweet just to get a list of users mentioned in the tweet because Twitter provides the &ldquo;entities.mentions&rdquo; field that contains what we need. After we collected the &ldquo;who mentions who&rdquo;, we then construct a directed graph to represent these relationships and convert them to an image so we can actually see it.</p>
+
+<p>First, we start with the aggregation of mentions per user. We will use the same code base as last time. So if this is your first time, I recommend reading my previous related post or you can <a href="https://github.com/gregmoreno/tweetminer">follow the changes in Github</a>. Note to self:  Convert this to an actual gem in the next post.</p>
+
+<pre><code># user_mention.rb
+module UserMention
+
+  def mentions_by_user
+    map_command = %q{
+      function() {
+        var mentions = this.entities.user_mentions,
+            users = [];
+        if (mentions.length &amp;gt; 0) {
+          for(i in mentions) {
+            users.push(mentions[i].id_str)
+          }
+
+          emit(this.user.id_str, { mentions: users });
+        }
+      }
+    }
+
+   reduce_command = %q{
+      function(key, values) {
+        var users = [];
+
+        for(i in values) {
+          users = users.concat(values[i].mentions);
+        }
+
+        return { mentions: users };
+      }
+    }
+
+    options = {:out =&gt; {:inline =&gt; 1}, :raw =&gt; true, :limit =&gt; 50 }
+    statuses.map_reduce(map_command, reduce_command, options)
+ end
+
+end
+</code></pre>
+
+<p>We then again use map-reduce in MongoDB to implement our aggregation. Of course, this sort of thing can be done in Ruby directly but it would be way more efficient if we do it in MongoDB especially if you have a big collection to process.  Note that we limit the number of documents to process because we don&rsquo;t want our graph to look unrecognizable when we display it.</p>
+
+<p>Now that we have our aggregation working, we construct a directed graph of user mentions using the <a href="http://rgl.rubyforge.org/rgl/index.html">rgl library</a>.</p>
+
+<pre><code>require "bundler"
+Bundler.require
+require File.expand_path("../tweetminer", __FILE__)
+settings = YAML.load_file File.expand_path("../mongo.yml", __FILE__)
+miner = TweetMiner.new(settings)
+
+require "rgl/adjacency"
+require "rgl/dot"
+
+graph = RGL::DirectedAdjacencyGraph.new
+miner.mentions_by_user.fetch("results").each do |user|
+  user.fetch("value").fetch("mentions").each do |mention|
+    graph.add_edge(user.fetch("_id"), mention)
+  end
+end
+
+# creates graph.dot, graph.png
+graph.write_to_graphic_file
+</code></pre>
+
+<p>Once you have the user-mentions relationships in a graph, you can do interesting things like who is connected to somebody and the degrees of separation. But for now, we are just interested in showing who mentioned whom.  Our sample program saves the graph to the file graph.dot (<a href="http://en.wikipedia.org/wiki/DOT_language">using the DOT language</a>) and PNG output. But the default PNG output is not laid out nicely. Instead, we will use the &ldquo;<a href="http://www.graphviz.org/">neato</a>&rdquo;  program to convert our graph.dot into a nice looking PNG file.</p>
+
+<pre><code>$ neato -Tpng graph.dot -o mentions.png
+</code></pre>
+
+<p>When you view &ldquo;mentions.png&rdquo;, you should see something similar as the one below. The labels are user IDs and the arrows show the mentioned users.</p>
+
+<p>It would be cool to modify our program to use the users' avatars and also make it interactive. Or, use Twitter&rsquo;s streaming API and create an auto-update graph. I haven&rsquo;t done any research yet but I&rsquo;m sure there is some Javascript library out there that can help us display graph relationships.</p>
+
+	</section>
+
+    </article>
+
+  
+    <article class="post">
+      
+	
+	<header class="post-header">
+		<span class="post-meta">05 Sep 2012</span>
+		<h2 class="post-title">
+			
+			<a href="/2012/09/05/mining-twitter-data-with-ruby-mongodb-and-map-reduce/">
+			
+				Mining Twitter Data With Ruby, MongoDB and Map-Reduce</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<p>When is the best time to tweet? If you care about reaching a lot of users, the best time probably is when your followers are also tweeting. In this exercise,we will try to figure out the day and time users are the most active.  Since there is no way for us to do this for all users in the twitterverse, we will only use the users we follow as our sample.</p>
+
+<h3>What do we need</h3>
+
+<ul>
+<li><a href="http://www.mongodb.org/">mongodb</a></li>
+<li><a href="https://github.com/intridea/tweetstream">tweetstream</a> gem</li>
+<li>awesome_print gem for awesome printing of Ruby objects</li>
+<li>oauth credentials</li>
+</ul>
+
+
+<p>Visit <a href="http://dev.twitter.com"><a href="http://dev.twitter.com">http://dev.twitter.com</a></a> to get your oauth credentials. You just need to login, create an app, and the oauth credentials you need will be there. Copy the oauth settings to the twitter.yml file because that is where our sample code will be looking.</p>
+
+<h3>Collect status updates</h3>
+
+<p>We use the Tweetstream gem to access the <a href="https://dev.twitter.com/docs/streaming-apis">Twitter Streaming APIs</a> which allows our program to receive updates as they occur without the need to regularly poll Twitter.</p>
+
+<pre><code># Collects user tweets and saves them to a mongodb
+require 'bundler'
+require File.dirname(__FILE__) + '/tweetminer'
+
+Bundler.require
+
+# We use the TweetStream gem to access Twitter's Streaming API
+# https://github.com/intridea/tweetstream
+
+TweetStream.configure do |config|
+  settings = YAML.load_file File.dirname(__FILE__) + '/twitter.yml'
+
+  config.consumer_key       = settings['consumer_key']
+  config.consumer_secret    = settings['consumer_secret']
+  config.oauth_token        = settings['oauth_token']
+  config.oauth_token_secret = settings['oauth_token_secret']
+end
+
+settings = YAML.load_file File.dirname(__FILE__) + '/mongo.yml'
+miner = TweetMiner.new(settings)stream = TweetStream::Client.new
+
+stream.on_error do |msg|
+  puts msg
+end
+
+stream.on_timeline_status do |status|
+  miner.insert_status status
+  print '.'
+end
+
+# Do not forget this to trigger the collection of tweets
+stream.userstream
+</code></pre>
+
+<p>The code above handles the collection of status updates. The actual saving to mongodb is handled by the TweetMiner module.</p>
+
+<pre><code># tweetminer.rb
+
+require 'mongo'
+
+class TweetMiner
+  attr_writer :db_connector
+  attr_reader :options
+
+  def initialize(options)
+    @options = options
+  end
+
+  def db
+    @db ||= connect_to_db
+  end
+
+  def insert_status(status)
+    statuses.insert status
+  end
+
+  def statuses
+    @statuses ||= db['statuses']
+  end
+
+  private
+
+  def connect_to_db
+    db_connector.call(options['host'], options['port']).db(options['database'])
+  end
+
+  def db_connector
+    @db_connector ||= Mongo::Connection.public_method :new
+  end
+
+ end
+</code></pre>
+
+<p>We will be modifying our code along the way and if you want follow each step, you can view this <a href="https://github.com/gregmoreno/tweetminer/commit/7d6e7ba3aa620c0a2ecc8495026056e043979510">commit at github</a>.</p>
+
+<p>Depending on how active the people you follow, it may take a while before you get a good sample of tweets. Actually, it would be interesting if you could run the collection for several days.</p>
+
+<p>Assuming we have several days' worth of data, let us proceed with the &ldquo;data mining&rdquo; part. Data mining would not be fun without a mention of map reduce - a strategy for data mining popularized by Google. The key innovation  with map reduce is its ability to take a query over a data set, divide it, and run it in parallel over many nodes. &ldquo;Counting&rdquo;, for example, is a task that fits nicely with the map reduce framework.  Imagine you and your friends are counting the number of people in a football stadium. First, you divide yourselves into 2 groups - group A counts the people in the lower deck while group B does the upper deck. Group A in turn divides the task into north, south, and endzones.  When group A is done counting, they tally all their results. After group B is done, they combine the results with group A for which the total gives us the number of people in the stadium.  Dividing your friends is the &ldquo;map&rdquo; part while the tallying of results is the &ldquo;reduce&rdquo; part.</p>
+
+<h3>Updates per user</h3>
+
+<p>First, let us do a simple task. Let us count the number of updates per user. We introduce a new module &lsquo;StatusCounter&rsquo; which we include in our TweetMiner module. We also add a new program to execute the map reduce task.</p>
+
+<pre><code># counter.rb
+
+require 'bundler'
+Bundler.require
+require File.dirname(__FILE__) + '/tweetminer'
+settings = YAML.load_file File.dirname(__FILE__) + '/mongo.yml'
+
+miner = TweetMiner.new(settings)
+
+results = miner.status_count_by_user
+ap results
+</code></pre>
+
+<p>Map reduce commands in mongodb are written in Javascript. When writing Javascript, just be conscious about string interpolation because Ruby sees it as a bunch of characters and nothing else. For the example below, we use the here document which interprets backslashes. In our later examples, we switch to single quotes when we use regular expressions within our Javascript.</p>
+
+<pre><code>module StatusCounter
+  class UserCounter
+    def map_command
+      &lt;&lt;-EOS
+        function() {
+          emit(this.user.id_str, 1);
+        }
+      EOS
+    end
+
+    def reduce_command
+      &lt;&lt;-EOS
+        function(key, values) {
+          var count = 0;
+          for(i in values) {
+            count += values[i]
+          }
+
+          return count;
+        }
+      EOS
+    end
+  end
+
+  def status_count_by_user
+    counter = UserCounter.new
+    statuses.map_reduce(counter.map_command, counter.reduce_command, default_mr_options)
+  end
+
+  def default_mr_options
+    {:out =&gt; {:inline =&gt; 1}, :raw =&gt; true }
+  end
+ end
+</code></pre>
+
+<p><a href="https://github.com/gregmoreno/tweetminer/commit/ccc3c0b85f9023bdb04986b825b1932a815e35f2">Follow this commit</a> to view the changes from our previous examples.</p>
+
+<p>When you run &lsquo;ruby counter.rb&rsquo;, you should see a similar screenshot as the one below:</p>
+
+<h3>Tweets per Hour</h3>
+
+<p>Now, let&rsquo;s do something a little bit harder than the previous example. This time,  we want to know how many tweets are posted per hour. Every tweet has a <em>created_at</em> field of type String. We then use a regular expression to extract the hour component.</p>
+
+<pre><code>created_at:  'Tue Sep 04 22:04:40 +0000 2012'
+regex:  (\d{2,2}):\d{2,2}:\d{2,2}
+match: 22
+</code></pre>
+
+<p>The only significant change is the addition of a new map command. Note the reduce command did not change from the previous example. <a href="https://github.com/gregmoreno/tweetminer/commit/93d18d206c5ff0960c62d03cd1e2d3333a45e2fc">See the commit</a>.</p>
+
+<pre><code>class HourOfDayCounter
+  def map_command
+    'function() {
+      var re = /(\d{2,2}):\d{2,2}:\d{2,2}/;
+      var hour = re.exec(this.created_at)[1];
+
+      emit(hour, 1);
+    }'
+  end
+
+  def reduce_command
+    &amp;lt;&amp;lt;-EOS
+      function(key, values) {
+        var count = 0;
+
+        for(i in values) {
+          count += values[i]
+        }
+
+        return count;
+      }
+    EOS
+  end
+
+end
+
+def status_count_by_hday
+  counter = HourOfDayCounter.new
+  statuses.map_reduce(counter.map_command, counter.reduce_command, default_mr_options)
+end
+</code></pre>
+
+<p>Now run &lsquo;ruby counter.rb&rsquo; in the console with the new method and the result should be something like the one below.</p>
+
+<p><img src="/assets/20120905-nck36r98kaftn7i3fpfh4i6her.jpg" alt="" /></p>
+
+<h3>Filtering records</h3>
+
+<p>Our examples so far include every status since the beginning of time, which is pretty much useless. What we want is to apply the counting tasks to statuses posted the past 7 days, for example. MongoDB allows you to <a href="http://www.mongodb.org/display/DOCS/MapReduce">pass a query to your map-reduce</a> so you can filter the data where the map-reduce is applied. One problem though: <em>created_at</em> field is a string. To get around this, we introduce a new field <em>created_at_dt</em> which is of type Date.  You can hook it up in the <em>insert_status</em> method but since we already have our data, we instead run a query (using MongoDB console) to update our records. Please note the collection we are using is <em>statuses</em> and the new field is <em>created_at_dt</em>.</p>
+
+<pre><code>var cursor = db.statuses.find({ created_at_dt: { $exists: false } });
+while (cursor.hasNext()) {
+  var doc = cursor.next();
+  db.statuses.update({ _id : doc._id }, { $set : { created_at_dt : new Date(doc.created_at) } } )
+}
+</code></pre>
+
+<p>Now, that we have a Date field, let&rsquo;s modify our method to include a <em>days_ago</em> parameter and a query in our map reduce.</p>
+
+<pre><code>def status_count_by_hday(days_ago = 7)
+  date     = Date.today - days_ago
+  days_ago = Time.utc(date.year, date.month, date.day)
+  query = { 'created_at_dt' =&gt; { '$gte' =&gt; days_ago } }
+
+  options = default_mr_options.merge(:query =&gt; query)
+
+  counter = HourOfDayCounter.new
+  statuses.map_reduce(counter.map_command, counter.reduce_command, options)
+end
+</code></pre>
+
+<p>Since we&rsquo;re now getting the hang of it, why don&rsquo;t we add another complexity. This time, let us count by day of the week and include a breakdown per hour.  Luckily for us,  the day of the week is also included in the created_at field and it is just a matter of extracting it.  Of course, if Twitter decides to change the format, this will break. Let&rsquo;s visit <a href="http://rubular.com">rubular.com</a> and  try our regular expression.</p>
+
+<p><img src="/assets/20120905-xfm9k1gsfrr7n4qnegue86pu1.jpg" alt="" /></p>
+
+<p>Now that we have our regex working, let&rsquo;s include this in our new map command.</p>
+
+<pre><code>def map_command
+  'function() {
+    var re = /(^\w{3,3}).+(\d{2,2}):\d{2,2}:\d{2,2}/;
+    var matches = re.exec(this.created_at);
+
+    var wday = matches[1],
+        hday = matches[2];
+
+    emit(wday, { count: 1, hdayBreakdown: [{ hday: hday, count: 1 }] });
+  }'
+end
+</code></pre>
+
+<p>Note the difference in the <em>emit</em> function from our previous examples. Before, we only emit a single numeric value that is why our reduce command is simple array loop.  This time, our reduce command requires more work.</p>
+
+<pre><code>def reduce_command
+  'function(key, values) {
+     var total = 0,
+         hdays = {},
+         hdayBreakdown;
+
+     for(i in values) {
+       total += values[i].count
+
+       hdayBreakdown = values[i].hdayBreakdown;
+
+       for(j in hdayBreakdown) {
+         hday  = hdayBreakdown[j].hday;
+         count = hdayBreakdown[j].count;
+
+         if( hdays[hday] == undefined ) {
+           hdays[hday] = count;
+         } else {
+           hdays[hday] += count;
+         }
+       }
+     }
+
+     hdayBreakdown = [];
+     for(k in hdays) {
+       hdayBreakdown.push({ hday: k, count: hdays[k] })
+     }
+
+     return { count: total, hdayBreakdown: hdayBreakdown }
+   }'
+end
+</code></pre>
+
+<p>In our previous examples, the <em>values</em> parameter is a simple array of numeric values.  Now, it becomes an an array of properties. On top of that, one of the properties (i.e. hdayBreakdown) is also an array.  If everything works according to plan, you should see something like the image below when you run collect.rb.</p>
+
+<p><img src="/assets/20120905-xpffryewtqchu875ap9fnk4kha.jpg" alt="" /></p>
+
+<p>Did you have fun? I hope so :)</p>
+
+	</section>
+
+    </article>
+
+  
+    <article class="post">
+      
+	
+	<header class="post-header">
+		<span class="post-meta">30 Aug 2012</span>
+		<h2 class="post-title">
+			
+			<a href="/2012/08/30/adding-keyboard-shortcuts-in-web-pages/">
+			
+				Adding Keyboard Shortcuts in Web Pages</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<p>Adding keyboard shortcuts to interact with your web pages seems like a useless feature when the rest of the world is using a mouse. But for a programmer who wants everything to be a few keystrokes away, keyboard shortcuts are very handy.</p>
+
+<p>In this tutorial, we will add a simple scrolling shortcuts to our webpage.  This is just to illustrate what is possible. So please, do not copy-and-paste this to your production code.</p>
+
+<h3>What do we need?</h3>
+
+<ul>
+<li><a href="http://jquery.com/">jquery</a></li>
+<li><a href="http://www.sinatrarb.com/">sinatra</a></li>
+<li><a href="http://coffeescript.org/">coffeescript</a></li>
+</ul>
+
+
+<p>Actually, the only critical piece we need is jQuery and knowledge of Javascript. However, since I am more of a Ruby guy, we will use Sinatra to build the page and CoffeeScript to write the Javascript.</p>
+
+<h3>Build the pages</h3>
+
+<p>The screenshot below (left side) shows how our directory structure would look like. It is pretty much a standard Sinatra structure.</p>
+
+<p>Our HTML page displays 10 entries where each is grouped under a &ldquo;div&rdquo; element with an  &ldquo;.entry&rdquo; class and an  ID.  We also add in some styling in our page to distinguish each entry.</p>
+
+<pre><code>&lt;!DOCTYPE HTML&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta http-equiv="content-type" content="text/html; charset=utf-8" /&gt;
+  &lt;title&gt;Index&lt;/title&gt;
+  &lt;link rel="stylesheet" href="css/style.css"/&gt; &lt;script type="text/javascript" charset="utf-8" src="http://code.jquery.com/jquery-1.7.1.min.js"&gt;&lt;/script&gt;
+  &lt;script type="text/javascript" charset="utf-8" src="js/app.js"&gt;
+  &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;% 1.upto(10) do |i| %&gt;
+    &lt;div id="&lt;%= "entry_#{i}" %&gt;"class="entry"&gt;
+      &lt;%= "Title #{i}" %&gt;
+      &lt;p&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;% end %&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>If everything is setup correctly, you should be able to run the app and see 10 entries.</p>
+
+<pre><code>$ ruby app.rb
+[2012-08-30 13:48:44] INFO WEBrick 1.3.1
+[2012-08-30 13:48:44] INFO ruby 1.9.2 (2012-04-20) [x86_64-darwin12.1.0]
+== Sinatra/1.3.3 has taken the stage on 4567 for development with backup from WEBrick
+[2012-08-30 13:48:44] INFO WEBrick::HTTPServer#start: pid=12415 port=4567
+</code></pre>
+
+<p>Now for the juicy part. When the user presses &lsquo;j&rsquo;, we will scroll to the next entry while &lsquo;k&rsquo; scrolls to the previous. If you are a Vim user, you know why.</p>
+
+<pre><code>current_entry = -1
+
+$(document).keydown (e) -&gt;
+  switch(e.keyCode)
+  when 74 then scroll_to_next() # j
+  when 75 then scroll_to_previous() # k
+
+scroll_to_next = -&gt;
+  #alert "scroll to next"
+  current_entry++
+  scroll_to_entry(current_entry)
+
+scroll_to_previous = -&gt;
+  if current_entry &gt; 0
+    current_entry–
+  scroll_to_entry(current_entry)
+
+scroll_to_entry = (entry) -&gt;
+  # Get the element we need to scroll to
+  id = $(".entry")[entry].id
+  $("html, body").animate { scrollTop: $("##{id}").offset().top }, "slow"
+</code></pre>
+
+<p>That&rsquo;s it! As I&rsquo;ve mentioned before, this is not production ready. For example, the shortcut should not interfere with other actions in your page like when the user is interacting with an input field. This also assumes the current visible entry is the first one.</p>
+
+<p>This post is based from the book <a href="http://webdevelopmentrecipes.com/">Web Development Recipes</a>. If you are looking for quick reference on how to improve your project, I suggest reading the book.</p>
+
+	</section>
+
+    </article>
+
+  
+    <article class="post">
+      
+	
+	<header class="post-header">
+		<span class="post-meta">07 Jun 2012</span>
+		<h2 class="post-title">
+			
+			<a href="/2012/06/07/how-to-create-a-wrapper-gem-for-service-apis-part-1/">
+			
+				How to Create a Wrapper Gem for Service APIs - Part 1</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<p>APIs are getting more and more popular as apps and services move to the cloud. Whenever you need to integrate a popular web service API into your Ruby app, 99.99% of the time there already exists a gem ready for use. That is a testament to how active Ruby developers are in supporting the community.</p>
+
+<p>Even if integrating with the popular APIs is not in your radar, you may still have a need to create an API wrapper for internal use. For example, if your Rails application has grown tremendously (congratulations!), you may eventually need to adopt a services architecture to support upcoming features and make things manageable.</p>
+
+<p>I created the <a href="https://github.com/gregmoreno/openamplify">gem for the Open Amplify API</a> as part of my exploration to data mining. When I first created it, my primary goal was simply to wrap the API. Though I still didn&rsquo;t write spaghetti code, it wasn&rsquo;t a good example of structured code either. Two years later (yep, that&rsquo;s how long I let the code rot), I decided to re-write the gem and adopt the architecture from the Twitter gem. It was a good exercise because not only I updated the gem for the newest API version, I also learned a great deal on how to write a gem.</p>
+
+<h3>Setup the project</h3>
+
+<p>We will create a wrapper for the fictitious Awesome API and thus call our gem &lsquo;awesome&rsquo;. To get things started, let&rsquo;s use bundler to set up our initial code.</p>
+
+<pre><code>$&gt; bundle gem awesome
+create awesome/Gemfile
+create awesome/Rakefile
+create awesome/LICENSE
+create awesome/README.md
+create awesome/.gitignore
+create awesome/awesome.gemspec
+create awesome/lib/awesome.rb
+create awesome/lib/awesome/version.rb
+Initializating git repo in /Users/greg/dev/code/awesome
+</code></pre>
+
+<p>This is the standard directory structure and naming convention of Ruby gems. The files Gemfile, Rakefile, and .gitignore are not necessary but they would be very useful while developing your gem.</p>
+
+<h3>Gem dependencies</h3>
+
+<p>All gem dependencies should go into awesome.gemspec and not in Gemfile. Inside your Gemfile, the line &lsquo;gemspec&rsquo; takes care of identifying the gems you needed in your local.</p>
+
+<pre><code>$&gt; more Gemfile
+source 'https://rubygems.org'
+
+# Specify your gem's dependencies in awesome.gemspec
+gemspec
+</code></pre>
+
+<h3>Versioning</h3>
+
+<p>You specify the version of your gem inside lib/awesome/version.rb</p>
+
+<pre><code>$&gt; more lib/awesome/version.rb
+module Awesome
+  VERSION = "0.0.1"
+end
+</code></pre>
+
+<p>You may be wondering how is this used by the gem. Take a peek at awesome.gemspec and you&rsquo;ll see that Awesome::VERSION is used by the .gemspec file.</p>
+
+<pre><code>$&gt; more awesome.gemspec
+require File.expand_path('../lib/awesome/version', __FILE__)
+
+Gem::Specification.new do |gem|
+gem.authors = ["Greg Moreno"]
+gem.email = ["greg.moreno@gmail.com"]
+gem.description = %q{TODO: Write a gem description}
+gem.summary = %q{TODO: Write a gem summary}
+gem.homepage = ""
+
+gem.files = `git ls-files`.split($\)
+gem.executables = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
+gem.test_files = gem.files.grep(%r{^(test|spec|features)/})
+gem.name = "awesome"
+gem.require_paths = ["lib"]
+gem.version = Awesome::VERSION
+end
+</code></pre>
+
+<h3>Additional modules and classes</h3>
+
+<p>You can write all your code in the file lib/awesome.rb and it would still work. However, in the spirit of making code maintainable, it is highly recommended that you put your classes and modules under the directory lib/awesome just like what we did with lib/awesome/version.rb</p>
+
+<h3>Testing the gem</h3>
+
+<p>We will use minitest but you can always use any test framework you prefer. For our test setup, we need to do the ff:</p>
+
+<ul>
+<li>Setup our test directory manually since bundler didn&rsquo;t do this for us.</li>
+<li>Create a rake task to run our tests.</li>
+<li>Specify gem dependencies in our common test helper file.</li>
+</ul>
+
+
+<p>And the steps and code below.</p>
+
+<pre><code>$&gt; mkdir test
+$&gt; touch test/helper.rb
+$&gt; mkdir test/awesome
+$&gt; touch test/awesome/awesome_test.rb
+
+# Rakefile
+require 'bundler/gem_tasks'
+
+require 'rake/testtask'
+Rake::TestTask.new do |test|
+  test.libs &lt;&lt; 'lib' &lt;&lt; 'test'
+  test.ruby_opts &lt;&lt; "-rubygems"
+  test.pattern = 'test/**/*_test.rb'
+  test.verbose = true
+end
+
+# test/helper.rb
+require 'awesome'
+require 'minitest/spec'
+require 'minitest/autorun'
+</code></pre>
+
+<p>Now that we have our testing in place, let&rsquo;s write a simple test and see if everything works.</p>
+
+<pre><code># test/awesome/awesome_test.rb
+require 'helper'
+
+describe Awesome do
+  it 'should have a version' do
+    Awesome::VERSION.wont_be_nil
+  end
+end
+
+# Then, let's run the test
+$&gt; rake test
+(in /Users/greg/dev/code/awesome)
+/Users/greg/.rbenv/versions/1.9.2-p290/bin/ruby -I"lib:lib:test" -rubygems "/Users/greg/.rbenv/versions/1.9.2-p290/lib/ruby/1.9.1/rake/rake_test_loader.rb" "test/awesome/awesome_test.rb"
+Loaded suite /Users/greg/.rbenv/versions/1.9.2-p290/lib/ruby/1.9.1/rake/rake_test_loader
+Started
+.
+Finished in 0.000695 seconds.
+
+1 tests, 1 assertions, 0 failures, 0 errors, 0 skips
+
+Test run options: --seed 55984
+</code></pre>
+
+<p>Perfect! Now, let&rsquo;s start working on the juicy parts of our gem.</p>
+
+<h3>Configuration</h3>
+
+<p>Every webservice API would definitely require a per-user configuration and your gem should be able to support that. For example in the Twitter gem, some methods require authentication and you setup the default configuration with this:</p>
+
+<pre><code>Twitter.configure do |config|
+  config.consumer_key = YOUR_CONSUMER_KEY
+  config.consumer_secret = YOUR_CONSUMER_SECRET
+  config.oauth_token = YOUR_OAUTH_TOKEN
+  config.oauth_token_secret = YOUR_OAUTH_TOKEN_SECRET
+end
+</code></pre>
+
+<p>Every API has different options but if you are wrapping a webservice, the options often fall into two categories - connections and functional options. For example,  connection-related options include the endpoint, user agent, and authentication keys while functional options include request format (e.g. json), number of pages to return and other parameters required by specific API functions. In some APIs, the  api key is passed as a parameter to GET calls so while it may be connection-related, it is better to group it with parameter options so you can easily encode all parameters in a single call.Our Awesome API is simple and will not deal with OAuth like the Twitter gem does. For the configuration, we should be able to do this:</p>
+
+<pre><code>Awesome.api_key = 'YOUR_API_KEY'
+Awesome.format = :json
+# Other options are: user_agent, method
+</code></pre>
+
+<p>Now, let&rsquo;s write some tests. Of course, these should fail at first :)</p>
+
+<pre><code># test/awesome/configuration_test.rbrequire 'helper'
+
+describe 'configuration' do
+  describe '.api_key' do
+    it 'should return default key' do
+      Awesome.api_key.must_equal Awesome::Configuration::DEFAULT_API_KEY
+    end
+  end
+
+  describe '.format' do
+    it 'should return default format' do
+      Awesome.format.must_equal Awesome::Configuration::DEFAULT_FORMAT
+    end
+  end
+
+  describe '.user_agent' do
+    it 'should return default user agent' do
+      Awesome.user_agent.must_equal Awesome::Configuration::DEFAULT_USER_AGENT
+    end
+  end
+
+  describe '.method' do
+    it 'should return default http method' do
+      Awesome.method.must_equal Awesome::Configuration::DEFAULT_METHOD
+    end
+  end
+end
+</code></pre>
+
+<p>As I mentioned before, the best way to write your gem (or any program for that matter) is to cleary separate the functionalities into modules and classes. In our case, we will put all configuration defaults inside a module (i.e. lib/awesome/configuration.rb). We also want to provide class methods for the module Awesome which we can easily do using Ruby&rsquo;s &lsquo;extend&rsquo;.</p>
+
+<pre><code># lib/awesome/configuration.rb
+
+module Awesome
+  module Configuration
+    VALID_CONNECTION_KEYS = [:endpoint, :user_agent, :method].freeze
+    VALID_OPTIONS_KEYS = [:api_key, :format].freeze
+    VALID_CONFIG_KEYS = VALID_CONNECTION_KEYS + VALID_OPTIONS_KEYS
+
+    DEFAULT_ENDPOINT = 'http://awesome.dev/api'
+    DEFAULT_METHOD = :get
+    DEFAULT_USER_AGENT = "Awesome API Ruby Gem #{Awesome::VERSION}".freeze
+
+    DEFAULT_API_KEY = nil
+    DEFAULT_FORMAT = :json
+
+    # Build accessor methods for every config options so we can do this, for example:
+    # Awesome.format = :xml
+    attr_accessor *VALID_CONFIG_KEYS
+
+    # Make sure we have the default values set when we get 'extended'
+    def self.extended(base)
+      base.reset
+    end
+
+    def reset
+      self.endpoint = DEFAULT_ENDPOINT
+      self.method = DEFAULT_METHOD
+      self.user_agent = DEFAULT_USER_AGENT
+
+      self.api_key = DEFAULT_API_KEY
+      self.format = DEFAULT_FORMAT
+    end
+
+  end # Configuration
+end
+
+# lib/awesome.rb
+require 'awesome/version'
+require 'awesome/configuration'
+
+module Awesome
+  extend Configuration
+end
+
+$&gt; rake test
+(in /Users/greg/dev/code/awesome)
+/Users/greg/.rbenv/versions/1.9.2-p290/bin/ruby -I"lib:lib:test" -rubygems "/Users/greg/.rbenv/versions/1.9.2-p290/lib/ruby/1.9.1/rake/rake_test_loader.rb" "test/awesome/awesome_test.rb" "test/awesome/configuration_test.rb"
+Loaded suite /Users/greg/.rbenv/versions/1.9.2-p290/lib/ruby/1.9.1/rake/rake_test_loader
+Started
+.....
+Finished in 0.001600 seconds.
+
+5 tests, 5 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
+
+<p>Our gem will not be awesome if we don&rsquo;t support a &lsquo;configure&rsquo; block like what the Twitter gem does. We want to setup the configuration like this:</p>
+
+<pre><code>Awesome.configure do |config|
+  config.api_key = 'YOUR_API_KEY'
+  config.method = :post
+  config.format = :json
+end
+</code></pre>
+
+<p>Fortunately, it&rsquo;s an easy fix. We just need to add a &lsquo;configure&rsquo; method to the Configuration module. We also update our tests to make sure this new method works.</p>
+
+<pre><code># lib/awesome/configuration.rb
+def configure
+  yield self
+end
+
+# test/awesome/configuration_test.rb
+after do
+  Awesome.reset
+end
+
+describe '.configure' do
+  Awesome::Configuration::VALID_CONFIG_KEYS.each do |key|
+    it "should set the #{key}" do
+      Awesome.configure do |config|
+        config.send("#{key}=", key)
+        Awesome.send(key).must_equal key
+      end
+    end
+  end
+end
+</code></pre>
+
+<p>Before we move on, let&rsquo;s take a second look at our configuration tests. We have tests for checking default values and setting-up new ones.  What if we added a new configuration key for our gem? The &lsquo;configure&rsquo; tests will be able to handle the new key but we still have to add another test for checking the default value. And we don&rsquo;t want to right another test code, right?  More importantly, we don&rsquo;t want our tests to yield false positives. If we fail to add the &lsquo;default value&rsquo; check, our tests will still pass even though  we forgot to set a default value.Let us remove all our default value tests and replace it with code that relies on VALID_CONFIG_KEYS instead.</p>
+
+<pre><code># test/awesome/configuration_test.rb
+Awesome::Configuration::VALID_CONFIG_KEYS.each do |key|
+  describe ".#{key}" do
+    it 'should return the default value' do
+      Awesome.send(key).must_equal Awesome::Configuration.const_get("DEFAULT_#{key.upcase}")
+    end
+  end
+end
+
+$&gt; rake test
+(in /Users/greg/dev/code/awesome)
+/Users/greg/.rbenv/versions/1.9.2-p290/bin/ruby -I"lib:lib:test" -rubygems "/Users/greg/.rbenv/versions/1.9.2-p290/lib/ruby/1.9.1/rake/rake_test_loader.rb" "test/awesome/awesome_test.rb" "test/awesome/configuration_test.rb"
+Loaded suite /Users/greg/.rbenv/versions/1.9.2-p290/lib/ruby/1.9.1/rake/rake_test_loader
+Started
+...........
+Finished in 0.002935 seconds.
+
+11 tests, 11 assertions, 0 failures, 0 errors, 0 skips
+
+Test run options: --seed 21540
+</code></pre>
+
+<h3>Configuring clients</h3>
+
+<p>Our end goal is to wrap API calls that fits nicely into our application and the common approach to do that is to wrap the API calls under a &lsquo;Client&rsquo; class. Depending on the size of the API you want to support, the Client class maybe delegating the method calls to other classes and modules but from the point of view your program, the action happens inside the Client class. There are two ways to configure the Client class:</p>
+
+<ul>
+<li>It inherits the configuration values defined in the Awesome module;</li>
+<li><p>It overrides the configuration values per client</p>
+
+<p>  # Use the values defined in the Awesome module
+  client = Awesome::Client.new
+  client.make_me_awesome(&lsquo;gregmoreno&rsquo;)</p>
+
+<p>  client_xml = Awesome::Client.new :format => :xml
+  client_json = Awesome::Client.new :format => :json</p></li>
+</ul>
+
+
+<p>We are not going to show our tests in here but if you are interested, you can view the <a href="https://github.com/gregmoreno/awesome/blob/master/test/awesome/client_test.rb">test code from the github</a> repository. Instead, we show the code that handles the two scenarios for client configuration.</p>
+
+<pre><code># lib/awesome/client.rb
+
+module Awesome
+  class Client
+
+    # Define the same set of accessors as the Awesome module
+    attr_accessor *Configuration::VALID_CONFIG_KEYS
+
+    def initialize(options={})
+      # Merge the config values from the module and those passed
+      # to the client.
+      merged_options = Awesome.options.merge(options)
+
+      # Copy the merged values to this client and ignore those
+      # not part of our configuration
+      Configuration::VALID_CONFIG_KEYS.each do |key|
+        send("#{key}=", merged_options[key])
+      end
+    end
+
+  end # Client
+end
+</code></pre>
+
+<p>We also need to update our Awesome module. First, we need to require the new file  awesome/client.rb so it will be loaded when we require the gem.  Second, we need to implement a method that returns all the configuration values inside the Awesome module. Since this is still about configuration, our new method should go inside the Configuration module.</p>
+
+<pre><code># lib/awesome/configuration.rb
+def options
+  Hash[ * VALID_CONFIG_KEYS.map { |key| [key, send(key)] }.flatten ]
+end
+</code></pre>
+
+<p>We&rsquo;re finally done with the configuration part of our gem. I know it&rsquo;s a lot of work for a simple task but we managed to put a good structure in our code. Plus, we learned how to make our tests less brittle, and use Ruby&rsquo;s awesome power to make our code better.   In our next installment, we&rsquo;ll discuss requests and error handling.</p>
 
 	</section>
 

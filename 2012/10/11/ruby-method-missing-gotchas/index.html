@@ -1,0 +1,250 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>#ruby method_missing gotchas | Greg Moreno</title>
+
+	<meta name="author" content="Greg Moreno">
+	
+	<meta name="description" content="Greg Moreno 11 Oct 2012 #ruby Method_missing Gotchas Forgetting &lsquo;super&rsquo; with &lsquo;method_missing&rsquo; &lsquo;method_missing&rsquo; &hellip;">
+
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link href="/atom.xml" rel="alternate" title="Greg Moreno" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400" />
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css" />
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body class="post-template">
+  <main class="content" role="main"><article class="post">
+  
+	<header class="post-header">
+		<a id="blog-logo" href="/">Greg Moreno</a>
+	</header>
+	<span class="post-meta">11 Oct 2012</span>
+	<h1 class="post-title">#ruby Method_missing Gotchas</h1>
+
+	<section class="post-content">
+		<h3>Forgetting &lsquo;super&rsquo; with &lsquo;method_missing&rsquo;</h3>
+
+<p>&lsquo;method_missing&rsquo; is one of Ruby&rsquo;s power that makes frameworks like Rails seem magical. When you call a method in an object (or &ldquo;send a message to the object&rdquo;), the object executes the first method it finds. If the object can&rsquo;t find the method, it complains. This is pretty much what every modern programming language does. Except in Ruby you can guard against a non-existent method call by having the method &lsquo;method_missing&rsquo; in your object. If you are using Rails, this technique enables dynamic record finders like User.find_by_first_name.</p>
+
+<pre><code>require "rspec"
+
+class RadioActive
+  def to_format(format)
+    format
+  end
+
+  def method_missing(name, *args)
+    if name.to_s =~ /^to_(\w+)$/
+      to_format($1)
+    end
+  end
+end
+
+describe RadioActive do
+  it "should respond to to_format" do
+    format = stub
+    subject.to_format(format).should == format
+  end
+
+  it "should respond to to_other_format" do
+    subject.to_other_format.should == "other_format"
+  end
+
+  it "should raise a method missing" do
+    expect do
+      subject.undefined_method
+    end.to raise_error
+  end
+end
+</code></pre>
+
+<p>However, improper use of &lsquo;method_missing&rsquo; can introduce bugs in your code that would be hard to track. To illustrate, our example code above intercepts methods whose name are in the &lsquo;to_name&rsquo; format. It works fine as our tests tell us except when we try to call an undefined method that does not follow the &ldquo;to_name&rdquo; format. The default behavior for undefined method is for the object to raise a NoMethodError exception.</p>
+
+<pre><code>$ rspec method_missing_gotcha-01.rb
+..F
+
+Failures:
+
+  1) RadioActive should raise a method missing
+     Failure/Error: expect do
+       expected Exception but nothing was raised
+     # ./method_missing_gotcha-01.rb:30:in `block (2 levels) in &lt;top (required)&gt;'
+
+Finished in 0.00448 seconds
+3 examples, 1 failure
+
+Failed examples:
+
+rspec ./method_missing_gotcha-01.rb:29 # RadioActive should raise a method missing
+</code></pre>
+
+<p>You can easily catch this bug if you have a test. It would be a different story if you just use your class straight away.</p>
+
+<pre><code>irb(main):001:0&gt; require './method_missing_gotcha-01.rb'
+=&gt; true
+irb(main):002:0&gt; r = RadioActive.new
+=&gt; #&lt;RadioActive:0x007fd232a4d8a8&gt;
+irb(main):003:0&gt; r.to_format('json')
+=&gt; "json"
+irb(main):004:0&gt; r.to_json
+=&gt; "json"
+irb(main):005:0&gt; r.undefined
+=&gt; nil
+</code></pre>
+
+<p>The undefined method just returns nil instead of raising an exception. When we defined our method_missing, we removed the default behavior accidentally. Oops!</p>
+
+<p>Fortunately, the fix is easy. There is no need to raise the &lsquo;NoMethodError&rsquo; in your code. Instead, simply call &lsquo;super&rsquo; if you are not handling the method. Whether you have your own class or inheriting from another, do not forget to call &lsquo;super&rsquo; with your &lsquo;method_missing&rsquo;. And that would make our tests happy :)</p>
+
+<pre><code>--- 1/method_missing_gotcha-01.rb
++++ 2/method_missing_gotcha-02.rb
+@@ -9,6 +9,8 @@ class RadioActive
+   def method_missing(name, *args)
+     if name.to_s =~ /^to_(\w+)$/
+       to_format($1)
++    else
++      super
+     end
+   end
+
+$ rspec method_missing_gotcha-02.rb
+...
+
+Finished in 0.00414 seconds
+3 examples, 0 failures
+</code></pre>
+
+<p>Calling &lsquo;super&rsquo; is not just for &lsquo;missing_method&rsquo;. You also need to do the same for the other hook methods like &lsquo;const_missing&rsquo;, &lsquo;append_features&rsquo;, or &lsquo;method_added&rsquo;.</p>
+
+<h3>Forgetting respond_to?</h3>
+
+<p>When we modified &lsquo;method_missing&rsquo;, we are essentially introducing ghost methods. They exist but you cannot see them. You can call them spirit methods if that suits your beliefs. In our example, we were able to use a method named &lsquo;to_json&rsquo; but if we look at the list of methods defined for RadioActive, we will not see a &lsquo;to_json&rsquo;.</p>
+
+<pre><code>irb(main):002:0&gt; RadioActive.instance_methods(false)
+=&gt; [:to_format, :method_missing]
+irb(main):003:0&gt; r = RadioActive.new
+=&gt; #&lt;RadioActive:0x007f88b2a151c0&gt;
+irb(main):004:0&gt; r.respond_to?(:to_format)
+=&gt; true
+irb(main):005:0&gt; r.respond_to?(:to_json)
+=&gt; false
+</code></pre>
+
+<p>Before we introduce a fix, let us first write a test that shows this bug. It&rsquo;s TDD time baby!</p>
+
+<pre><code>@@ -32,4 +34,8 @@ describe RadioActive do
+     end.to raise_error
+   end
+
++  it "should respond_to? to_other format" do
++    subject.respond_to?(:to_other_format).should == true
++  end
++
+ end
+
+...F
+
+Failures:
+
+  1) RadioActive should respond_to? to_other format
+     Failure/Error: subject.respond_to?(:to_other_format).should == true
+       expected: true
+            got: false (using ==)
+     # ./method_missing_gotcha-02.rb:38:in `block (2 levels) in &lt;top (required)&gt;'
+
+Finished in 0.00444 seconds
+4 examples, 1 failure
+
+Failed examples:
+
+rspec ./method_missing_gotcha-02.rb:37 # RadioActive should respond_to? to_other format
+</code></pre>
+
+<p>The fix is every time you modify &lsquo;method_missing&rsquo;, you also need to update &lsquo;respond_to?&rsquo;. And don&rsquo;t forget to include &lsquo;super&rsquo;.</p>
+
+<pre><code>+  def respond_to?(name)
++    !!(name.to_s =~ /^to_/ || super)
++  end
++
+ end
+</code></pre>
+
+<p>And with that, we are all green.</p>
+
+<pre><code>....
+
+Finished in 0.00443 seconds
+4 examples, 0 failures
+</code></pre>
+
+	</section>
+
+  <footer class="post-footer">
+  <section class="author">
+    <h4>Greg Moreno</h4>
+    <p></p>
+  </section>
+  <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=#ruby method_missing gotchas&amp;url=http://gregmoreno.ca/2012/10/11/ruby-method-missing-gotchas/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+      <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/2012/10/11/ruby-method-missing-gotchas/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/2012/10/11/ruby-method-missing-gotchas/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+      <span class="hidden">Google+</span>
+    </a>
+  </section>
+</footer>
+  <hr>
+  
+    <div class="share">
+</div>
+
+  
+  
+</article></main>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
+
+
+<div class="inner">
+
+
+
+
+
+
+
+
+
+<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
+
+<section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
+
+</div>
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+
+
+</body>
+</html>

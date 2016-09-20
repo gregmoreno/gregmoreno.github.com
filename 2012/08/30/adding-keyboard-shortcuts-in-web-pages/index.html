@@ -1,0 +1,174 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>Adding keyboard shortcuts in web pages | Greg Moreno</title>
+
+	<meta name="author" content="Greg Moreno">
+	
+	<meta name="description" content="Greg Moreno 30 Aug 2012 Adding Keyboard Shortcuts in Web Pages Adding keyboard shortcuts to interact with your web pages seems like a useless &hellip;">
+
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link href="/atom.xml" rel="alternate" title="Greg Moreno" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400" />
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css" />
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body class="post-template">
+  <main class="content" role="main"><article class="post">
+  
+	<header class="post-header">
+		<a id="blog-logo" href="/">Greg Moreno</a>
+	</header>
+	<span class="post-meta">30 Aug 2012</span>
+	<h1 class="post-title">Adding Keyboard Shortcuts in Web Pages</h1>
+
+	<section class="post-content">
+		<p>Adding keyboard shortcuts to interact with your web pages seems like a useless feature when the rest of the world is using a mouse. But for a programmer who wants everything to be a few keystrokes away, keyboard shortcuts are very handy.</p>
+
+<p>In this tutorial, we will add a simple scrolling shortcuts to our webpage.  This is just to illustrate what is possible. So please, do not copy-and-paste this to your production code.</p>
+
+<h3>What do we need?</h3>
+
+<ul>
+<li><a href="http://jquery.com/">jquery</a></li>
+<li><a href="http://www.sinatrarb.com/">sinatra</a></li>
+<li><a href="http://coffeescript.org/">coffeescript</a></li>
+</ul>
+
+
+<p>Actually, the only critical piece we need is jQuery and knowledge of Javascript. However, since I am more of a Ruby guy, we will use Sinatra to build the page and CoffeeScript to write the Javascript.</p>
+
+<h3>Build the pages</h3>
+
+<p>The screenshot below (left side) shows how our directory structure would look like. It is pretty much a standard Sinatra structure.</p>
+
+<p>Our HTML page displays 10 entries where each is grouped under a &ldquo;div&rdquo; element with an  &ldquo;.entry&rdquo; class and an  ID.  We also add in some styling in our page to distinguish each entry.</p>
+
+<pre><code>&lt;!DOCTYPE HTML&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta http-equiv="content-type" content="text/html; charset=utf-8" /&gt;
+  &lt;title&gt;Index&lt;/title&gt;
+  &lt;link rel="stylesheet" href="css/style.css"/&gt; &lt;script type="text/javascript" charset="utf-8" src="http://code.jquery.com/jquery-1.7.1.min.js"&gt;&lt;/script&gt;
+  &lt;script type="text/javascript" charset="utf-8" src="js/app.js"&gt;
+  &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;% 1.upto(10) do |i| %&gt;
+    &lt;div id="&lt;%= "entry_#{i}" %&gt;"class="entry"&gt;
+      &lt;%= "Title #{i}" %&gt;
+      &lt;p&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;% end %&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>If everything is setup correctly, you should be able to run the app and see 10 entries.</p>
+
+<pre><code>$ ruby app.rb
+[2012-08-30 13:48:44] INFO WEBrick 1.3.1
+[2012-08-30 13:48:44] INFO ruby 1.9.2 (2012-04-20) [x86_64-darwin12.1.0]
+== Sinatra/1.3.3 has taken the stage on 4567 for development with backup from WEBrick
+[2012-08-30 13:48:44] INFO WEBrick::HTTPServer#start: pid=12415 port=4567
+</code></pre>
+
+<p>Now for the juicy part. When the user presses &lsquo;j&rsquo;, we will scroll to the next entry while &lsquo;k&rsquo; scrolls to the previous. If you are a Vim user, you know why.</p>
+
+<pre><code>current_entry = -1
+
+$(document).keydown (e) -&gt;
+  switch(e.keyCode)
+  when 74 then scroll_to_next() # j
+  when 75 then scroll_to_previous() # k
+
+scroll_to_next = -&gt;
+  #alert "scroll to next"
+  current_entry++
+  scroll_to_entry(current_entry)
+
+scroll_to_previous = -&gt;
+  if current_entry &gt; 0
+    current_entry–
+  scroll_to_entry(current_entry)
+
+scroll_to_entry = (entry) -&gt;
+  # Get the element we need to scroll to
+  id = $(".entry")[entry].id
+  $("html, body").animate { scrollTop: $("##{id}").offset().top }, "slow"
+</code></pre>
+
+<p>That&rsquo;s it! As I&rsquo;ve mentioned before, this is not production ready. For example, the shortcut should not interfere with other actions in your page like when the user is interacting with an input field. This also assumes the current visible entry is the first one.</p>
+
+<p>This post is based from the book <a href="http://webdevelopmentrecipes.com/">Web Development Recipes</a>. If you are looking for quick reference on how to improve your project, I suggest reading the book.</p>
+
+	</section>
+
+  <footer class="post-footer">
+  <section class="author">
+    <h4>Greg Moreno</h4>
+    <p></p>
+  </section>
+  <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=Adding keyboard shortcuts in web pages&amp;url=http://gregmoreno.ca/2012/08/30/adding-keyboard-shortcuts-in-web-pages/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+      <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/2012/08/30/adding-keyboard-shortcuts-in-web-pages/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/2012/08/30/adding-keyboard-shortcuts-in-web-pages/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+      <span class="hidden">Google+</span>
+    </a>
+  </section>
+</footer>
+  <hr>
+  
+    <div class="share">
+</div>
+
+  
+  
+</article></main>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
+
+
+<div class="inner">
+
+
+
+
+
+
+
+
+
+<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
+
+<section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
+
+</div>
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+
+
+</body>
+</html>

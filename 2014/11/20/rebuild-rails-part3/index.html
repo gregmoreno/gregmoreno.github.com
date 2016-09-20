@@ -1,0 +1,244 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>Rebuild Rails Part 3 | Greg Moreno</title>
+
+	<meta name="author" content="Greg Moreno">
+	
+	<meta name="description" content="Greg Moreno 20 Nov 2014 Rebuild Rails Part 3 Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
+by assuming &hellip;">
+
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link href="/atom.xml" rel="alternate" title="Greg Moreno" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400" />
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css" />
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body class="post-template">
+  <main class="content" role="main"><article class="post">
+  
+	<header class="post-header">
+		<a id="blog-logo" href="/">Greg Moreno</a>
+	</header>
+	<span class="post-meta">20 Nov 2014</span>
+	<h1 class="post-title">Rebuild Rails Part 3</h1>
+
+	<section class="post-content">
+		<p>Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
+by assuming a <code>controller/action</code> path format and only support <code>GET</code> request.</p>
+
+<p>We adjust our <code>.call</code> implementation to handle the new path format. We also introduce
+another method <code>#render_controller_action</code> that inspects the <code>path_info</code>
+and instantiates the right controller using Rails <code>NameController</code> convention.</p>
+
+<pre><code># lib/tracks.rb
+def self.call(env)
+  path_info = env["PATH_INFO"]
+  if  path_info == "/"
+    text = Tracks::Controller.render_default_root
+  else
+    text = Tracks::Controller.render_controller_action(env)
+  end
+
+  [200, {"Content-Type" =&gt; "text/html"}, [text] ]
+end
+
+# lib/tracks/controller.rb
+def self.render_controller_action(env)
+  path_info = env["PATH_INFO"]
+  _, controller, action, after = path_info.split("/")
+
+  controller_class_name = controller.capitalize + "Controller"
+  controller_class = Object.const_get(controller_class_name)
+  controller_class.new.send(action)
+end
+
+$ ruby spec/application_spec.rb
+Run options: --seed 55835
+# Running:
+
+.E
+
+Finished in 0.015837s, 126.2865 runs/s, 126.2865 assertions/s.
+
+  1) Error:
+CrazyApp::Application#test_0002_should respond with different path:
+NameError: uninitialized constant PostsController
+    /code/crazy/lib/tracks/controller.rb:13:in `const_get'
+</code></pre>
+
+<p>When we run the test, you see it failed on <code>PostsController</code> which is what
+we expect since we haven&rsquo;t implemented <code>PostsController</code> yet. Let&rsquo;s add the
+controller now.</p>
+
+<pre><code># app/controllers/posts_controller.rb
+class PostsController &lt; Tracks::Controller
+  def index
+    "hello from tracks /posts/index"
+  end
+end
+
+# config/application.rb
+require "./app/controllers/posts_controller"
+
+$ ruby spec/application_spec.rb
+Run options: --seed 2475
+
+# Running:
+..
+
+Finished in 0.019152s, 104.4277 runs/s, 208.8555 assertions/s.
+
+2 runs, 4 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
+
+<h3>Automatic loading</h3>
+
+<p>Our tests pass but something&rsquo;s not right. In Rails, there is no need to require
+every controller (or pretty much anything) to make it work. To support this feature in
+our framework, we need 2 things:</p>
+
+<ul>
+<li>convert PostsController to posts_controller.rb; and</li>
+<li>auto-require &lsquo;posts_controller&rsquo;</li>
+</ul>
+
+
+<p>To tie these 2 together, we tap into <code>Object.const_missing</code> so our framework would
+know if a class has been used but not yet loaded.</p>
+
+<p>We also update the <code>$LOAD_PATH</code> to include <code>app/controllers</code> folder so Ruby knows
+where to look.</p>
+
+<pre><code># lib/tracks.rb
+require File.expand_path("../tracks/helper", __FILE__)
+require File.expand_path("../tracks/object", __FILE__)
+
+# config/application.rb
+require './lib/tracks'
+$LOAD_PATH &lt;&lt; File.expand_path("../../app/controllers", __FILE__)
+
+module CrazyApp
+  class Application &lt; Tracks::Application
+  end
+end
+
+# lib/tracks/helper.rb
+module Tracks
+  module Helper
+    def self.to_underscore(string)
+      string.scan(/[A-Z][a-z]+/).
+      join('_').
+      downcase
+    end
+  end
+end
+
+# lib/tracks/object.rb
+class Object
+  def self.const_missing(c)
+    require Tracks::Helper.to_underscore(c.to_s)
+    const_get(c)
+  end
+end
+</code></pre>
+
+<p>Our implementation of <code>.to_underscore</code> is limited compared to what&rsquo;s supported in Rails.</p>
+
+<pre><code>irb(main):019:0&gt; s = "PostsController"
+=&gt; "PostsController"
+irb(main):020:0&gt; s.scan(/[A-Z][a-z]+/).join('_').downcase
+=&gt; "posts_controller"
+</code></pre>
+
+<p>Also, since we call <code>const_get</code> inside <code>const_missing</code>, you will run into serious
+trouble if your file does not contain the expected class. Try changing the name of the
+class inside <code>app/controllers/posts_controller.rb</code> into something else and you will get this
+error.</p>
+
+<pre><code>$ ruby spec/application_spec.rb
+Run options: --seed 60433
+
+# Running:
+
+.E
+Finished in 0.043152s, 46.3478 runs/s, 46.3478 assertions/s.
+
+  1) Error:
+CrazyApp::Application#test_0002_should respond with different path:
+SystemStackError: stack level too deep
+    /Users/greg/.rbenv/versions/2.0.0-p247/lib/ruby/2.0.0/forwardable.rb:174
+
+2 runs, 2 assertions, 0 failures, 1 errors, 0 skips
+</code></pre>
+
+	</section>
+
+  <footer class="post-footer">
+  <section class="author">
+    <h4>Greg Moreno</h4>
+    <p></p>
+  </section>
+  <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=Rebuild Rails Part 3&amp;url=http://gregmoreno.ca/2014/11/20/rebuild-rails-part3/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+      <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/2014/11/20/rebuild-rails-part3/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/2014/11/20/rebuild-rails-part3/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+      <span class="hidden">Google+</span>
+    </a>
+  </section>
+</footer>
+  <hr>
+  
+    <div class="share">
+</div>
+
+  
+  
+</article></main>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
+
+
+<div class="inner">
+
+
+
+
+
+
+
+
+
+<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
+
+<section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
+
+</div>
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+
+
+</body>
+</html>
