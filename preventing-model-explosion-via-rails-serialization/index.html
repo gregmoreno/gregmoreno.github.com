@@ -1,0 +1,205 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>Preventing model explosion via Rails serialization | Greg Moreno</title>
+
+	<meta name="author" content="Greg Moreno">
+	
+	<meta name="description" content="Greg Moreno &nbsp; Archives 27 Jan 2011 Preventing Model Explosion via Rails Serialization A great thing about ActiveRecord is you can easily add a &hellip;">
+
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link href="/atom.xml" rel="alternate" title="Greg Moreno" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400" />
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css" />
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body class="post-template">
+  <main class="content" role="main"><article class="post">
+  
+	<header class="post-header">
+		<a id="blog-logo" href="/">Greg Moreno</a>
+    &nbsp;
+  <a href="/archives">Archives</a>
+
+	</header>
+	<span class="post-meta">27 Jan 2011</span>
+	<h1 class="post-title">Preventing Model Explosion via Rails Serialization</h1>
+
+	<section class="post-content">
+		<p>A great thing about ActiveRecord is you can easily add a new model to your application and play around with it as you progress. However, this power can easily be overused leading to unnecessary overhead in your code.</p>
+
+<p>Consider the case where you have preferences for each user. For example, a user may opt to show or hide his email address, adjust his timezone, or language. One solution is to simply add new columns to the users table that correspond to each preference type. For example, you can have a ‘show_email’, ‘timezone’, ‘locale’ columns in the ‘users’ table, which can make your table become wide as you add more preferences options. Another option is to use a separate ‘preferences’ table.</p>
+
+<pre><code>class User &lt; ActiveRecord::Base
+  has_many :preferences
+end
+
+class Preferences &lt; ActiveRecord::Base
+  belongs_to :user
+
+  # name  - preference name
+  # value - preference value
+end
+</code></pre>
+
+<p>Note there is no user interface to add or remove ‘preferences’, i.e. the kinds of preferences are fixed. Of course, in the future you may add a new kind of preference but this kind of work is better done outside of the user interface. Since that is the case, there is no need to represent ‘preferences’ as a separate model.</p>
+
+<p>One better alternative is to use Rails serialization to store the different kinds and user-specific values. The code would look like this:</p>
+
+<pre><code>class User &lt; ActiveRecord::Base
+  serialize :preferences, Hash
+end
+
+u = User.new
+u.preferences = {:show_email =&gt; true, :locale =&gt; :en }
+u.save
+
+# somewhere in your view using haml
+- if @user.preferences[:show_email]
+  = @user.email
+</code></pre>
+
+<p>Using ‘serialize’ results in less code, fewer tables, and less overall complexity. However, with serialization you lose the ability to efficiently search the preferences data. The million-dollar question is do you need to query these preferences? Do you need a finder that returns all users who wants to show their email?</p>
+
+<p>One issue I had with ‘serialize’ is that by using it, I expose the implementation details. In the display example above, it is obvious I had it stored as a Hash. I would rather hide this detail and present the preferences attributes as user attributes instead. I also want default values for every user.</p>
+
+<p>For example:</p>
+
+<pre><code>u = User.new  # automatically assigns the default preferences
+u.preferences
+=&gt; {:show_email =&gt; false, :locale =&gt; :en}
+
+u.show_email = true  # I can change it like an attribute via @user.update_attributes(params[:user])
+u.preferences
+=&gt; {:show_email =&gt; true, :locale =&gt; :en}
+</code></pre>
+
+<p>I have created a module to support this. It is not a unique problem so others may have probably released a gem or plugin to do this. (I actually never bothered to search for one.) Nevertheless, it was a good exercise in metaprogramming.</p>
+
+<p>To use my implementation, simply call ‘serializeable’ with the column you want to serialize and the default values.</p>
+
+<pre><code>class User &lt; ActiveRecord::Base
+  serializeable :preferences, :show_email =&gt; true, :locale =&gt; :en
+end
+</code></pre>
+
+<p>Below is the implementation of ‘serializeable’. The convention is to save it under your ‘lib’ folder and include it in your ‘config/application.rb’ if you are using Rails 3.</p>
+
+<pre><code>module AttributeSerializer
+  module ActiveRecordExtensions
+    module ClassMethods
+
+      def serializeable(serialized, serialized_accessors={})  
+        serialize serialized, serialized_accessors.class
+
+        serialized_attr_accessor serialized, serialized_accessors
+        default_serialized_attr serialized,  serialized_accessors
+      end
+
+      # Creates the accessors
+      def serialized_attr_accessor(serialized, accessors)
+        accessors.keys.each do |k|
+          define_method("#{k}") do
+            self[serialized] &amp;&amp; self[serialized][k]
+          end
+
+          define_method("#{k}=") do |value|
+            self[serialized][k] = value
+          end
+        end
+      end
+
+      # Sets the default value of the serialized field
+      def default_serialized_attr(serialized, accessors)
+        method_name =  "set_default_#{serialized}"
+        after_initialize method_name 
+
+        define_method(method_name) do
+          self[serialized] = accessors if self[serialized].nil?
+        end
+      end
+
+    end
+  end
+end
+
+class ActiveRecord::Base
+  extend AttributeSerializer::ActiveRecordExtensions::ClassMethods
+end
+</code></pre>
+
+<p>ActiveRecord is both easy and powerful. It can also lead to misuse and abuse. Even though you are adding just one model, remember that it is not just the model class itself. You are also adding the database migrations, unit tests, factories, finders, and validations that go along with the model. Next time you have a new requirement, see if serialization can do a better job.</p>
+
+<p>Update: Adam Cuppy converted this code into a <a href="https://github.com/DYE/has_serialized">Rails plugin</a> while <a href="https://gist.github.com/842797">Jay added dynamic finder methods</a>. I also moved this into a gem I called <a href="https://github.com/gregmoreno/fancy_serializer">fancy_serializer</a>.</p>
+
+	</section>
+
+
+  <footer class="post-footer">
+  <section class="author">
+    <h4>Greg Moreno</h4>
+    <p></p>
+  </section>
+  <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=Preventing model explosion via Rails serialization&amp;url=http://gregmoreno.ca/preventing-model-explosion-via-rails-serialization/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+      <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/preventing-model-explosion-via-rails-serialization/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/preventing-model-explosion-via-rails-serialization/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+      <span class="hidden">Google+</span>
+    </a>
+  </section>
+</footer>
+  <hr>
+  
+    <div class="share">
+</div>
+
+  
+  
+</article></main>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
+
+
+<div class="inner">
+
+
+
+
+
+
+
+
+
+<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
+
+<section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
+
+</div>
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+
+
+</body>
+</html>

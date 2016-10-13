@@ -4,7 +4,7 @@
   <title><![CDATA[Greg Moreno]]></title>
   <link href="http://gregmoreno.ca/atom.xml" rel="self"/>
   <link href="http://gregmoreno.ca/"/>
-  <updated>2016-10-13T15:48:16-07:00</updated>
+  <updated>2016-10-13T16:10:32-07:00</updated>
   <id>http://gregmoreno.ca/</id>
   <author>
     <name><![CDATA[Greg Moreno]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Joy Ride in Ruby's spaceship]]></title>
-    <link href="http://gregmoreno.ca/2016/02/16/joy-ride-in-rubys-spaceship/"/>
+    <link href="http://gregmoreno.ca/joy-ride-in-rubys-spaceship/"/>
     <updated>2016-02-16T20:52:04-08:00</updated>
-    <id>http://gregmoreno.ca/2016/02/16/joy-ride-in-rubys-spaceship</id>
+    <id>http://gregmoreno.ca/joy-ride-in-rubys-spaceship</id>
     <content type="html"><![CDATA[<p>Ruby&rsquo;s <code>&lt;=&gt;</code> operator is commonly referred to as the spaceship in the community. You may not have
 played with it directly but I bet you have relied on it a lot of times. Because, every time you use
 sort an array, you are tapping in to the spaceship operator.</p>
@@ -208,9 +208,9 @@ Comparison via &ldquo;&lt;=>&rdquo; and the Comparable Module.</p>
   
   <entry>
     <title type="html"><![CDATA[You can't handle the truth]]></title>
-    <link href="http://gregmoreno.ca/2016/02/15/you-cant-handle-the-truth/"/>
+    <link href="http://gregmoreno.ca/you-cant-handle-the-truth/"/>
     <updated>2016-02-15T16:21:58-08:00</updated>
-    <id>http://gregmoreno.ca/2016/02/15/you-cant-handle-the-truth</id>
+    <id>http://gregmoreno.ca/you-cant-handle-the-truth</id>
     <content type="html"><![CDATA[<p>Quick question. What’s the output of this code in Ruby?</p>
 
 <pre><code>amount = 0
@@ -286,9 +286,9 @@ get a copy of <code>Effective Ruby</code> by Peter Jones.</p>
   
   <entry>
     <title type="html"><![CDATA[Rails #permitted]]></title>
-    <link href="http://gregmoreno.ca/2015/08/21/rails-permitted/"/>
+    <link href="http://gregmoreno.ca/rails-permitted/"/>
     <updated>2015-08-21T00:00:00-07:00</updated>
-    <id>http://gregmoreno.ca/2015/08/21/rails-permitted</id>
+    <id>http://gregmoreno.ca/rails-permitted</id>
     <content type="html"><![CDATA[<p>I recently upgraded a personal app I use for learning new things in Rails. But when I upgraded from
 4.1.4 to 4.1.12 I encountered this familiar error.</p>
 
@@ -376,9 +376,9 @@ NoMethodError: undefined method `permitted?' for {:provider=&gt;"facebook", :uid
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 4]]></title>
-    <link href="http://gregmoreno.ca/2014/11/24/rebuild-rails-part4/"/>
+    <link href="http://gregmoreno.ca/rebuild-rails-part4/"/>
     <updated>2014-11-24T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/2014/11/24/rebuild-rails-part4</id>
+    <id>http://gregmoreno.ca/rebuild-rails-part4</id>
     <content type="html"><![CDATA[<p>Now, it is time to build real pages in our super duper Tracks framework. We will support ERB and to do that
 we need the <a href="https://rubygems.org/gems/erubis">erubis</a> gem.</p>
 
@@ -583,9 +583,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 3]]></title>
-    <link href="http://gregmoreno.ca/2014/11/20/rebuild-rails-part3/"/>
+    <link href="http://gregmoreno.ca/rebuild-rails-part3/"/>
     <updated>2014-11-20T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/2014/11/20/rebuild-rails-part3</id>
+    <id>http://gregmoreno.ca/rebuild-rails-part3</id>
     <content type="html"><![CDATA[<p>Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
 by assuming a <code>controller/action</code> path format and only support <code>GET</code> request.</p>
 
@@ -738,9 +738,9 @@ SystemStackError: stack level too deep
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 2]]></title>
-    <link href="http://gregmoreno.ca/2014/11/19/rebuild-rails-part2/"/>
+    <link href="http://gregmoreno.ca/rebuild-rails-part2/"/>
     <updated>2014-11-19T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/2014/11/19/rebuild-rails-part2</id>
+    <id>http://gregmoreno.ca/rebuild-rails-part2</id>
     <content type="html"><![CDATA[<p>Before we continue with out rebuilding series, we should write some tests first :)</p>
 
 <pre><code># spec/spec_helper.rb
@@ -798,9 +798,9 @@ Finished in 0.015864s, 126.0716 runs/s, 252.1432 assertions/s.
   
   <entry>
     <title type="html"><![CDATA[#ruby Array of hashes quiz]]></title>
-    <link href="http://gregmoreno.ca/2014/11/17/ruby-array-of-hashes-quiz/"/>
+    <link href="http://gregmoreno.ca/ruby-array-of-hashes-quiz/"/>
     <updated>2014-11-17T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/2014/11/17/ruby-array-of-hashes-quiz</id>
+    <id>http://gregmoreno.ca/ruby-array-of-hashes-quiz</id>
     <content type="html"><![CDATA[<p>Found this interesting ruby quiz from <a href="http://www.alphasights.com/careers/experienced/positions/new-york/6-ruby-on-rails-developer/apply">AlphaSights</a>.
 Given an array of hashes, collapse into an array of hashes containing one entry per day.
 And you can only reference the <code>:time</code> key and not the rest.</p>
@@ -869,9 +869,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[To the crazy ones]]></title>
-    <link href="http://gregmoreno.ca/2014/11/16/to-the-crazy-ones/"/>
+    <link href="http://gregmoreno.ca/to-the-crazy-ones/"/>
     <updated>2014-11-16T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/2014/11/16/to-the-crazy-ones</id>
+    <id>http://gregmoreno.ca/to-the-crazy-ones</id>
     <content type="html"><![CDATA[<p>Though I&rsquo;ve seen this video a gazillion times, I still find it fresh and inspiring.</p>
 
 <p><a href="http://www.youtube.com/watch?v=tjgtLSHhTPg" title="To The Crazy Ones"><img src="http://img.youtube.com/vi/tjgtLSHhTPg/0.jpg" alt="To The Crazy Ones" /></a></p>
@@ -880,9 +880,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 1]]></title>
-    <link href="http://gregmoreno.ca/2014/11/16/rebuild-rails-part1/"/>
+    <link href="http://gregmoreno.ca/rebuild-rails-part1/"/>
     <updated>2014-11-16T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/2014/11/16/rebuild-rails-part1</id>
+    <id>http://gregmoreno.ca/rebuild-rails-part1</id>
     <content type="html"><![CDATA[<p>I have no plans to build another Rails-clone. Let&rsquo;s leave that work to other smarter people with more time.
 But wouldn&rsquo;t it be fun if we can learn how Rails work under the hood and find out what makes it &ldquo;magical&rdquo;?
 In this post I will only cover what happens when you typed that url until you get an HTML page. We&rsquo;ll simplify further by not using any database
@@ -1001,9 +1001,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[#ruby Counting Vowels]]></title>
-    <link href="http://gregmoreno.ca/2014/11/13/ruby-minimal-code/"/>
+    <link href="http://gregmoreno.ca/ruby-minimal-code/"/>
     <updated>2014-11-13T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/2014/11/13/ruby-minimal-code</id>
+    <id>http://gregmoreno.ca/ruby-minimal-code</id>
     <content type="html"><![CDATA[<p>Just saw a simple exercise in my Facebook feed and I thought I give it a shot. The problem is simple:</p>
 
 <blockquote><p>Write a function that returns the number of vowels in the string.</p></blockquote>
@@ -1078,9 +1078,9 @@ Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
   
   <entry>
     <title type="html"><![CDATA[#hacking  Ansible]]></title>
-    <link href="http://gregmoreno.ca/2014/10/17/hacking-ansible/"/>
+    <link href="http://gregmoreno.ca/hacking-ansible/"/>
     <updated>2014-10-17T21:02:43-07:00</updated>
-    <id>http://gregmoreno.ca/2014/10/17/hacking-ansible</id>
+    <id>http://gregmoreno.ca/hacking-ansible</id>
     <content type="html"><![CDATA[<p>Before you continue, let me congratulate myself. It’s been years since I’ve written a post. Hooray! Also, thank you to <a href="https://github.com/radamanthus/ansible-rails">Rad</a> for guiding me on my Ansible adventure. The ansible code I reference here are <a href="https://github.com/gregmoreno/ansible-rails">available in github</a>.</p>
 
 <p>There are tons of posts about Ansible already so this is more about gotchas I learned along the way.</p>
@@ -1192,9 +1192,9 @@ cat ~/uploaded_key.pub &gt;&gt; ~/.ssh/authorized_keys
   
   <entry>
     <title type="html"><![CDATA[#ruby method_missing gotchas]]></title>
-    <link href="http://gregmoreno.ca/2012/10/11/ruby-method-missing-gotchas/"/>
+    <link href="http://gregmoreno.ca/ruby-method-missing-gotchas/"/>
     <updated>2012-10-11T00:00:00-07:00</updated>
-    <id>http://gregmoreno.ca/2012/10/11/ruby-method-missing-gotchas</id>
+    <id>http://gregmoreno.ca/ruby-method-missing-gotchas</id>
     <content type="html"><![CDATA[<h3>Forgetting &lsquo;super&rsquo; with &lsquo;method_missing&rsquo;</h3>
 
 <p>&lsquo;method_missing&rsquo; is one of Ruby&rsquo;s power that makes frameworks like Rails seem magical. When you call a method in an object (or &ldquo;send a message to the object&rdquo;), the object executes the first method it finds. If the object can&rsquo;t find the method, it complains. This is pretty much what every modern programming language does. Except in Ruby you can guard against a non-existent method call by having the method &lsquo;method_missing&rsquo; in your object. If you are using Rails, this technique enables dynamic record finders like User.find_by_first_name.</p>
@@ -1354,9 +1354,9 @@ Finished in 0.00443 seconds
   
   <entry>
     <title type="html"><![CDATA[Mining Twitter Data with Ruby - Visualizing User Mentions]]></title>
-    <link href="http://gregmoreno.ca/2012/09/20/mining-twitter-data-with-ruby-visualizing-user-mentions/"/>
+    <link href="http://gregmoreno.ca/mining-twitter-data-with-ruby-visualizing-user-mentions/"/>
     <updated>2012-09-20T20:53:45-07:00</updated>
-    <id>http://gregmoreno.ca/2012/09/20/mining-twitter-data-with-ruby-visualizing-user-mentions</id>
+    <id>http://gregmoreno.ca/mining-twitter-data-with-ruby-visualizing-user-mentions</id>
     <content type="html"><![CDATA[<p>In my <a href="http://gregmoreno.ca/2012/09/05/mining-twitter-data-with-ruby-mongodb-and-map-reduce/">previous post on mining twitter data with ruby</a>, we laid our foundation for collecting and analyzing Twitter updates. We stored these updates in <a href="http://www.mongodb.org/">MongoDB</a> and used map-reduce to implement a simple counting of tweets.  In this post, we&rsquo;ll show relationships between users based on mentions inside the tweet.  Fortunately for us, there is no need to parse each tweet just to get a list of users mentioned in the tweet because Twitter provides the &ldquo;entities.mentions&rdquo; field that contains what we need. After we collected the &ldquo;who mentions who&rdquo;, we then construct a directed graph to represent these relationships and convert them to an image so we can actually see it.</p>
 
 <p>First, we start with the aggregation of mentions per user. We will use the same code base as last time. So if this is your first time, I recommend reading my previous related post or you can <a href="https://github.com/gregmoreno/tweetminer">follow the changes in Github</a>. Note to self:  Convert this to an actual gem in the next post.</p>
@@ -1435,9 +1435,9 @@ graph.write_to_graphic_file
   
   <entry>
     <title type="html"><![CDATA[Mining Twitter data with Ruby, MongoDB and Map-Reduce]]></title>
-    <link href="http://gregmoreno.ca/2012/09/05/mining-twitter-data-with-ruby-mongodb-and-map-reduce/"/>
+    <link href="http://gregmoreno.ca/mining-twitter-data-with-ruby-mongodb-and-map-reduce/"/>
     <updated>2012-09-05T19:48:27-07:00</updated>
-    <id>http://gregmoreno.ca/2012/09/05/mining-twitter-data-with-ruby-mongodb-and-map-reduce</id>
+    <id>http://gregmoreno.ca/mining-twitter-data-with-ruby-mongodb-and-map-reduce</id>
     <content type="html"><![CDATA[<p>When is the best time to tweet? If you care about reaching a lot of users, the best time probably is when your followers are also tweeting. In this exercise,we will try to figure out the day and time users are the most active.  Since there is no way for us to do this for all users in the twitterverse, we will only use the users we follow as our sample.</p>
 
 <h3>What do we need</h3>
@@ -1729,9 +1729,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Adding keyboard shortcuts in web pages]]></title>
-    <link href="http://gregmoreno.ca/2012/08/30/adding-keyboard-shortcuts-in-web-pages/"/>
+    <link href="http://gregmoreno.ca/adding-keyboard-shortcuts-in-web-pages/"/>
     <updated>2012-08-30T20:52:53-07:00</updated>
-    <id>http://gregmoreno.ca/2012/08/30/adding-keyboard-shortcuts-in-web-pages</id>
+    <id>http://gregmoreno.ca/adding-keyboard-shortcuts-in-web-pages</id>
     <content type="html"><![CDATA[<p>Adding keyboard shortcuts to interact with your web pages seems like a useless feature when the rest of the world is using a mouse. But for a programmer who wants everything to be a few keystrokes away, keyboard shortcuts are very handy.</p>
 
 <p>In this tutorial, we will add a simple scrolling shortcuts to our webpage.  This is just to illustrate what is possible. So please, do not copy-and-paste this to your production code.</p>
@@ -1815,9 +1815,9 @@ scroll_to_entry = (entry) -&gt;
   
   <entry>
     <title type="html"><![CDATA[How to create a wrapper gem for service APIs - part 1]]></title>
-    <link href="http://gregmoreno.ca/2012/06/07/how-to-create-a-wrapper-gem-for-service-apis-part-1/"/>
+    <link href="http://gregmoreno.ca/how-to-create-a-wrapper-gem-for-service-apis-part-1/"/>
     <updated>2012-06-07T00:41:01-07:00</updated>
-    <id>http://gregmoreno.ca/2012/06/07/how-to-create-a-wrapper-gem-for-service-apis-part-1</id>
+    <id>http://gregmoreno.ca/how-to-create-a-wrapper-gem-for-service-apis-part-1</id>
     <content type="html"><![CDATA[<p>APIs are getting more and more popular as apps and services move to the cloud. Whenever you need to integrate a popular web service API into your Ruby app, 99.99% of the time there already exists a gem ready for use. That is a testament to how active Ruby developers are in supporting the community.</p>
 
 <p>Even if integrating with the popular APIs is not in your radar, you may still have a need to create an API wrapper for internal use. For example, if your Rails application has grown tremendously (congratulations!), you may eventually need to adopt a services architecture to support upcoming features and make things manageable.</p>
@@ -2171,9 +2171,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Create your own Rails 3 engine]]></title>
-    <link href="http://gregmoreno.ca/2012/05/29/create-your-own-rails-3-engine/"/>
+    <link href="http://gregmoreno.ca/create-your-own-rails-3-engine/"/>
     <updated>2012-05-29T22:47:53-07:00</updated>
-    <id>http://gregmoreno.ca/2012/05/29/create-your-own-rails-3-engine</id>
+    <id>http://gregmoreno.ca/create-your-own-rails-3-engine</id>
     <content type="html"><![CDATA[<p>Engine is an interesting feature of Rails. Engines are miniature applications that live inside your application and they have structure that you would normally find in a typical Rails application. If you have used the Devise gem, which itself is an engine, you know the benefits of being able to add functionality to your application with just a few lines of code. Another great benefit of engines is when you or your team are maintaining a number of applications the common functionalities can be extracted into engines.</p>
 
 <p>Engines are already available prior to Rails 3 but it is not a core feature of the framework. As such, engine developers resorted to monkey-patching which, oftentimes, lead to engines breaking when Rails gets updated. In Rails 3.1, engines are now supported by the framework and there is now a clealy defined place where to hook your engines into Rails.</p>
@@ -2423,9 +2423,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Architecture the Lost Years by Robert Martin]]></title>
-    <link href="http://gregmoreno.ca/2012/03/06/architecture-the-lost-years-by-robert-martin/"/>
+    <link href="http://gregmoreno.ca/architecture-the-lost-years-by-robert-martin/"/>
     <updated>2012-03-06T05:14:15-08:00</updated>
-    <id>http://gregmoreno.ca/2012/03/06/architecture-the-lost-years-by-robert-martin</id>
+    <id>http://gregmoreno.ca/architecture-the-lost-years-by-robert-martin</id>
     <content type="html"><![CDATA[<p><a href="http://www.youtube.com/watch?v=WpkDN78P884" title="Architecture the Lost Years by Robert Martin"><img src="http://img.youtube.com/vi/WpkDN78P884/0.jpg" alt="Architecture the Lost Years by Robert Martin" /></a></p>
 
 <p>http://youtu.be/WpkDN78P884</p>
@@ -2435,9 +2435,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[More Ruby tips and tricks]]></title>
-    <link href="http://gregmoreno.ca/2012/03/03/more-ruby-tips-and-tricks/"/>
+    <link href="http://gregmoreno.ca/more-ruby-tips-and-tricks/"/>
     <updated>2012-03-03T01:50:39-08:00</updated>
-    <id>http://gregmoreno.ca/2012/03/03/more-ruby-tips-and-tricks</id>
+    <id>http://gregmoreno.ca/more-ruby-tips-and-tricks</id>
     <content type="html"><![CDATA[<h3>String to number conversion gotcha</h3>
 
 <pre><code>&gt;&gt; Float('3.14159')
@@ -2559,9 +2559,9 @@ http://localhost:3000/items/year/1969/month/7/day/21
   
   <entry>
     <title type="html"><![CDATA[Ruby tips and tricks]]></title>
-    <link href="http://gregmoreno.ca/2012/02/09/24-ruby-language-tips-and-tricks/"/>
+    <link href="http://gregmoreno.ca/24-ruby-language-tips-and-tricks/"/>
     <updated>2012-02-09T01:35:44-08:00</updated>
-    <id>http://gregmoreno.ca/2012/02/09/24-ruby-language-tips-and-tricks</id>
+    <id>http://gregmoreno.ca/24-ruby-language-tips-and-tricks</id>
     <content type="html"><![CDATA[<h3>Generate random numbers within a given range</h3>
 
 <pre><code>irb(main):019:0&gt; rand(10..20)

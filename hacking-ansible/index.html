@@ -1,0 +1,206 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>#hacking  Ansible | Greg Moreno</title>
+
+	<meta name="author" content="Greg Moreno">
+	
+	<meta name="description" content="Greg Moreno &nbsp; Archives 17 Oct 2014 #hacking Ansible Before you continue, let me congratulate myself. It’s been years since I’ve written a post &hellip;">
+
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link href="/atom.xml" rel="alternate" title="Greg Moreno" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400" />
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css" />
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body class="post-template">
+  <main class="content" role="main"><article class="post">
+  
+	<header class="post-header">
+		<a id="blog-logo" href="/">Greg Moreno</a>
+    &nbsp;
+  <a href="/archives">Archives</a>
+
+	</header>
+	<span class="post-meta">17 Oct 2014</span>
+	<h1 class="post-title">#hacking Ansible</h1>
+
+	<section class="post-content">
+		<p>Before you continue, let me congratulate myself. It’s been years since I’ve written a post. Hooray! Also, thank you to <a href="https://github.com/radamanthus/ansible-rails">Rad</a> for guiding me on my Ansible adventure. The ansible code I reference here are <a href="https://github.com/gregmoreno/ansible-rails">available in github</a>.</p>
+
+<p>There are tons of posts about Ansible already so this is more about gotchas I learned along the way.</p>
+
+<h3>Variables</h3>
+
+<p>Just like good coding, you should isolate things that will change. Store variables in vars/defaults.yml for things like initial database password, deployment directory, ruby version, and whatnot. I started out with using snake format but I later learned you can have a hierarchy for your variables as well, for example:</p>
+
+<pre><code>app:
+  name: google.app
+</code></pre>
+
+<p>Inside your tasks, you can reference it with . Of course, nothing prevents you from just simply naming your variable as app_name and use it as</p>
+
+<h3>Hosts and groups</h3>
+
+<p>You can use ansible to work on 1 or more servers at a time. These servers are specified in the hosts file (see hosts in the example). You can also group servers by using [groupname]. In the example below, you can have ansible target qa only (using the —limit option) and it will update the 2 servers you listed under the [qa] group.</p>
+
+<pre><code>[local]
+localhost ansible_python_interpreter=/usr/local/bin/python
+
+[www]
+www.yourapp.com
+
+[staging]
+staging.yourapp.com
+
+[qa]
+qa1.yourapp.com
+qa2.yourapp.com
+</code></pre>
+
+<h3>Use roles</h3>
+
+<p>Roles allow you to separate common tasks into sort of like modules giving you flexibility. Some use roles to group common tasks like ‘db’, ‘web’, etc. For starters like me and if you are playing with combining different software, I used roles to define specific software. I have a role named ‘mysql’, a role ‘nginx-puma’, or a role ‘nginx-passenger’. Over time, you may split the roles into functional distinctions like web, db, etc.</p>
+
+<h3>Creating an EC2 instance</h3>
+
+<p>In my example, just update the variables below (included in vars/defaults.yml) to suit your requirements.</p>
+
+<pre><code>ec2_keypair: yourapp-www
+ec2_instance_type: t1.micro
+ec2_security_group: web-security-group
+ec2_region: us-west-1
+ec2_zone: us-west-1c
+ec2_image: ami-f1fdfeb4 # Ubuntu Server 14.04 LTS (PV) 64-bit
+ec2_instance_count: 1
+</code></pre>
+
+<p>You need your AWS_ACCESS_KEY, AWS_SECRET_KEY, and PEM file to create an instance. Creating the AWS access keys requires access to the IAM (Identity and Access Management).</p>
+
+<p>When you’re ready, run the command:</p>
+
+<pre><code>AWS_ACCESS_KEY="access" AWS_SECRET_KEY="secret" ansible-playbook -i hosts ec2.yml
+</code></pre>
+
+<p>I have set ec2.yml to run against ‘local’ group (specified in the ’hosts’ file) because you don’t have a host yet. The Ansible EC2 module is smart enough to know that you are still creating an instance at this point.</p>
+
+<p>After running the playbook, notice that it creates a new entry in the [launched] group in your hosts file. The new entry points to the EC2 instance you just created. At this point, you now have a server to run the rest of the playbooks.</p>
+
+<h3>Creating the deploy user</h3>
+
+<p>When the instance is created, it would create a new user. In my project where I use Ubuntu, it creates an ‘ubuntu’ user. In other cases, it might only create ‘root’ user. Regardless, your next step is to create a ‘deploy’ user because it is not a good idea to keep using root. You can change the name of the deploy user (see vars/defaults.yml) but I prefer using ‘deploy’ because it is also the default user in capistrano and I’m a Rails guy.</p>
+
+<pre><code>ansible-playbook -i hosts create-user.yml --user root --limit launched --private-key ~/.ssh/yourapp.pem
+</code></pre>
+
+<p>This playbook does several things:</p>
+
+<ul>
+<li>Creates the ‘deploy’ user.</li>
+<li>Adds your ssh key to /home/deploy/.ssh/authorized_keys</li>
+<li>Gives deploy sudo rights.</li>
+<li>Disables ssh and password access for root.</li>
+</ul>
+
+
+<p>Note that I specified in the initial user ‘root’. Depending on the instance you just created it might be ‘ubuntu’ or some other initial user</p>
+
+<h3>Creating an instance in other providers</h3>
+
+<p>In Digital Ocean (and other similar providers), you can create an instance using their admin interface. The initial user is ‘root’ and you can specify a password and/or public key. If you forgot the public key, you must add it before you continue.</p>
+
+<pre><code>scp ~/.ssh/id_rsa.pub root@yourapp.com:~/uploaded_key.pub
+ssh root@staging.app.com
+mkdir -m og-rwx .ssh
+cat ~/uploaded_key.pub &gt;&gt; ~/.ssh/authorized_keys
+</code></pre>
+
+<h3>Bootstrapping</h3>
+
+<p>Now that you have your deploy user, just run the command below, take a coffee, and come back after 30 mins. That’s how awesome ansible is.</p>
+
+<pre><code>ansible-playbook -i hosts bootstrap.yml --limit launched
+</code></pre>
+
+<p>You may need to tweak the roles or update a specific server. For example, you’re testing an upgrade on a staging server. In that case, make sure you specify the corect host group in the —limit parameter</p>
+
+<p>A few more things I learned with this exercise:</p>
+
+<ul>
+<li>I can set the file mode with mkdir.</li>
+<li>Use <code>bash —login</code> to load login profile. When I ssh using ‘deploy@domain‘, my ruby gets loaded correctly. However, when using ansible (which uses ssh), my ruby is not loaded and thus, you will get errors like &lsquo;bundle not found&rsquo;.</li>
+<li>I’m torn between using system ruby and chruby. On one hand, I feel like there is no need for chruby because this is a server and no need to switch rubies from time-to-time. On the other hand, why not try it and see how it works.</li>
+</ul>
+
+
+	</section>
+
+
+  <footer class="post-footer">
+  <section class="author">
+    <h4>Greg Moreno</h4>
+    <p></p>
+  </section>
+  <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=#hacking  Ansible&amp;url=http://gregmoreno.ca/hacking-ansible/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+      <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/hacking-ansible/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/hacking-ansible/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+      <span class="hidden">Google+</span>
+    </a>
+  </section>
+</footer>
+  <hr>
+  
+    <div class="share">
+</div>
+
+  
+  
+</article></main>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
+
+
+<div class="inner">
+
+
+
+
+
+
+
+
+
+<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
+
+<section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
+
+</div>
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+
+
+</body>
+</html>

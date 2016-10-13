@@ -1,0 +1,169 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>#ruby Counting Vowels | Greg Moreno</title>
+
+	<meta name="author" content="Greg Moreno">
+	
+	<meta name="description" content="Greg Moreno &nbsp; Archives 13 Nov 2014 #ruby Counting Vowels Just saw a simple exercise in my Facebook feed and I thought I give it a shot. The &hellip;">
+
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link href="/atom.xml" rel="alternate" title="Greg Moreno" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400" />
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css" />
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body class="post-template">
+  <main class="content" role="main"><article class="post">
+  
+	<header class="post-header">
+		<a id="blog-logo" href="/">Greg Moreno</a>
+    &nbsp;
+  <a href="/archives">Archives</a>
+
+	</header>
+	<span class="post-meta">13 Nov 2014</span>
+	<h1 class="post-title">#ruby Counting Vowels</h1>
+
+	<section class="post-content">
+		<p>Just saw a simple exercise in my Facebook feed and I thought I give it a shot. The problem is simple:</p>
+
+<blockquote><p>Write a function that returns the number of vowels in the string.</p></blockquote>
+
+<p>Here&rsquo;s my ruby solution:</p>
+
+<pre><code>  require 'minitest/autorun'
+
+  def vowel_count(s)
+    vowels = %w[a e i o u]
+    s.to_s.scan(/\w/).select { |i| i if vowels.include?(i.downcase) }.count
+  end
+
+  describe "#vowel_count" do
+    it "should count upcase lowercase" do
+      test = "I wanted to be an astronaut"
+      vowel_count(test).must_equal 10
+    end
+
+    it "should be zero for empty string" do
+      vowel_count("").must_equal 0
+    end
+
+    it "should be zero for nil" do
+      vowel_count(nil).must_equal 0
+    end
+  end
+</code></pre>
+
+<p>Sounds simple, right? But there are subtle things you should watch out for.</p>
+
+<ul>
+<li><em>Upper and lower cases</em> may seem trivial but programmers are often bitten by these when comparing strings.</li>
+<li>An initial solution would be to access each character via [index] and increment a counter for vowels.
+Here is where familiarity with your language&rsquo;s libraries becomes useful.
+While I didn&rsquo;t get the right method initially, I know Ruby&rsquo;s String library offers a way
+to extract regex matches. From then on, it&rsquo;s just a matter of using <code>Enumerable#select</code>
+which is a common Ruby idiom for filtering elements.</li>
+<li>Having tests even for a simple code is a good discipline to have. My initial test only
+covers the functional requirement. When I added the case of nil it quickly showed
+the flaw in my code, which brings me to my next point.</li>
+<li>Produce sensible results as much as possible. While you can argue the requirement
+states a string and not a nil, it is good habit to defend your code in case the caller
+passed an invalid value. Hence, I converted the parameter to a string to ensure the
+rest of the code is working with a string object and it gives a sensible result even
+if the passed parameter is not a string.</li>
+</ul>
+
+
+<h3>Minimalist testing</h3>
+
+<p>If you are working with Rails' for a while, you probably been pampered with Rails seamless
+integration with testing frameworks you&rsquo;ll be forgiven if you think these support
+are only available within Rails.</p>
+
+<p>Ruby comes with <code>minitest/autorun</code> that supports a minimalist testing framework. Just require in your code and you are
+good to go with rspec-style testing right off the bat.</p>
+
+<pre><code>$ ruby vowelcount.rb
+Run options: --seed 47907
+
+# Running:
+
+...
+
+Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
+
+3 runs, 3 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
+
+	</section>
+
+
+  <footer class="post-footer">
+  <section class="author">
+    <h4>Greg Moreno</h4>
+    <p></p>
+  </section>
+  <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=#ruby Counting Vowels&amp;url=http://gregmoreno.ca/ruby-minimal-code/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+      <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/ruby-minimal-code/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/ruby-minimal-code/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+      <span class="hidden">Google+</span>
+    </a>
+  </section>
+</footer>
+  <hr>
+  
+    <div class="share">
+</div>
+
+  
+  
+</article></main>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
+
+
+<div class="inner">
+
+
+
+
+
+
+
+
+
+<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2016 • All rights reserved.</section>
+
+<section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
+
+</div>
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+
+
+</body>
+</html>
