@@ -3,6 +3,8 @@ layout: default
 title: Blog Archives
 ---
 
-{% for post in site.posts reverse %}
-	{% include archive_post.html %}
-{% endfor %}
+<article class="post">
+  {% for post in site.posts reverse %}
+    <h4 class="title"><a href="{{ root_url }}{{ post.url }}">{{post.title}}</a></h4>
+  {% endfor %}
+</article>
