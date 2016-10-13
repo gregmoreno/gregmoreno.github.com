@@ -4,7 +4,7 @@
   <title><![CDATA[Greg Moreno]]></title>
   <link href="http://gregmoreno.ca/atom.xml" rel="self"/>
   <link href="http://gregmoreno.ca/"/>
-  <updated>2016-10-13T14:18:49-07:00</updated>
+  <updated>2016-10-13T15:48:16-07:00</updated>
   <id>http://gregmoreno.ca/</id>
   <author>
     <name><![CDATA[Greg Moreno]]></name>
@@ -2553,6 +2553,121 @@ http://localhost:3000/items/year/1969/month/7/day/21
 
 &gt;&gt; h = Hash[*params[:specs].split('/')]
 =&gt; {"year"=&gt;"1969", "month"=&gt;"7", "day"=&gt;"21"}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby tips and tricks]]></title>
+    <link href="http://gregmoreno.ca/2012/02/09/24-ruby-language-tips-and-tricks/"/>
+    <updated>2012-02-09T01:35:44-08:00</updated>
+    <id>http://gregmoreno.ca/2012/02/09/24-ruby-language-tips-and-tricks</id>
+    <content type="html"><![CDATA[<h3>Generate random numbers within a given range</h3>
+
+<pre><code>irb(main):019:0&gt; rand(10..20)
+=&gt; 12
+irb(main):020:0&gt; rand(10...20) # works with exclusive range
+=&gt; 16
+</code></pre>
+
+<h3>Dump your object using awesome_print</h3>
+
+<pre><code># Install the gem first
+gem install awesome_print
+
+irb(main):001:0&gt; require 'ap'
+=&gt; true
+irb(main):002:0&gt; ap :a =&gt; 1, :b =&gt; 'greg', :c =&gt; [1,2,3]
+{
+    :a =&gt; 1,
+    :b =&gt; "greg",
+    :c =&gt; [
+        [0] 1,
+        [1] 2,
+        [2] 3
+    ]
+}
+=&gt; {:a=&gt;1, :b=&gt;"greg", :c=&gt;[1, 2, 3]}
+</code></pre>
+
+<h3>Concatenating strings</h3>
+
+<pre><code>irb(main):005:0&gt; "abc" + "def"
+=&gt; "abcdef"
+irb(main):006:0&gt; "abc".concat("def")
+=&gt; "abcdef"
+irb(main):007:0&gt; x = "abc" "def"
+=&gt; "abcdef"
+</code></pre>
+
+<h3>Include modules in a single line</h3>
+
+<pre><code>class MyClass
+  include Module1, Module2, Module3
+  # However, the modules are included in reverse order. Confusing eh!
+end
+</code></pre>
+
+<h3>Instance variable interpolation</h3>
+
+<pre><code>irb(main):008:0&gt; @name = "greg"
+=&gt; "greg"
+irb(main):009:0&gt; "my name is #{@name}"
+=&gt; "my name is greg"
+irb(main):010:0&gt; "my name is #@name"
+=&gt; "my name is greg"
+</code></pre>
+
+<p>I still prefer the curly braces.</p>
+
+<h3>Syntax checking</h3>
+
+<pre><code>$ ruby -c facu.rb 
+facu.rb:12: syntax error, unexpected keyword_end, expecting $end
+</code></pre>
+
+<h3>Zipping arrays</h3>
+
+<pre><code>irb(main):027:0&gt; names = %w(fred jess john)
+=&gt; ["fred", "jess", "john"]
+irb(main):028:0&gt; ages = [38, 47,91]
+=&gt; [38, 47, 91]
+irb(main):029:0&gt; locations = %w(spain france usa)
+=&gt; ["spain", "france", "usa"]
+irb(main):030:0&gt; names.zip(ages)
+=&gt; [["fred", 38], ["jess", 47], ["john", 91]]
+irb(main):031:0&gt; names.zip(ages, locations)
+=&gt; [["fred", 38, "spain"], ["jess", 47, "france"], ["john", 91, "usa"]]
+</code></pre>
+
+<h3>Range into arrays</h3>
+
+<pre><code>irb(main):034:0&gt; (10..20).to_a  # what I used to do
+=&gt; [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+irb(main):035:0&gt; [*10..20]
+=&gt; [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+</code></pre>
+
+<h3>Using parameter as default value</h3>
+
+<pre><code>irb(main):047:0&gt; def method(a, b=a); "#{a} #{b}"; end
+=&gt; nil
+irb(main):048:0&gt; method 1
+=&gt; "1 1"
+irb(main):049:0&gt; method 1, 2
+=&gt; "1 2"
+</code></pre>
+
+<h3>Put regex match in a variable</h3>
+
+<pre><code>irb(main):058:0&gt; s = "Greg Moreno"
+=&gt; "Greg Moreno"
+irb(main):059:0&gt; /(?&lt;first&gt;\w+) (?&lt;second&gt;\w+)/ =~ s
+=&gt; 0
+irb(main):060:0&gt; first
+=&gt; "Greg"
+irb(main):061:0&gt; second
+=&gt; "Moreno"
 </code></pre>
 ]]></content>
   </entry>
