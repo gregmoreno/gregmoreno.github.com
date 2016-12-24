@@ -3,7 +3,6 @@
 		{% assign is_first_post = false %}
 	{% endif %}
 	<header class="post-header">
-		<span class="post-meta">{{ post.date | date: "%d %b %Y" }}</span>
 		<h2 class="post-title">
 			{% if post.external-url %}
 			<a href="{{ post.external-url }}">
@@ -16,6 +15,7 @@
 	<section class="post-excerpt">
 		{{ content | excerpt }}
 	</section>
+	<span class="post-meta">{{ post.date | date: "%d %b %Y" }}</span>
 {% else %}
 	<header class="post-header">
 		<a id="blog-logo" href="{{ site.root }}">{{ site.title }}</a>
@@ -23,10 +23,11 @@
   <a href="{{ root_url }}/archives">Archives</a>
 
 	</header>
-	<span class="post-meta">{{ page.date | date: "%d %b %Y" }}</span>
 	<h1 class="post-title">{% if site.titlecase %}{{ page.title | titlecase }}{% else %}{{ page.title }}{% endif %}</h1>
 
 	<section class="post-content">
 		{{ content }}
 	</section>
+
+	<span class="post-meta">{{ page.date | date: "%d %b %Y" }}</span>
 {% endif %}
