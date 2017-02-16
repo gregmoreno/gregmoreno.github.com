@@ -9,7 +9,7 @@
 
 	<meta name="author" content="Greg Moreno">
 	
-	<meta name="description" content="#hacking Ansible Before you continue, let me congratulate myself. It’s been years since I’ve written a post. Hooray! Also, thank you to Rad for &hellip;">
+	<meta name="description" content="#ruby Counting Vowels Just saw a simple exercise in my Facebook feed and I thought I give it a shot. The problem is simple: Write a function that &hellip;">
 
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="MobileOptimized" content="320" />
@@ -47,6 +47,95 @@
       
 	
 		
+	
+	<header class="post-header">
+		<h2 class="post-title">
+			
+			<a href="/ruby-minimal-code/">
+			
+				#ruby Counting Vowels</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<p>Just saw a simple exercise in my Facebook feed and I thought I give it a shot. The problem is simple:</p>
+
+<blockquote><p>Write a function that returns the number of vowels in the string.</p></blockquote>
+
+<p>Here&rsquo;s my ruby solution:</p>
+
+<pre><code>  require 'minitest/autorun'
+
+  def vowel_count(s)
+    vowels = %w[a e i o u]
+    s.to_s.scan(/\w/).select { |i| i if vowels.include?(i.downcase) }.count
+  end
+
+  describe "#vowel_count" do
+    it "should count upcase lowercase" do
+      test = "I wanted to be an astronaut"
+      vowel_count(test).must_equal 10
+    end
+
+    it "should be zero for empty string" do
+      vowel_count("").must_equal 0
+    end
+
+    it "should be zero for nil" do
+      vowel_count(nil).must_equal 0
+    end
+  end
+</code></pre>
+
+<p>Sounds simple, right? But there are subtle things you should watch out for.</p>
+
+<ul>
+<li><em>Upper and lower cases</em> may seem trivial but programmers are often bitten by these when comparing strings.</li>
+<li>An initial solution would be to access each character via [index] and increment a counter for vowels.
+Here is where familiarity with your language&rsquo;s libraries becomes useful.
+While I didn&rsquo;t get the right method initially, I know Ruby&rsquo;s String library offers a way
+to extract regex matches. From then on, it&rsquo;s just a matter of using <code>Enumerable#select</code>
+which is a common Ruby idiom for filtering elements.</li>
+<li>Having tests even for a simple code is a good discipline to have. My initial test only
+covers the functional requirement. When I added the case of nil it quickly showed
+the flaw in my code, which brings me to my next point.</li>
+<li>Produce sensible results as much as possible. While you can argue the requirement
+states a string and not a nil, it is good habit to defend your code in case the caller
+passed an invalid value. Hence, I converted the parameter to a string to ensure the
+rest of the code is working with a string object and it gives a sensible result even
+if the passed parameter is not a string.</li>
+</ul>
+
+
+<h3>Minimalist testing</h3>
+
+<p>If you are working with Rails' for a while, you probably been pampered with Rails seamless
+integration with testing frameworks you&rsquo;ll be forgiven if you think these support
+are only available within Rails.</p>
+
+<p>Ruby comes with <code>minitest/autorun</code> that supports a minimalist testing framework. Just require in your code and you are
+good to go with rspec-style testing right off the bat.</p>
+
+<pre><code>$ ruby vowelcount.rb
+Run options: --seed 47907
+
+# Running:
+
+...
+
+Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
+
+3 runs, 3 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
+
+	</section>
+	<span class="post-meta">13 Nov 2014</span>
+
+
+    </article>
+
+  
+    <article class="post">
+      
 	
 	<header class="post-header">
 		<h2 class="post-title">
@@ -1629,133 +1718,6 @@ http://localhost:3000/items/year/1969/month/7/day/21
 
 	</section>
 	<span class="post-meta">03 Mar 2012</span>
-
-
-    </article>
-
-  
-    <article class="post">
-      
-	
-	<header class="post-header">
-		<h2 class="post-title">
-			
-			<a href="/24-ruby-language-tips-and-tricks/">
-			
-				Ruby Tips and Tricks</a>
-		</h2>
-	</header>
-	<section class="post-excerpt">
-		<h3>Generate random numbers within a given range</h3>
-
-<pre><code>irb(main):019:0&gt; rand(10..20)
-=&gt; 12
-irb(main):020:0&gt; rand(10...20) # works with exclusive range
-=&gt; 16
-</code></pre>
-
-<h3>Dump your object using awesome_print</h3>
-
-<pre><code># Install the gem first
-gem install awesome_print
-
-irb(main):001:0&gt; require 'ap'
-=&gt; true
-irb(main):002:0&gt; ap :a =&gt; 1, :b =&gt; 'greg', :c =&gt; [1,2,3]
-{
-    :a =&gt; 1,
-    :b =&gt; "greg",
-    :c =&gt; [
-        [0] 1,
-        [1] 2,
-        [2] 3
-    ]
-}
-=&gt; {:a=&gt;1, :b=&gt;"greg", :c=&gt;[1, 2, 3]}
-</code></pre>
-
-<h3>Concatenating strings</h3>
-
-<pre><code>irb(main):005:0&gt; "abc" + "def"
-=&gt; "abcdef"
-irb(main):006:0&gt; "abc".concat("def")
-=&gt; "abcdef"
-irb(main):007:0&gt; x = "abc" "def"
-=&gt; "abcdef"
-</code></pre>
-
-<h3>Include modules in a single line</h3>
-
-<pre><code>class MyClass
-  include Module1, Module2, Module3
-  # However, the modules are included in reverse order. Confusing eh!
-end
-</code></pre>
-
-<h3>Instance variable interpolation</h3>
-
-<pre><code>irb(main):008:0&gt; @name = "greg"
-=&gt; "greg"
-irb(main):009:0&gt; "my name is #{@name}"
-=&gt; "my name is greg"
-irb(main):010:0&gt; "my name is #@name"
-=&gt; "my name is greg"
-</code></pre>
-
-<p>I still prefer the curly braces.</p>
-
-<h3>Syntax checking</h3>
-
-<pre><code>$ ruby -c facu.rb 
-facu.rb:12: syntax error, unexpected keyword_end, expecting $end
-</code></pre>
-
-<h3>Zipping arrays</h3>
-
-<pre><code>irb(main):027:0&gt; names = %w(fred jess john)
-=&gt; ["fred", "jess", "john"]
-irb(main):028:0&gt; ages = [38, 47,91]
-=&gt; [38, 47, 91]
-irb(main):029:0&gt; locations = %w(spain france usa)
-=&gt; ["spain", "france", "usa"]
-irb(main):030:0&gt; names.zip(ages)
-=&gt; [["fred", 38], ["jess", 47], ["john", 91]]
-irb(main):031:0&gt; names.zip(ages, locations)
-=&gt; [["fred", 38, "spain"], ["jess", 47, "france"], ["john", 91, "usa"]]
-</code></pre>
-
-<h3>Range into arrays</h3>
-
-<pre><code>irb(main):034:0&gt; (10..20).to_a  # what I used to do
-=&gt; [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-irb(main):035:0&gt; [*10..20]
-=&gt; [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-</code></pre>
-
-<h3>Using parameter as default value</h3>
-
-<pre><code>irb(main):047:0&gt; def method(a, b=a); "#{a} #{b}"; end
-=&gt; nil
-irb(main):048:0&gt; method 1
-=&gt; "1 1"
-irb(main):049:0&gt; method 1, 2
-=&gt; "1 2"
-</code></pre>
-
-<h3>Put regex match in a variable</h3>
-
-<pre><code>irb(main):058:0&gt; s = "Greg Moreno"
-=&gt; "Greg Moreno"
-irb(main):059:0&gt; /(?&lt;first&gt;\w+) (?&lt;second&gt;\w+)/ =~ s
-=&gt; 0
-irb(main):060:0&gt; first
-=&gt; "Greg"
-irb(main):061:0&gt; second
-=&gt; "Moreno"
-</code></pre>
-
-	</section>
-	<span class="post-meta">09 Feb 2012</span>
 
 
     </article>

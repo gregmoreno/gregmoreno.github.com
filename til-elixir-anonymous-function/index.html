@@ -1,0 +1,171 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>#til Elixir's anonymous function | Greg Moreno</title>
+
+	<meta name="author" content="Greg Moreno">
+	
+	<meta name="description" content="Greg Moreno &nbsp; Archives #til Elixir's Anonymous Function fn is a keyword that creates an anonymous function. sum = fn(a,b) -&gt; a+b
+end IO.puts &hellip;">
+
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link href="/atom.xml" rel="alternate" title="Greg Moreno" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400" />
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css" />
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body class="post-template">
+  <main class="content" role="main"><article class="post">
+  
+	<header class="post-header">
+		<a id="blog-logo" href="/">Greg Moreno</a>
+    &nbsp;
+  <a href="/archives">Archives</a>
+
+	</header>
+	<h1 class="post-title">#til Elixir's Anonymous Function</h1>
+
+	<section class="post-content">
+		<p>fn is a keyword that creates an anonymous function.</p>
+
+<pre><code>sum = fn(a,b) -&gt;
+  a+b
+end
+
+IO.puts sum.(1,2)
+</code></pre>
+
+<p>Invoke using . (dot) similar to Ruby&rsquo;s #call.
+Note the dot is not used for named function calls.</p>
+
+<pre><code>fb = fn
+  {0, 0, c} -&gt; "FizzBuzz"
+  {0, b, c} -&gt; "Fizz"
+  {a, 0, c} -&gt; "Buzz"
+  {a, b, c} -&gt; c
+end
+</code></pre>
+
+<p>A single function with multiple implementations
+depending on the arguments passed. Elixir does not have assignments - yes you heard it right.
+Instead, it uses pattern matching then it binds the variable to the value.
+Note each implementation should have the same number of arguments.</p>
+
+<pre><code>IO.puts fb.({0,0,3})
+# FizzBuzz
+IO.puts fb.({0,2,3})
+# Fizz
+IO.puts fb.({1,0,3})
+# Buzz
+IO.puts fb.({1,2,3})
+# 3
+</code></pre>
+
+<p>Since it is just a function, why not define it inside another function.</p>
+
+<pre><code>fizzbuzz = fn(n) -&gt;
+  fb = fn
+    {0, 0, c} -&gt; "FizzBuzz"
+    {0, b, c} -&gt; "Fizz"
+    {a, 0, c} -&gt; "Buzz"
+    {a, b, c} -&gt; c
+  end
+
+  fb.({rem(n,3), rem(n,5), n})
+end
+
+IO.puts fizzbuzz.(10)
+IO.puts fizzbuzz.(11)
+IO.puts fizzbuzz.(12)
+IO.puts fizzbuzz.(13)
+IO.puts fizzbuzz.(14)
+IO.puts fizzbuzz.(15)
+IO.puts fizzbuzz.(16)
+</code></pre>
+
+<p>We now have a baseline <a href="http://wiki.c2.com/?FizzBuzzTest">FizzBuzz</a> solution with no conditional logic.
+Note <code>rem(a,b)</code> is an operator that returns the remainder after dividing a by b. The final solution uses
+the <a href="https://hexdocs.pm/elixir/Enum.html">Enum module</a>.</p>
+
+<pre><code>Enum.each(1..100, fn(n) -&gt; IO.puts fizzbuzz.(n) end)
+</code></pre>
+
+<p>I&rsquo;ve read the <code>|&gt;</code> <a href="https://elixirschool.com/lessons/basics/pipe-operator/">pipe operator</a> before, so why not use it. The pipe operator simply takes the result
+of one expression and passes it as the 1st parameter to the next expression.</p>
+
+<pre><code>(1..100) |&gt; Enum.each(fn(n) -&gt; IO.puts fizzbuzz.(n) end)
+</code></pre>
+
+	</section>
+
+	<span class="post-meta">16 Feb 2017</span>
+
+
+  <footer class="post-footer">
+  <section class="author">
+    <h4>Greg Moreno</h4>
+    <p></p>
+  </section>
+  <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=#til Elixir's anonymous function&amp;url=http://gregmoreno.ca/til-elixir-anonymous-function/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+      <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://gregmoreno.ca/til-elixir-anonymous-function/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://gregmoreno.ca/til-elixir-anonymous-function/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+      <span class="hidden">Google+</span>
+    </a>
+  </section>
+</footer>
+  <hr>
+  
+    <div class="share">
+</div>
+
+  
+  
+</article></main>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http://gregmoreno.ca/atom.xml"><span class="tooltip">Subscribe!</span></a>
+
+
+<div class="inner">
+
+
+
+
+
+
+
+
+
+<section class="copyright">All content copyright <a href="/">Greg Moreno</a> © 2017 • All rights reserved.</section>
+
+<section class="poweredby">Casper theme by <a class="icon-ghost" href="http://tryghost.org">Ghost</a> &amp; Published with <a href="http://octopress.org">Octopress</a></section>
+
+</div>
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+
+
+
+
+</body>
+</html>

@@ -9,8 +9,8 @@
 
 	<meta name="author" content="Greg Moreno">
 	
-	<meta name="description" content="Joy Ride in Ruby's Spaceship Ruby&rsquo;s &lt;=&gt; operator is commonly referred to as the spaceship in the community. You may not have
-played with &hellip;">
+	<meta name="description" content="#til Elixir's Anonymous Function fn is a keyword that creates an anonymous function. sum = fn(a,b) -&gt; a+b
+end IO.puts sum.(1,2) Invoke using . ( &hellip;">
 
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="MobileOptimized" content="320" />
@@ -48,6 +48,95 @@ played with &hellip;">
       
 	
 		
+	
+	<header class="post-header">
+		<h2 class="post-title">
+			
+			<a href="/til-elixir-anonymous-function/">
+			
+				#til Elixir's Anonymous Function</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<p>fn is a keyword that creates an anonymous function.</p>
+
+<pre><code>sum = fn(a,b) -&gt;
+  a+b
+end
+
+IO.puts sum.(1,2)
+</code></pre>
+
+<p>Invoke using . (dot) similar to Ruby&rsquo;s #call.
+Note the dot is not used for named function calls.</p>
+
+<pre><code>fb = fn
+  {0, 0, c} -&gt; "FizzBuzz"
+  {0, b, c} -&gt; "Fizz"
+  {a, 0, c} -&gt; "Buzz"
+  {a, b, c} -&gt; c
+end
+</code></pre>
+
+<p>A single function with multiple implementations
+depending on the arguments passed. Elixir does not have assignments - yes you heard it right.
+Instead, it uses pattern matching then it binds the variable to the value.
+Note each implementation should have the same number of arguments.</p>
+
+<pre><code>IO.puts fb.({0,0,3})
+# FizzBuzz
+IO.puts fb.({0,2,3})
+# Fizz
+IO.puts fb.({1,0,3})
+# Buzz
+IO.puts fb.({1,2,3})
+# 3
+</code></pre>
+
+<p>Since it is just a function, why not define it inside another function.</p>
+
+<pre><code>fizzbuzz = fn(n) -&gt;
+  fb = fn
+    {0, 0, c} -&gt; "FizzBuzz"
+    {0, b, c} -&gt; "Fizz"
+    {a, 0, c} -&gt; "Buzz"
+    {a, b, c} -&gt; c
+  end
+
+  fb.({rem(n,3), rem(n,5), n})
+end
+
+IO.puts fizzbuzz.(10)
+IO.puts fizzbuzz.(11)
+IO.puts fizzbuzz.(12)
+IO.puts fizzbuzz.(13)
+IO.puts fizzbuzz.(14)
+IO.puts fizzbuzz.(15)
+IO.puts fizzbuzz.(16)
+</code></pre>
+
+<p>We now have a baseline <a href="http://wiki.c2.com/?FizzBuzzTest">FizzBuzz</a> solution with no conditional logic.
+Note <code>rem(a,b)</code> is an operator that returns the remainder after dividing a by b. The final solution uses
+the <a href="https://hexdocs.pm/elixir/Enum.html">Enum module</a>.</p>
+
+<pre><code>Enum.each(1..100, fn(n) -&gt; IO.puts fizzbuzz.(n) end)
+</code></pre>
+
+<p>I&rsquo;ve read the <code>|&gt;</code> <a href="https://elixirschool.com/lessons/basics/pipe-operator/">pipe operator</a> before, so why not use it. The pipe operator simply takes the result
+of one expression and passes it as the 1st parameter to the next expression.</p>
+
+<pre><code>(1..100) |&gt; Enum.each(fn(n) -&gt; IO.puts fizzbuzz.(n) end)
+</code></pre>
+
+	</section>
+	<span class="post-meta">16 Feb 2017</span>
+
+
+    </article>
+
+  
+    <article class="post">
+      
 	
 	<header class="post-header">
 		<h2 class="post-title">
@@ -1135,95 +1224,6 @@ end
 
 	</section>
 	<span class="post-meta">16 Nov 2014</span>
-
-
-    </article>
-
-  
-    <article class="post">
-      
-	
-	<header class="post-header">
-		<h2 class="post-title">
-			
-			<a href="/ruby-minimal-code/">
-			
-				#ruby Counting Vowels</a>
-		</h2>
-	</header>
-	<section class="post-excerpt">
-		<p>Just saw a simple exercise in my Facebook feed and I thought I give it a shot. The problem is simple:</p>
-
-<blockquote><p>Write a function that returns the number of vowels in the string.</p></blockquote>
-
-<p>Here&rsquo;s my ruby solution:</p>
-
-<pre><code>  require 'minitest/autorun'
-
-  def vowel_count(s)
-    vowels = %w[a e i o u]
-    s.to_s.scan(/\w/).select { |i| i if vowels.include?(i.downcase) }.count
-  end
-
-  describe "#vowel_count" do
-    it "should count upcase lowercase" do
-      test = "I wanted to be an astronaut"
-      vowel_count(test).must_equal 10
-    end
-
-    it "should be zero for empty string" do
-      vowel_count("").must_equal 0
-    end
-
-    it "should be zero for nil" do
-      vowel_count(nil).must_equal 0
-    end
-  end
-</code></pre>
-
-<p>Sounds simple, right? But there are subtle things you should watch out for.</p>
-
-<ul>
-<li><em>Upper and lower cases</em> may seem trivial but programmers are often bitten by these when comparing strings.</li>
-<li>An initial solution would be to access each character via [index] and increment a counter for vowels.
-Here is where familiarity with your language&rsquo;s libraries becomes useful.
-While I didn&rsquo;t get the right method initially, I know Ruby&rsquo;s String library offers a way
-to extract regex matches. From then on, it&rsquo;s just a matter of using <code>Enumerable#select</code>
-which is a common Ruby idiom for filtering elements.</li>
-<li>Having tests even for a simple code is a good discipline to have. My initial test only
-covers the functional requirement. When I added the case of nil it quickly showed
-the flaw in my code, which brings me to my next point.</li>
-<li>Produce sensible results as much as possible. While you can argue the requirement
-states a string and not a nil, it is good habit to defend your code in case the caller
-passed an invalid value. Hence, I converted the parameter to a string to ensure the
-rest of the code is working with a string object and it gives a sensible result even
-if the passed parameter is not a string.</li>
-</ul>
-
-
-<h3>Minimalist testing</h3>
-
-<p>If you are working with Rails' for a while, you probably been pampered with Rails seamless
-integration with testing frameworks you&rsquo;ll be forgiven if you think these support
-are only available within Rails.</p>
-
-<p>Ruby comes with <code>minitest/autorun</code> that supports a minimalist testing framework. Just require in your code and you are
-good to go with rspec-style testing right off the bat.</p>
-
-<pre><code>$ ruby vowelcount.rb
-Run options: --seed 47907
-
-# Running:
-
-...
-
-Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
-
-3 runs, 3 assertions, 0 failures, 0 errors, 0 skips
-</code></pre>
-
-	</section>
-	<span class="post-meta">13 Nov 2014</span>
 
 
     </article>

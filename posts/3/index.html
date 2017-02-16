@@ -9,7 +9,9 @@
 
 	<meta name="author" content="Greg Moreno">
 	
-	<meta name="description" content="Preventing Model Explosion via Rails Serialization A great thing about ActiveRecord is you can easily add a new model to your application and play &hellip;">
+	<meta name="description" content="Ruby Tips and Tricks Generate random numbers within a given range irb(main):019:0&gt; rand(10..20)
+=&gt; 12
+irb(main):020:0&gt; rand(10...20) # &hellip;">
 
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="MobileOptimized" content="320" />
@@ -47,6 +49,133 @@
       
 	
 		
+	
+	<header class="post-header">
+		<h2 class="post-title">
+			
+			<a href="/24-ruby-language-tips-and-tricks/">
+			
+				Ruby Tips and Tricks</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<h3>Generate random numbers within a given range</h3>
+
+<pre><code>irb(main):019:0&gt; rand(10..20)
+=&gt; 12
+irb(main):020:0&gt; rand(10...20) # works with exclusive range
+=&gt; 16
+</code></pre>
+
+<h3>Dump your object using awesome_print</h3>
+
+<pre><code># Install the gem first
+gem install awesome_print
+
+irb(main):001:0&gt; require 'ap'
+=&gt; true
+irb(main):002:0&gt; ap :a =&gt; 1, :b =&gt; 'greg', :c =&gt; [1,2,3]
+{
+    :a =&gt; 1,
+    :b =&gt; "greg",
+    :c =&gt; [
+        [0] 1,
+        [1] 2,
+        [2] 3
+    ]
+}
+=&gt; {:a=&gt;1, :b=&gt;"greg", :c=&gt;[1, 2, 3]}
+</code></pre>
+
+<h3>Concatenating strings</h3>
+
+<pre><code>irb(main):005:0&gt; "abc" + "def"
+=&gt; "abcdef"
+irb(main):006:0&gt; "abc".concat("def")
+=&gt; "abcdef"
+irb(main):007:0&gt; x = "abc" "def"
+=&gt; "abcdef"
+</code></pre>
+
+<h3>Include modules in a single line</h3>
+
+<pre><code>class MyClass
+  include Module1, Module2, Module3
+  # However, the modules are included in reverse order. Confusing eh!
+end
+</code></pre>
+
+<h3>Instance variable interpolation</h3>
+
+<pre><code>irb(main):008:0&gt; @name = "greg"
+=&gt; "greg"
+irb(main):009:0&gt; "my name is #{@name}"
+=&gt; "my name is greg"
+irb(main):010:0&gt; "my name is #@name"
+=&gt; "my name is greg"
+</code></pre>
+
+<p>I still prefer the curly braces.</p>
+
+<h3>Syntax checking</h3>
+
+<pre><code>$ ruby -c facu.rb 
+facu.rb:12: syntax error, unexpected keyword_end, expecting $end
+</code></pre>
+
+<h3>Zipping arrays</h3>
+
+<pre><code>irb(main):027:0&gt; names = %w(fred jess john)
+=&gt; ["fred", "jess", "john"]
+irb(main):028:0&gt; ages = [38, 47,91]
+=&gt; [38, 47, 91]
+irb(main):029:0&gt; locations = %w(spain france usa)
+=&gt; ["spain", "france", "usa"]
+irb(main):030:0&gt; names.zip(ages)
+=&gt; [["fred", 38], ["jess", 47], ["john", 91]]
+irb(main):031:0&gt; names.zip(ages, locations)
+=&gt; [["fred", 38, "spain"], ["jess", 47, "france"], ["john", 91, "usa"]]
+</code></pre>
+
+<h3>Range into arrays</h3>
+
+<pre><code>irb(main):034:0&gt; (10..20).to_a  # what I used to do
+=&gt; [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+irb(main):035:0&gt; [*10..20]
+=&gt; [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+</code></pre>
+
+<h3>Using parameter as default value</h3>
+
+<pre><code>irb(main):047:0&gt; def method(a, b=a); "#{a} #{b}"; end
+=&gt; nil
+irb(main):048:0&gt; method 1
+=&gt; "1 1"
+irb(main):049:0&gt; method 1, 2
+=&gt; "1 2"
+</code></pre>
+
+<h3>Put regex match in a variable</h3>
+
+<pre><code>irb(main):058:0&gt; s = "Greg Moreno"
+=&gt; "Greg Moreno"
+irb(main):059:0&gt; /(?&lt;first&gt;\w+) (?&lt;second&gt;\w+)/ =~ s
+=&gt; 0
+irb(main):060:0&gt; first
+=&gt; "Greg"
+irb(main):061:0&gt; second
+=&gt; "Moreno"
+</code></pre>
+
+	</section>
+	<span class="post-meta">09 Feb 2012</span>
+
+
+    </article>
+
+  
+    <article class="post">
+      
 	
 	<header class="post-header">
 		<h2 class="post-title">
@@ -473,6 +602,40 @@ Screen.MousePointer = vbNormal
 
 	</section>
 	<span class="post-meta">14 Sep 2007</span>
+
+
+    </article>
+
+  
+    <article class="post">
+      
+	
+	<header class="post-header">
+		<h2 class="post-title">
+			
+			<a href="/beware-of-the-usability-stockholm-syndrome/">
+			
+				Beware of the Usability Stockholm Syndrome</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<p>The only way they to know if an application works well for users is to conduct usability testing. A usability test does not need to be expensive like having a laboratory where cameras are mounted in every angle and viewers are on the other side of a one-way mirror looking at monitors that track the users eye movements and heartbeat.</p>
+<p>A usability test can be as simple as <a href="http://www.microisv.com.ph/blog/usability-in-a-small-company.html">grabbing the next person that passes by the hallway</a>. You don't even need a hundred people; five people is enough.</p>
+<p>We conduct usability tests because we know that someone with a set of fresh eyes will find more problems in the application than someone who has been looking at the user interface everyday for the past 189 days. When we ask people to participate in our usability tests, we expect them to be super-critical of our software. We tell them we're evaluating the software, not the person. It is absolutely OK if they tell us that the "interface sucks" or "I felt dizzy after looking at this page. I think I'm gonna puke."</p>
+<p>But as experienced by <a href="http://blogs.msdn.com/jensenh/archive/2006/03/20/555460.aspx">Jensen Harris</a>, a Microsoft programmer working on the Office software, people tend to become less critical during usability testing as if they are suffering the Stockholm syndrome &mdash; a case where the hostage becomes sympathetic with its captors. Why does it happen?</p>
+<h4>It's human nature</h4>
+<p>If someone invited you over dinner and asked you what do you think of the food you won't say it tastes bad. You will most likely say, "I love it" or "you should start a restaurant business."  It is our human nature not to say bad things of a person especially if we are in her house. Probably after the usability tests, you would tell your friends that the new software Greg is working is a mess, but not infront of him.</p>
+<h4>We think we're computer illiterate</h4>
+<p>When we were kids at school, if we're the only person who got the division wrong, we feel very bad. Can't blame you. The other kids would probably be laughing and by now you think you're stupid. Add the look in your teacher's face as if telling you to pack your things, go home, and sell banana. Growing up, we were conditioned that if you don't get it, it is your fault. Every time we can't figure out how a software works, we tend to blame ourselves, rather than the software, because we think we are "computer illiterate." If only we could adapt to this software, then there wouldn't be any problems.</p>
+<h4>So what can you do?</h4>
+<ul>
+<li>Be friendly. It's difficult to tell the truth if someone would kill you by doing so.</li>
+<li>Reassure the participant that this is not about her, this about the software.</li>
+<li>Be always on the lookout. If the participant appears hesitant to comment, help her speak out like asking questions such as "Do you find the text confusing?"</li>
+</ul>
+
+	</section>
+	<span class="post-meta">05 Dec 2006</span>
 
 
     </article>
