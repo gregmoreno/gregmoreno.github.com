@@ -9,9 +9,9 @@
 
 	<meta name="author" content="Greg Moreno">
 	
-	<meta name="description" content="Ruby Tips and Tricks Generate random numbers within a given range irb(main):019:0&gt; rand(10..20)
-=&gt; 12
-irb(main):020:0&gt; rand(10...20) # &hellip;">
+	<meta name="description" content="More Ruby Tips and Tricks String to number conversion gotcha &gt;&gt; Float('3.14159')
+=&gt; 3.14159 &gt;&gt; '3.14159'.to_f
+=&gt; 3.14159 # However &hellip;">
 
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="MobileOptimized" content="320" />
@@ -49,6 +49,142 @@ irb(main):020:0&gt; rand(10...20) # &hellip;">
       
 	
 		
+	
+	<header class="post-header">
+		<h2 class="post-title">
+			
+			<a href="/more-ruby-tips-and-tricks/">
+			
+				More Ruby Tips and Tricks</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<h3>String to number conversion gotcha</h3>
+
+<pre><code>&gt;&gt; Float('3.14159')
+=&gt; 3.14159 
+&gt;&gt; '3.14159'.to_f
+=&gt; 3.14159 
+
+# However, Float() method will return an exception if given
+# a bad input while to_f() will ignore everything from the 
+# offending character.
+
+&gt;&gt; Float('3.x14159')
+ArgumentError: invalid value for Float(): "3.x14159"
+  from (irb):4:in 'Float'
+  from (irb):4
+
+&gt;&gt; '3.x14159'.to_f
+=&gt; 3.0
+
+
+# Similar case with to_i() and Integer().
+
+&gt;&gt; Integer('19x69')
+ArgumentError: invalid value for Integer(): "19x69"
+  from (irb):15:in 'Integer'
+  from (irb):15
+  from /Users/greg/.rvm/rubies/ruby-1.9.2-p0/bin/irb:17:in '&lt;main&gt;'
+
+&gt;&gt; '19x69'.to_i
+=&gt; 19
+</code></pre>
+
+<h3>Case insensitive regular expression</h3>
+
+<pre><code># Regex is case sensitive by default.
+# Adding 'i' for insensitive match
+puts 'matches' if  /AM/i =~ 'am'
+</code></pre>
+
+<h3>Hash is ordered in 1.9</h3>
+
+<pre><code># new syntax in 1.9
+h = {first: 'a', second: 'b', third: 'c'}
+
+# hashes in 1.9 are ordered
+h.each do |e|
+  pp e
+end
+</code></pre>
+
+<h3>Filter a list using several conditions</h3>
+
+<pre><code>conditions = [
+    proc { |i| i &gt; 5 },
+    proc { |i| (i % 2).zero? },
+    proc { |i| (i % 3).zero? }
+  ]
+
+matches = (1..100).select do |i|
+  conditions.all? { |c| c[i] }
+end
+</code></pre>
+
+<h3>Randomly pick an element from an array</h3>
+
+<pre><code>&gt;&gt; [1,2,3,4,5].sample
+=&gt; 2 
+&gt;&gt; [1,2,3,4,5].sample
+=&gt; 1 
+
+# pick 2 random elements
+&gt;&gt; [1,2,3,4,5].sample(2)
+=&gt; [1, 5]
+</code></pre>
+
+<h3>List methods unique to a class</h3>
+
+<pre><code># List all instance methods that starts with `re` including those inherited by String.
+
+&gt;&gt; String.instance_methods.grep /^re/
+=&gt; [:replace, :reverse, :reverse!, :respond_to?, :respond_to_missing?] 
+
+# List methods unique to String, i.e. not include
+# those defined by its ancestors.
+
+&gt;&gt; String.instance_methods(false).grep /^re/
+=&gt; [:replace, :reverse, :reverse!]
+</code></pre>
+
+<h3>Globbing key-value pairs</h3>
+
+<pre><code>&gt;&gt; h = Hash['a', 1, 'b', 2]
+=&gt; {"a"=&gt;1, "b"=&gt;2}
+
+&gt;&gt; h = Hash[ [ ['a', 1], ['b', 2] ] ] 
+=&gt; {"a"=&gt;1, "b"=&gt;2}
+
+&gt;&gt; h = Hash[ 'a' =&gt; 1, 'b' =&gt; 2 ]
+=&gt; {"a"=&gt;1, "b"=&gt;2}
+
+# The first form is very useful for globbing key-value pairs in Rails’ routes. For example, if you have the following:
+
+# route definition in Rails 3
+match 'items/*specs' =&gt; 'items#specs'
+
+# sample url
+http://localhost:3000/items/year/1969/month/7/day/21
+
+# params[:specs] will be set
+
+&gt;&gt; params[:specs]
+=&gt; "year/1969/month/7/day/21"
+
+&gt;&gt; h = Hash[*params[:specs].split('/')]
+=&gt; {"year"=&gt;"1969", "month"=&gt;"7", "day"=&gt;"21"}
+</code></pre>
+
+	</section>
+	<span class="post-meta">03 Mar 2012</span>
+
+
+    </article>
+
+  
+    <article class="post">
+      
 	
 	<header class="post-header">
 		<h2 class="post-title">

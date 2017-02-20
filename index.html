@@ -9,8 +9,7 @@
 
 	<meta name="author" content="Greg Moreno">
 	
-	<meta name="description" content="#til Elixir's Anonymous Function fn is a keyword that creates an anonymous function. sum = fn(a,b) -&gt; a+b
-end IO.puts sum.(1,2) Invoke using . ( &hellip;">
+	<meta name="description" content="Am I Too Old to Be Senior Developer? Or, aren&rsquo;t you too young to be a Senior developer? I never had the title of Senior Developer until about &hellip;">
 
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="MobileOptimized" content="320" />
@@ -48,6 +47,47 @@ end IO.puts sum.(1,2) Invoke using . ( &hellip;">
       
 	
 		
+	
+	<header class="post-header">
+		<h2 class="post-title">
+			
+			<a href="/am-i-too-old-to-be-a-senior-developer/">
+			
+				Am I Too Old to Be Senior Developer?</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<p>Or, aren&rsquo;t you too young to be a Senior developer?</p>
+
+<p>I never had the title of Senior Developer until about 3 years ago. By that time, I already have 15 years of experience in creating, deploying and fixing software. This is not counting the years I spent freelancing for various tech companies while I was in college. I have worked in startups and big companies, led teams, launched several products on my own and failed, and numerous times I had to learn stuff not related to coding just to get that freaking software out the door. Suddenly, I feel so old and it feels so jurassic now to remember my Visual Basic program running on Windows 95 - ah the good old days!</p>
+
+<p>I imagine these are more than enough to earn a senior title. On the other hand, I’ve worked with developers with a senior title who produced amateurish work. It made me wonder when should companies give the “senior” title to someone. More importantly, when can a developer, call oneself a senior in this field?</p>
+
+<p>In the early stages of a project, the team usually has a number of technical options. A senior developer can articulate the pros and cons of a technical decision - the why and when, not just the how and what. This could be  as simple as avoiding early optimizations, highlighting roadblocks the team will face, or avoiding unnecessary work.</p>
+
+<p>An effective signal to know someone is truly a senior developer (or in that mindset regardless of title) is when the developer looks at context when applying a theory. What problem are we solving? What is important and what is not? When to start and when to stop. How often have you seen over-engineered systems that are flexible in ways that don’t matter and inflexible in ones that do? This is simply because developers want to try the latest cool thing they’ve read.</p>
+
+<p>There is also, looking at the big picture. Not every moment in software development is spent working on change-the-world tasks. It’s quite the contrary. Majority of your time is spent on boring tasks that must be completed to the same quality as any other potentially more interesting tasks. Have you met a developer who planned on resigning if he get to work on a legacy project, regardless if that project generates millions of dollars of revenue? I did. It made me think now, if he was more interested in showing off in his resume rather than adding value to the company.</p>
+
+<p>If my thoughts above would  be considered, does this mean a developer with 3 years of coding experience and brings tremendous value to the team, can now be called a senior developer?  How about someone with 10 years experience but in reality is just experienced the same year 10 times?</p>
+
+<p>Realization. It’s never about time - it’s the maturity.</p>
+
+<p>On the other hand,  how realistically can you gain maturity in a short amount of time? Can you compress 10 years worth of experience into 1?</p>
+
+<p>Success in software development goes beyond technical skills. If you want to learn how to manage a crisis, you have to experience a crisis. If you want to have a high performing team, you have to learn to work together, which takes time. Hey, even when superstar athletes play together they rarely get success in their first two years.</p>
+
+<p>Can we now agree that years of experience is misleading? Worthwhile experiences simply do not happen every day. You can try compressing it similar to what schools do, or read books that’s ideally based on the author’s years of experience. Still, while these are helpful, they are not good enough to deal with messy problems. In actual work, there are lots of compromises and very few assumptions. And you have to rely on your previous success and failures when dealing with new problems.</p>
+
+	</section>
+	<span class="post-meta">20 Feb 2017</span>
+
+
+    </article>
+
+  
+    <article class="post">
+      
 	
 	<header class="post-header">
 		<h2 class="post-title">
@@ -1088,139 +1128,6 @@ end
 		<p>Though I&rsquo;ve seen this video a gazillion times, I still find it fresh and inspiring.</p>
 
 <p><a href="http://www.youtube.com/watch?v=tjgtLSHhTPg" title="To The Crazy Ones"><img src="http://img.youtube.com/vi/tjgtLSHhTPg/0.jpg" alt="To The Crazy Ones" /></a></p>
-
-	</section>
-	<span class="post-meta">16 Nov 2014</span>
-
-
-    </article>
-
-  
-    <article class="post">
-      
-	
-	<header class="post-header">
-		<h2 class="post-title">
-			
-			<a href="/rebuild-rails-part1/">
-			
-				Rebuild Rails Part 1</a>
-		</h2>
-	</header>
-	<section class="post-excerpt">
-		<p>I have no plans to build another Rails-clone. Let&rsquo;s leave that work to other smarter people with more time.
-But wouldn&rsquo;t it be fun if we can learn how Rails work under the hood and find out what makes it &ldquo;magical&rdquo;?
-In this post I will only cover what happens when you typed that url until you get an HTML page. We&rsquo;ll simplify further by not using any database
-access. If you would like to go deeper and wider, there is a <a href="https://rebuilding-rails.com/">book devoted entirely to it that I highly recommend</a>.</p>
-
-<p>Let&rsquo;s call our application <code>CrazyApp</code> and let&rsquo;s build our first web app.</p>
-
-<pre><code># config.ru
-app =  proc do |env|
-  [200, {'Content-Type' =&gt; 'text/html'}, ["hello from crazy app"] ]
-end
-
-run app
-
-$ rackup config.ru -p 3000                                                                       [2.0.0-p247]
-Thin web server (v1.6.2 codename Doc Brown)
-Maximum connections set to 1024
-Listening on 0.0.0.0:3000, CTRL+C to stop
-127.0.0.1 - - [16/Nov/2014 20:42:02] "GET / HTTP/1.1" 200 - 0.0008
-</code></pre>
-
-<h3>It&rsquo;s all about the Rack</h3>
-
-<p>Rack is a gem that sits between your framework (e.g. Rails) and Ruby-based
-application servers like Thin, Puma, Unicorn, and WEBrick. When you type a url,
-it goes through several layers of software until it hits our application which
-in this case just returns a <code>hellow from crazy app</code>. Rack simplifies the interface
-for web servers that we only have to worry about a few things to handle an HTTP request.</p>
-
-<ul>
-<li>HTTP status, e.g. 200</li>
-<li>Response headers. There are lot of things you can set here but for now let&rsquo;s stick to content-type.</li>
-<li>Actual content. In our case, an HTML page.</li>
-</ul>
-
-
-<p>Let&rsquo;s look at a boilerplate <code>config.ru</code> that you get from Rails.</p>
-
-<pre><code># This file is used by Rack-based servers to start the application.
-
-require ::File.expand_path('../config/environment',  __FILE__)
-run Rails.application
-</code></pre>
-
-<p>One step in <a href="http://api.rubyonrails.org/classes/Rails/Application.html">Rails' bootup process</a> is to
-define <code>Rails.application</code> as <code>class MyApp::Application &lt; Rails::Application</code>.
-Both <code>Rails::Application</code> and <code>proc</code> provides a <code>call</code> method that is why both <code>config.ru</code> works.</p>
-
-<p>Now, let&rsquo;s move our initial <code>config.ru</code> code to a different class that we can later extract into
-a gem for our framework that we shall call <code>Tracks</code>. From here on, we shall follow Rails conventions
-and build our gem from there.</p>
-
-<pre><code># config.ru
-require './config/application'
-run CrazyApp::Application
-
-# config/application.rb
-require './lib/tracks'
-
-module CrazyApp
-  class Application &lt; Tracks::Application
-  end
-end
-
-# lib/tracks.rb
-module Tracks
-  class Application
-    def self.call(env)
-      [200, {'Content-Type' =&gt; 'text/html'}, ["hello from tracks"] ]
-    end
-  end
-end
-</code></pre>
-
-<p>Exit from your rackup process and re-run it because we are not supporting auto-reloading. This time you will see a message from our <code>Tracks</code> - the super awesome Rails-like framework.</p>
-
-<h3>Render a default page</h3>
-
-<p>We now introduce a very simple root controller and use it to render a default index page. We also modify our route handling
-by inspecting the value in <code>env</code> object that Rack passed to our framework. The <code>env</code> packs a lot of information about
-a request and for our routing, we are interested in <code>PATH_INFO</code> which is the url after the domain minus the query parameters.</p>
-
-<pre><code># lib/tracks/controlle.rb
-module Tracks
-  class Controller
-    def self.render_default_root
-      filename = File.join('public', 'index.html')
-      File.read filename
-    end
-  end
-end
-
-
-# lib/tracks.rb
-require File.expand_path('../tracks/controller', __FILE__)
-
-module Tracks
-  class Application
-    def self.call(env)
-      path_info = env['PATH_INFO']
-      if  path_info == '/'
-        text = Tracks::Controller.render_default_root
-      else
-        text = "hello from tracks #{path_info}"
-      end
-
-      [200, {'Content-Type' =&gt; 'text/html'}, [text] ]
-    end
-  end
-end
-</code></pre>
-
-<p>That&rsquo;s it for now. Next time, we will create our own controllers, action, and dynamic pages using ERB.</p>
 
 	</section>
 	<span class="post-meta">16 Nov 2014</span>
