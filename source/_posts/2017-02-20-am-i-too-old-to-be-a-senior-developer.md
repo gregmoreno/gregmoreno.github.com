@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Am I too old to be senior developer?"
+title: "Am I too old to be a senior developer?"
 date: 2017-02-20 19:35:04 -0800
 comments: true
 categories:
