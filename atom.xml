@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Greg Moreno]]></title>
-  <link href="http://gregmoreno.ca/atom.xml" rel="self"/>
-  <link href="http://gregmoreno.ca/"/>
-  <updated>2017-02-20T11:38:12-08:00</updated>
-  <id>http://gregmoreno.ca/</id>
+  <link href="http:///atom.xml" rel="self"/>
+  <link href="http:///"/>
+  <updated>2017-10-29T22:11:32-07:00</updated>
+  <id>http:///</id>
   <author>
     <name><![CDATA[Greg Moreno]]></name>
     
@@ -14,10 +14,56 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Am I too old to be senior developer?]]></title>
-    <link href="http://gregmoreno.ca/am-i-too-old-to-be-a-senior-developer/"/>
+    <title type="html"><![CDATA[5-bullet Sunday morning]]></title>
+    <link href="http:///5-bullet-sunday-morning/"/>
+    <updated>2017-10-29T21:43:07-07:00</updated>
+    <id>http:///5-bullet-sunday-morning</id>
+    <content type="html"><![CDATA[<p>On Javascript, 1–1s, scholarships, bitcoin, and evil things.</p>
+
+<p><em>As a developer:</em></p>
+
+<p><a href="https://medium.com/@peterxjang/modern-javascript-explained-for-dinosaurs-f695e9747b70">Modern JavaScript Explained For Dinosaurs</a></p>
+
+<p>Even though I’m already familiar with the tools mentioned in the article, this provided me a better understanding of the front-end ecosystem. It also helped that the headline resonated with me :) The article started with doing it old school — just like many of us dinosaurs did decades ago and moved on to modern techniques. It’s like resetting your brain and learning things again but only this time you come out with a better understanding.</p>
+
+<p>On related note, I’m currently taking the <a href="https://es6.io/">ES6 course by Wes Bos</a>. Just finished the Promises module and I say it’s totally worth it.</p>
+
+<p><em>As a manager:</em></p>
+
+<p>I’m thinking about 1–1s, why we do it and how to make it worthwhile for both parties. 1–1s that turn into status updates that can easily (and more efficiently) be done via email is a waste of everyone ’s time. But if you view 1–1s as an opportunity to create a connection between you and your manager, it is a very effective tool to build great working relationships that will go beyond your current workplace.</p>
+
+<p>Don’t think of it as a meeting but rather a coffee with someone you are eager to know better.</p>
+
+<p><em>As a parent:</em></p>
+
+<p>My wife and I, together with our Grade 11 son, attended a college scholarship seminar sponsored by my son’s school. The school’s theatre is packed but according to my son, it is just a fraction of the student population that would benefit from it. I wonder why there aren’t that much interest on such an opportunity. My hypothesis is many students (and even parents) think applying for college scholarships is done when you are close to graduation time.</p>
+
+<p>My takeaway from the seminar is that going after the smaller grants (e.g. $500 — $5000) will give you a better chance of hitting your scholarship goals. Why? Because there are so many of them (at least in Canada) and the chance of getting accepted to at least 10 is not unrealistic. Add those amounts and now your college is free. On the other hand, if you aim for the lottery, not only you are competing against the best and the brightest students who found a cure to cancer or ended hunger in Africa, there is just a handful of slots available.</p>
+
+<p>If you’re a teacher or member of the parent council, and if you happen to be in BC Canada, I recommend you book <a href="http://www.keytoscholarships.com/">Brittany Palmer</a>.</p>
+
+<p><em>On Bitcoin and cryptocurrencies:</em></p>
+
+<p>There is a lot of hype going around and we shouldn’t be shocked if 99% of the cryptocurrencies out there turn out to be scams. Many people don’t know, including those who now call themselves “investors”, that these cryptocurrencies have 2 sides — the money and the technology. What you will often hear is the money side. After all, a headline that says some “kid became a millionaire after investing $100” will always grab our attention.</p>
+
+<p>Of course, as an “investor”, I am happy with the success of the cryptocurrencies but even if the prices go down to zero, the technology (hint: it is not just blockchain) will stay and evolve in the coming years. And that is where the real benefits lie.</p>
+
+<p>Cryptocurrencies are here to stay. But don’t be stupid.</p>
+
+<p><em>I’m pondering:</em></p>
+
+<p>What if evil is part of life? That the person doing bad things is just doing his job? Like a normal job, some are bad at it, some are doing it really well, and some are simply looking to change job?
+On that note, <a href="http://www.imdb.com/title/tt5290382/?ref_=fn_al_tt_1">Mindhunter</a> looks to be another interesting series from Netflix. But that has to wait because it is <a href="http://www.imdb.com/title/tt4574334/?ref_=nv_sr_1">Stranger Things Season 2</a> baby.</p>
+
+<p>This post was also published at <a href="https://medium.com/@gregmoreno/5-bullet-sunday-morning-786a8c6c35ae">Medium</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Am I too old to be a senior developer?]]></title>
+    <link href="http:///am-i-too-old-to-be-a-senior-developer/"/>
     <updated>2017-02-20T19:35:04-08:00</updated>
-    <id>http://gregmoreno.ca/am-i-too-old-to-be-a-senior-developer</id>
+    <id>http:///am-i-too-old-to-be-a-senior-developer</id>
     <content type="html"><![CDATA[<p>Or, aren&rsquo;t you too young to be a Senior developer?</p>
 
 <p>I never had the title of Senior Developer until about 3 years ago. By that time, I already have 15 years of experience in creating, deploying and fixing software. This is not counting the years I spent freelancing for various tech companies while I was in college. I have worked in startups and big companies, led teams, launched several products on my own and failed, and numerous times I had to learn stuff not related to coding just to get that freaking software out the door. Suddenly, I feel so old and it feels so jurassic now to remember my Visual Basic program running on Windows 95 - ah the good old days!</p>
@@ -44,9 +90,9 @@
   
   <entry>
     <title type="html"><![CDATA[#til Elixir's anonymous function]]></title>
-    <link href="http://gregmoreno.ca/til-elixir-anonymous-function/"/>
+    <link href="http:///til-elixir-anonymous-function/"/>
     <updated>2017-02-16T20:46:04-08:00</updated>
-    <id>http://gregmoreno.ca/til-elixir-anonymous-function</id>
+    <id>http:///til-elixir-anonymous-function</id>
     <content type="html"><![CDATA[<p>fn is a keyword that creates an anonymous function.</p>
 
 <pre><code>sum = fn(a,b) -&gt;
@@ -121,9 +167,9 @@ of one expression and passes it as the 1st parameter to the next expression.</p>
   
   <entry>
     <title type="html"><![CDATA[Joy Ride in Ruby's spaceship]]></title>
-    <link href="http://gregmoreno.ca/joy-ride-in-rubys-spaceship/"/>
+    <link href="http:///joy-ride-in-rubys-spaceship/"/>
     <updated>2016-02-16T20:52:04-08:00</updated>
-    <id>http://gregmoreno.ca/joy-ride-in-rubys-spaceship</id>
+    <id>http:///joy-ride-in-rubys-spaceship</id>
     <content type="html"><![CDATA[<p>Ruby&rsquo;s <code>&lt;=&gt;</code> operator is commonly referred to as the spaceship in the community. You may not have
 played with it directly but I bet you have relied on it a lot of times. Because, every time you use
 sort an array, you are tapping in to the spaceship operator.</p>
@@ -314,9 +360,9 @@ Comparison via &ldquo;&lt;=>&rdquo; and the Comparable Module.</p>
   
   <entry>
     <title type="html"><![CDATA[You can't handle the truth]]></title>
-    <link href="http://gregmoreno.ca/you-cant-handle-the-truth/"/>
+    <link href="http:///you-cant-handle-the-truth/"/>
     <updated>2016-02-15T16:21:58-08:00</updated>
-    <id>http://gregmoreno.ca/you-cant-handle-the-truth</id>
+    <id>http:///you-cant-handle-the-truth</id>
     <content type="html"><![CDATA[<p>Quick question. What’s the output of this code in Ruby?</p>
 
 <pre><code>amount = 0
@@ -392,9 +438,9 @@ get a copy of <code>Effective Ruby</code> by Peter Jones.</p>
   
   <entry>
     <title type="html"><![CDATA[Rails #permitted]]></title>
-    <link href="http://gregmoreno.ca/rails-permitted/"/>
+    <link href="http:///rails-permitted/"/>
     <updated>2015-08-21T00:00:00-07:00</updated>
-    <id>http://gregmoreno.ca/rails-permitted</id>
+    <id>http:///rails-permitted</id>
     <content type="html"><![CDATA[<p>I recently upgraded a personal app I use for learning new things in Rails. But when I upgraded from
 4.1.4 to 4.1.12 I encountered this familiar error.</p>
 
@@ -482,9 +528,9 @@ NoMethodError: undefined method `permitted?' for {:provider=&gt;"facebook", :uid
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 4]]></title>
-    <link href="http://gregmoreno.ca/rebuild-rails-part4/"/>
+    <link href="http:///rebuild-rails-part4/"/>
     <updated>2014-11-24T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/rebuild-rails-part4</id>
+    <id>http:///rebuild-rails-part4</id>
     <content type="html"><![CDATA[<p>Now, it is time to build real pages in our super duper Tracks framework. We will support ERB and to do that
 we need the <a href="https://rubygems.org/gems/erubis">erubis</a> gem.</p>
 
@@ -689,9 +735,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 3]]></title>
-    <link href="http://gregmoreno.ca/rebuild-rails-part3/"/>
+    <link href="http:///rebuild-rails-part3/"/>
     <updated>2014-11-20T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/rebuild-rails-part3</id>
+    <id>http:///rebuild-rails-part3</id>
     <content type="html"><![CDATA[<p>Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
 by assuming a <code>controller/action</code> path format and only support <code>GET</code> request.</p>
 
@@ -844,9 +890,9 @@ SystemStackError: stack level too deep
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 2]]></title>
-    <link href="http://gregmoreno.ca/rebuild-rails-part2/"/>
+    <link href="http:///rebuild-rails-part2/"/>
     <updated>2014-11-19T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/rebuild-rails-part2</id>
+    <id>http:///rebuild-rails-part2</id>
     <content type="html"><![CDATA[<p>Before we continue with out rebuilding series, we should write some tests first :)</p>
 
 <pre><code># spec/spec_helper.rb
@@ -904,9 +950,9 @@ Finished in 0.015864s, 126.0716 runs/s, 252.1432 assertions/s.
   
   <entry>
     <title type="html"><![CDATA[#ruby Array of hashes quiz]]></title>
-    <link href="http://gregmoreno.ca/ruby-array-of-hashes-quiz/"/>
+    <link href="http:///ruby-array-of-hashes-quiz/"/>
     <updated>2014-11-17T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/ruby-array-of-hashes-quiz</id>
+    <id>http:///ruby-array-of-hashes-quiz</id>
     <content type="html"><![CDATA[<p>Found this interesting ruby quiz from <a href="http://www.alphasights.com/careers/experienced/positions/new-york/6-ruby-on-rails-developer/apply">AlphaSights</a>.
 Given an array of hashes, collapse into an array of hashes containing one entry per day.
 And you can only reference the <code>:time</code> key and not the rest.</p>
@@ -975,9 +1021,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[To the crazy ones]]></title>
-    <link href="http://gregmoreno.ca/to-the-crazy-ones/"/>
+    <link href="http:///to-the-crazy-ones/"/>
     <updated>2014-11-16T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/to-the-crazy-ones</id>
+    <id>http:///to-the-crazy-ones</id>
     <content type="html"><![CDATA[<p>Though I&rsquo;ve seen this video a gazillion times, I still find it fresh and inspiring.</p>
 
 <p><a href="http://www.youtube.com/watch?v=tjgtLSHhTPg" title="To The Crazy Ones"><img src="http://img.youtube.com/vi/tjgtLSHhTPg/0.jpg" alt="To The Crazy Ones" /></a></p>
@@ -986,9 +1032,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Rebuild Rails Part 1]]></title>
-    <link href="http://gregmoreno.ca/rebuild-rails-part1/"/>
+    <link href="http:///rebuild-rails-part1/"/>
     <updated>2014-11-16T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/rebuild-rails-part1</id>
+    <id>http:///rebuild-rails-part1</id>
     <content type="html"><![CDATA[<p>I have no plans to build another Rails-clone. Let&rsquo;s leave that work to other smarter people with more time.
 But wouldn&rsquo;t it be fun if we can learn how Rails work under the hood and find out what makes it &ldquo;magical&rdquo;?
 In this post I will only cover what happens when you typed that url until you get an HTML page. We&rsquo;ll simplify further by not using any database
@@ -1107,9 +1153,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[#ruby Counting Vowels]]></title>
-    <link href="http://gregmoreno.ca/ruby-minimal-code/"/>
+    <link href="http:///ruby-minimal-code/"/>
     <updated>2014-11-13T00:00:00-08:00</updated>
-    <id>http://gregmoreno.ca/ruby-minimal-code</id>
+    <id>http:///ruby-minimal-code</id>
     <content type="html"><![CDATA[<p>Just saw a simple exercise in my Facebook feed and I thought I give it a shot. The problem is simple:</p>
 
 <blockquote><p>Write a function that returns the number of vowels in the string.</p></blockquote>
@@ -1184,9 +1230,9 @@ Finished in 0.001155s, 2597.4026 runs/s, 2597.4026 assertions/s.
   
   <entry>
     <title type="html"><![CDATA[#hacking  Ansible]]></title>
-    <link href="http://gregmoreno.ca/hacking-ansible/"/>
+    <link href="http:///hacking-ansible/"/>
     <updated>2014-10-17T21:02:43-07:00</updated>
-    <id>http://gregmoreno.ca/hacking-ansible</id>
+    <id>http:///hacking-ansible</id>
     <content type="html"><![CDATA[<p>Before you continue, let me congratulate myself. It’s been years since I’ve written a post. Hooray! Also, thank you to <a href="https://github.com/radamanthus/ansible-rails">Rad</a> for guiding me on my Ansible adventure. The ansible code I reference here are <a href="https://github.com/gregmoreno/ansible-rails">available in github</a>.</p>
 
 <p>There are tons of posts about Ansible already so this is more about gotchas I learned along the way.</p>
@@ -1298,9 +1344,9 @@ cat ~/uploaded_key.pub &gt;&gt; ~/.ssh/authorized_keys
   
   <entry>
     <title type="html"><![CDATA[#ruby method_missing gotchas]]></title>
-    <link href="http://gregmoreno.ca/ruby-method-missing-gotchas/"/>
+    <link href="http:///ruby-method-missing-gotchas/"/>
     <updated>2012-10-11T00:00:00-07:00</updated>
-    <id>http://gregmoreno.ca/ruby-method-missing-gotchas</id>
+    <id>http:///ruby-method-missing-gotchas</id>
     <content type="html"><![CDATA[<h3>Forgetting &lsquo;super&rsquo; with &lsquo;method_missing&rsquo;</h3>
 
 <p>&lsquo;method_missing&rsquo; is one of Ruby&rsquo;s power that makes frameworks like Rails seem magical. When you call a method in an object (or &ldquo;send a message to the object&rdquo;), the object executes the first method it finds. If the object can&rsquo;t find the method, it complains. This is pretty much what every modern programming language does. Except in Ruby you can guard against a non-existent method call by having the method &lsquo;method_missing&rsquo; in your object. If you are using Rails, this technique enables dynamic record finders like User.find_by_first_name.</p>
@@ -1460,10 +1506,10 @@ Finished in 0.00443 seconds
   
   <entry>
     <title type="html"><![CDATA[Mining Twitter Data with Ruby - Visualizing User Mentions]]></title>
-    <link href="http://gregmoreno.ca/mining-twitter-data-with-ruby-visualizing-user-mentions/"/>
+    <link href="http:///mining-twitter-data-with-ruby-visualizing-user-mentions/"/>
     <updated>2012-09-20T20:53:45-07:00</updated>
-    <id>http://gregmoreno.ca/mining-twitter-data-with-ruby-visualizing-user-mentions</id>
-    <content type="html"><![CDATA[<p>In my <a href="http://gregmoreno.ca/2012/09/05/mining-twitter-data-with-ruby-mongodb-and-map-reduce/">previous post on mining twitter data with ruby</a>, we laid our foundation for collecting and analyzing Twitter updates. We stored these updates in <a href="http://www.mongodb.org/">MongoDB</a> and used map-reduce to implement a simple counting of tweets.  In this post, we&rsquo;ll show relationships between users based on mentions inside the tweet.  Fortunately for us, there is no need to parse each tweet just to get a list of users mentioned in the tweet because Twitter provides the &ldquo;entities.mentions&rdquo; field that contains what we need. After we collected the &ldquo;who mentions who&rdquo;, we then construct a directed graph to represent these relationships and convert them to an image so we can actually see it.</p>
+    <id>http:///mining-twitter-data-with-ruby-visualizing-user-mentions</id>
+    <content type="html"><![CDATA[<p>In my <a href="http:///2012/09/05/mining-twitter-data-with-ruby-mongodb-and-map-reduce/">previous post on mining twitter data with ruby</a>, we laid our foundation for collecting and analyzing Twitter updates. We stored these updates in <a href="http://www.mongodb.org/">MongoDB</a> and used map-reduce to implement a simple counting of tweets.  In this post, we&rsquo;ll show relationships between users based on mentions inside the tweet.  Fortunately for us, there is no need to parse each tweet just to get a list of users mentioned in the tweet because Twitter provides the &ldquo;entities.mentions&rdquo; field that contains what we need. After we collected the &ldquo;who mentions who&rdquo;, we then construct a directed graph to represent these relationships and convert them to an image so we can actually see it.</p>
 
 <p>First, we start with the aggregation of mentions per user. We will use the same code base as last time. So if this is your first time, I recommend reading my previous related post or you can <a href="https://github.com/gregmoreno/tweetminer">follow the changes in Github</a>. Note to self:  Convert this to an actual gem in the next post.</p>
 
@@ -1541,9 +1587,9 @@ graph.write_to_graphic_file
   
   <entry>
     <title type="html"><![CDATA[Mining Twitter data with Ruby, MongoDB and Map-Reduce]]></title>
-    <link href="http://gregmoreno.ca/mining-twitter-data-with-ruby-mongodb-and-map-reduce/"/>
+    <link href="http:///mining-twitter-data-with-ruby-mongodb-and-map-reduce/"/>
     <updated>2012-09-05T19:48:27-07:00</updated>
-    <id>http://gregmoreno.ca/mining-twitter-data-with-ruby-mongodb-and-map-reduce</id>
+    <id>http:///mining-twitter-data-with-ruby-mongodb-and-map-reduce</id>
     <content type="html"><![CDATA[<p>When is the best time to tweet? If you care about reaching a lot of users, the best time probably is when your followers are also tweeting. In this exercise,we will try to figure out the day and time users are the most active.  Since there is no way for us to do this for all users in the twitterverse, we will only use the users we follow as our sample.</p>
 
 <h3>What do we need</h3>
@@ -1744,7 +1790,7 @@ end
 
 <p>Now run &lsquo;ruby counter.rb&rsquo; in the console with the new method and the result should be something like the one below.</p>
 
-<p><img src="http://gregmoreno.ca/assets/20120905-nck36r98kaftn7i3fpfh4i6her.jpg" alt="" /></p>
+<p><img src="http:///assets/20120905-nck36r98kaftn7i3fpfh4i6her.jpg" alt="" /></p>
 
 <h3>Filtering records</h3>
 
@@ -1773,7 +1819,7 @@ end
 
 <p>Since we&rsquo;re now getting the hang of it, why don&rsquo;t we add another complexity. This time, let us count by day of the week and include a breakdown per hour.  Luckily for us,  the day of the week is also included in the created_at field and it is just a matter of extracting it.  Of course, if Twitter decides to change the format, this will break. Let&rsquo;s visit <a href="http://rubular.com">rubular.com</a> and  try our regular expression.</p>
 
-<p><img src="http://gregmoreno.ca/assets/20120905-xfm9k1gsfrr7n4qnegue86pu1.jpg" alt="" /></p>
+<p><img src="http:///assets/20120905-xfm9k1gsfrr7n4qnegue86pu1.jpg" alt="" /></p>
 
 <p>Now that we have our regex working, let&rsquo;s include this in our new map command.</p>
 
@@ -1827,7 +1873,7 @@ end
 
 <p>In our previous examples, the <em>values</em> parameter is a simple array of numeric values.  Now, it becomes an an array of properties. On top of that, one of the properties (i.e. hdayBreakdown) is also an array.  If everything works according to plan, you should see something like the image below when you run collect.rb.</p>
 
-<p><img src="http://gregmoreno.ca/assets/20120905-xpffryewtqchu875ap9fnk4kha.jpg" alt="" /></p>
+<p><img src="http:///assets/20120905-xpffryewtqchu875ap9fnk4kha.jpg" alt="" /></p>
 
 <p>Did you have fun? I hope so :)</p>
 ]]></content>
@@ -1835,9 +1881,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Adding keyboard shortcuts in web pages]]></title>
-    <link href="http://gregmoreno.ca/adding-keyboard-shortcuts-in-web-pages/"/>
+    <link href="http:///adding-keyboard-shortcuts-in-web-pages/"/>
     <updated>2012-08-30T20:52:53-07:00</updated>
-    <id>http://gregmoreno.ca/adding-keyboard-shortcuts-in-web-pages</id>
+    <id>http:///adding-keyboard-shortcuts-in-web-pages</id>
     <content type="html"><![CDATA[<p>Adding keyboard shortcuts to interact with your web pages seems like a useless feature when the rest of the world is using a mouse. But for a programmer who wants everything to be a few keystrokes away, keyboard shortcuts are very handy.</p>
 
 <p>In this tutorial, we will add a simple scrolling shortcuts to our webpage.  This is just to illustrate what is possible. So please, do not copy-and-paste this to your production code.</p>
@@ -1921,9 +1967,9 @@ scroll_to_entry = (entry) -&gt;
   
   <entry>
     <title type="html"><![CDATA[How to create a wrapper gem for service APIs - part 1]]></title>
-    <link href="http://gregmoreno.ca/how-to-create-a-wrapper-gem-for-service-apis-part-1/"/>
+    <link href="http:///how-to-create-a-wrapper-gem-for-service-apis-part-1/"/>
     <updated>2012-06-07T00:41:01-07:00</updated>
-    <id>http://gregmoreno.ca/how-to-create-a-wrapper-gem-for-service-apis-part-1</id>
+    <id>http:///how-to-create-a-wrapper-gem-for-service-apis-part-1</id>
     <content type="html"><![CDATA[<p>APIs are getting more and more popular as apps and services move to the cloud. Whenever you need to integrate a popular web service API into your Ruby app, 99.99% of the time there already exists a gem ready for use. That is a testament to how active Ruby developers are in supporting the community.</p>
 
 <p>Even if integrating with the popular APIs is not in your radar, you may still have a need to create an API wrapper for internal use. For example, if your Rails application has grown tremendously (congratulations!), you may eventually need to adopt a services architecture to support upcoming features and make things manageable.</p>
@@ -2277,9 +2323,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Create your own Rails 3 engine]]></title>
-    <link href="http://gregmoreno.ca/create-your-own-rails-3-engine/"/>
+    <link href="http:///create-your-own-rails-3-engine/"/>
     <updated>2012-05-29T22:47:53-07:00</updated>
-    <id>http://gregmoreno.ca/create-your-own-rails-3-engine</id>
+    <id>http:///create-your-own-rails-3-engine</id>
     <content type="html"><![CDATA[<p>Engine is an interesting feature of Rails. Engines are miniature applications that live inside your application and they have structure that you would normally find in a typical Rails application. If you have used the Devise gem, which itself is an engine, you know the benefits of being able to add functionality to your application with just a few lines of code. Another great benefit of engines is when you or your team are maintaining a number of applications the common functionalities can be extracted into engines.</p>
 
 <p>Engines are already available prior to Rails 3 but it is not a core feature of the framework. As such, engine developers resorted to monkey-patching which, oftentimes, lead to engines breaking when Rails gets updated. In Rails 3.1, engines are now supported by the framework and there is now a clealy defined place where to hook your engines into Rails.</p>
@@ -2524,18 +2570,6 @@ end
 <p>If everything work fine, you should see a message from Twitter.</p>
 
 <p>We only scratched the surface with Rails 3 engine. Your engine, much like any normal Rails app, can have models and migrations, javascripts, css, specs, etc. If you want to dig deeper into engines, I recommend Rails 3 in Action by Ryan Bigg and Yehuda Katz. It includes a whole chapter about engines, discussion of middleware, and how tests your engine.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Architecture the Lost Years by Robert Martin]]></title>
-    <link href="http://gregmoreno.ca/architecture-the-lost-years-by-robert-martin/"/>
-    <updated>2012-03-06T05:14:15-08:00</updated>
-    <id>http://gregmoreno.ca/architecture-the-lost-years-by-robert-martin</id>
-    <content type="html"><![CDATA[<p><a href="http://www.youtube.com/watch?v=WpkDN78P884" title="Architecture the Lost Years by Robert Martin"><img src="http://img.youtube.com/vi/WpkDN78P884/0.jpg" alt="Architecture the Lost Years by Robert Martin" /></a></p>
-
-<p>http://youtu.be/WpkDN78P884</p>
-
 ]]></content>
   </entry>
   
