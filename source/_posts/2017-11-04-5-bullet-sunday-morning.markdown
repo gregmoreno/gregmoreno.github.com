@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "5-bullet-sunday-morning"
+title: 5-bullet Sunday morning"
 date: 2017-11-04 17:50:57 -0700
 comments: true
 categories: 
