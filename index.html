@@ -9,7 +9,7 @@
 
 	<meta name="author" content="Greg Moreno">
 	
-	<meta name="description" content="5-bullet Sunday Morning On Javascript, 1–1s, scholarships, bitcoin, and evil things. As a developer: Modern JavaScript Explained For Dinosaurs Even &hellip;">
+	<meta name="description" content="5-bullet-sunday-morning I’m currently reading Principles by Ray Dalio When your name is Ray Dalio, you dont need a thought-provoking title nor a &hellip;">
 
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="MobileOptimized" content="320" />
@@ -47,6 +47,94 @@
       
 	
 		
+	
+	<header class="post-header">
+		<h2 class="post-title">
+			
+			<a href="/5-bullet-sunday-morning/">
+			
+				5-bullet-sunday-morning</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<p><em>I’m currently reading <a href="https://www.amazon.ca/Principles-Life-Work-Ray-Dalio/dp/1501124021/ref=pd_bxgy_14_img_2?_encoding=UTF8&amp;psc=1&amp;refRID=BMW026RN9BH7JBJKAFXP">Principles by Ray Dalio</a></em></p>
+
+<p>When your name is Ray Dalio, you dont need a thought-provoking title nor a fancy cover to have a bestseller. It is a thick book and with a hardbound black cover, it can pass as the Bible. Just like the Bible, this is not a book you read in one sitting nor something to pass the time. I had to pause, think about what he said, question it, and see if I can apply it to my life.</p>
+
+<p>Here is Ray Dalio’s popular <a href="https://www.youtube.com/watch?v=HXbsVbFAczg">TED talk</a>.</p>
+
+<p><em>Bitcoin is so hot I need to mention it</em></p>
+
+<p>A friend messaged me complaining how complicated and tedious it is to trade Bitcoin and other cryptocurrencies. Worse, he is just halfway to all the things he need to do. We haven’t fully discussed what a wallet is for, why a piece of paper can be so important in the Internet age, and why he needs a water-tight fire-proof vault :) He made the leap even though he still doesn’t fully understand what all these currencies are and I can only imagine how these steps can feel like just a waste of time.</p>
+
+<p>He is not alone and this is good thing.</p>
+
+<p>Yes, I am channeling my inner Stoicism here so here me out. Massive financial gains happen when you got in an opportunity before the general public does. The Bitcoin ecosystem right now is not much different from the early days of the Internet — with all the possibilities, confusion, as well as danger of <a href="https://medium.com/@dennyk/why-and-how-the-cryptobubble-will-burst-de9bc7fc5332">another bubble</a>.</p>
+
+<p>If you feel the pain, look at it as your ticket to an exciting game. Let us enjoy the game and I wish you good luck.</p>
+
+<p><em>On watching Cirque du Soleil</em></p>
+
+<p>I first heard of Cirque du Soleil about 4 years ago. Whenever they are in Vancouver, they would have a big tent setup in the parking lot near a train station. Around this time, I would see that tent on way to and from my work. It is like one mysterious event. You don’t see much from the outside but people are lining up and you hear conversations in the train on how breathtaking the show is.</p>
+
+<p>When I heard they are coming again, we made sure we will not let it pass this time, damn the cost. I am glad we did not. My kids love it. I love it. Seeing people fly and do stunts in a 3D theatre is fun though we know it is all computer magic and stunt doubles. But watching people somersault in the air with only a rope on one arm is way different fun. You can actually feel the danger with it.</p>
+
+<p>I am grateful I get to watch this with my family.</p>
+
+<p><em>This thing in JavaScript</em></p>
+
+<p>Finished some modules from Wes Bos JavaScript course, so why not apply it right away. So I did and I thought this was no a brainer.</p>
+
+<pre><code>$('#filters').on('change', () =&gt; {
+  console.log($(this).val());
+});
+</code></pre>
+
+<p>Except that it is not and I paid some scarce hair for it. The right solution is to use regular function.</p>
+
+<pre><code>$('#filters').on('change', function () {
+  console.log($(this).val());
+});
+</code></pre>
+
+<p>Ah the binding. When using arrow function, <code>this</code> is not bound to the <code>on</code> scope. Instead, it just inherited whatever the parent scope is. Lesson learned.</p>
+
+<p>Now I get it. So I thought.</p>
+
+<pre><code>$('#filters').on('change', function () {
+  console.log($(this).val());
+  setTimeout(function () {
+    console.log($(this).val());
+  });
+});
+</code></pre>
+
+<p>Damnit, same error again. Because inside the function passed to setTimeout, <code>this</code> is bound to <code>setTimeout</code>. Hence, the same error. To fix it, just use arrow function.</p>
+
+<pre><code>$('#filters').on('change', function () {
+  console.log($(this).val());
+  setTimeout(() =&gt; {
+    console.log($(this).val());
+  });
+});
+</code></pre>
+
+<p>Confusing, eh? Just remember to go back to the binding rules for the arrow function and now it makes sense because we want to have this refer to the parent scope.</p>
+
+<p><em>Quote for you</em></p>
+
+<p>&ldquo;A side effect of doing challenging work is that you’re pulled by excitement and pushed by confusion at the same time.&rdquo;
+- <a href="https://jamesclear.com/successful-people-start-before-they-feel-ready?__s=rg5u4ofe9tzwuyfixegg">James Clear</a></p>
+
+	</section>
+	<span class="post-meta">04 Nov 2017</span>
+
+
+    </article>
+
+  
+    <article class="post">
+      
 	
 	<header class="post-header">
 		<h2 class="post-title">
@@ -1083,89 +1171,6 @@ Finished in 0.015864s, 126.0716 runs/s, 252.1432 assertions/s.
 
 	</section>
 	<span class="post-meta">19 Nov 2014</span>
-
-
-    </article>
-
-  
-    <article class="post">
-      
-	
-	<header class="post-header">
-		<h2 class="post-title">
-			
-			<a href="/ruby-array-of-hashes-quiz/">
-			
-				#ruby Array of Hashes Quiz</a>
-		</h2>
-	</header>
-	<section class="post-excerpt">
-		<p>Found this interesting ruby quiz from <a href="http://www.alphasights.com/careers/experienced/positions/new-york/6-ruby-on-rails-developer/apply">AlphaSights</a>.
-Given an array of hashes, collapse into an array of hashes containing one entry per day.
-And you can only reference the <code>:time</code> key and not the rest.</p>
-
-<pre><code>log = [
-  {time: 201201, x: 2},
-  {time: 201201, y: 7},
-  {time: 201201, z: 2},
-  {time: 201202, a: 3},
-  {time: 201202, b: 4},
-  {time: 201202, c: 0}
-]
-
-# result should be
-[
-  {time: 201201, x: 2, y: 7, z: 2},
-  {time: 201202, a: 3, b: 4, c: 0},
-]
-</code></pre>
-
-<p>The first thing came to mind is to use <a href="http://www.ruby-doc.org/core-2.1.1/Enumerable.html#method-i-group_by"><code>Enumerable#group_by</code></a></p>
-
-<pre><code>grouped = log.group_by { |i| i[:time] }
-collapsed = grouped.collect do |t, a|
-  no_time_h = a.inject({}) do |others, h|
-    others.merge h.reject { |k, v| k.to_sym == :time }
-  end
-
-  {time: t}.merge(no_time_h)
-end
-
-puts collapsed.inspect
-</code></pre>
-
-<p>However, after reading this a couple of times, I still find the solution hard to follow.
-For starter, <code>group_by</code> returns a hash where the values are an array of hashes which
-brings me back to the original problem even though it is already grouped by time.
-That I feel made the rest of the code more complicated.</p>
-
-<pre><code># result of group_by
-{201201=&gt;[{:time=&gt;201201, :x=&gt;2}, {:time=&gt;201201, :y=&gt;7}, {:time=&gt;201201, :z=&gt;2}], 201202=&gt;[{:time=&gt;201202, :a=&gt;3}, {:time=&gt;201202, :b=&gt;4}, {:time=&gt;201202, :c=&gt;0}]}
-</code></pre>
-
-<p>For my second version, I simply loop into the array and compose the hash using <code>:time</code> as the key.
-Afterwards, use the <code>key-value</code> pair to compose the resulting array. The code may be longer but
-it is more readable. Remember, <a href="https://www.safaribooksonline.com/library/view/beautiful-code/9780596510046/ch05.html">Correct, Beautiful, Fast (in That Order)</a>.</p>
-
-<pre><code>hash_by_time = {}
-log.each do |h|
-  time = h[:time]
-  others = h.reject { |k,v| k.to_sym == :time }
-
-  if hash_by_time[time]
-    hash_by_time[time].merge! others
-  else
-    hash_by_time[time] = others
-  end
-end
-
-collapsed = hash_by_time.collect do |k, v|
-  {time: k}.merge(v)
-end
-</code></pre>
-
-	</section>
-	<span class="post-meta">17 Nov 2014</span>
 
 
     </article>

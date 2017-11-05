@@ -9,7 +9,7 @@
 
 	<meta name="author" content="Greg Moreno">
 	
-	<meta name="description" content="Architecture the Lost Years by Robert Martin http://youtu.be/WpkDN78P884 06 Mar 2012 More Ruby Tips and Tricks String to number conversion gotcha & &hellip;">
+	<meta name="description" content="Create Your Own Rails 3 Engine Engine is an interesting feature of Rails. Engines are miniature applications that live inside your application and &hellip;">
 
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="MobileOptimized" content="320" />
@@ -47,6 +47,270 @@
       
 	
 		
+	
+	<header class="post-header">
+		<h2 class="post-title">
+			
+			<a href="/create-your-own-rails-3-engine/">
+			
+				Create Your Own Rails 3 Engine</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<p>Engine is an interesting feature of Rails. Engines are miniature applications that live inside your application and they have structure that you would normally find in a typical Rails application. If you have used the Devise gem, which itself is an engine, you know the benefits of being able to add functionality to your application with just a few lines of code. Another great benefit of engines is when you or your team are maintaining a number of applications the common functionalities can be extracted into engines.</p>
+
+<p>Engines are already available prior to Rails 3 but it is not a core feature of the framework. As such, engine developers resorted to monkey-patching which, oftentimes, lead to engines breaking when Rails gets updated. In Rails 3.1, engines are now supported by the framework and there is now a clealy defined place where to hook your engines into Rails.</p>
+
+<p>Now, let us go through the steps of building a simple engine. We will be working on authentication engine (like Devise) that allows users of your application to use their Twitter or Facebook credentials.</p>
+
+<pre><code># This is the app that will use our engine
+$&gt; rails new social_app
+
+# This is our engine
+$&gt; rails plugin new undevise --mountable
+</code></pre>
+
+<p>The –mountable option tells Rails you want to generate a mountable plugin, commonly known as engine. When you look at the directory structure of your engine, it is much different from your Rails app. The engine has controllers, models, views, mailers, lib, and even its own config/routes.rb (didn’t we just said it is a miniature Rails app).</p>
+
+<h3>Include the engine in your app</h3>
+
+<p>Just like any gem, you should update your app’s Gemfile to use the engine we created.</p>
+
+<pre><code># social_app/Gemfile
+gem 'undevise', :path =&gt; '../undevise'
+</code></pre>
+
+<p>Of course, you can set :path to any location or if it is in a git repository, you can use the :git option. If you are developing your engine alongside your app, a better approach is to use gem groups in your Gemfile. For example:</p>
+
+<pre><code>group :development do
+  gem 'undevise', :path =&gt; '../undevise'
+end
+
+group :production do
+  gem 'undevise', :git =&gt; 'git://github.com/yourname/undevise.git'
+end
+</code></pre>
+
+<p>After adding the engine in your Gemfile, let’s make sure all dependencies are available for the application. If everything works, you should be able to see a reference to undevise inside Gemfile.lock</p>
+
+<pre><code>$&gt; cd social_app
+$&gt; bundle install
+$&gt; more Gemfile.lock
+PATH
+  remote: ../undevise
+  specs:
+    undevise (0.0.1)
+      rails (~&gt; 3.2.1)
+</code></pre>
+
+<h3>Mount the engine</h3>
+
+<p>Next, we will mount the engine and see if we can route requests to it. What this does is make sure requests starting with /auth will be passed to our engine.</p>
+
+<pre><code># social_app/config/routes.rb
+SocialApp::Application.routes.draw do
+  mount Undevise::Engine, :at =&gt; '/auth'
+end
+
+# Run the social app. Make sure you are in the social_app directory.
+$&gt; rails s
+
+# Then visit http://localhost:3000/auth
+</code></pre>
+
+<p>When you visit ‘/auth‘, you will get a routing error because you haven’t defined any routes in your engine yet.</p>
+
+<pre><code># undevise/config/routes.rb
+Undevise::Engine.routes.draw do
+  root :to =&gt; 'auth#index'
+end
+</code></pre>
+
+<p>Remember even though your engine is mounted at ‘/auth’, what your engine sees is the path after the ‘/auth’. Routes in engines are namespaced to avoid conflicts with your app. You can change the mounted path in your Rails app anytime and your engine wouldn’t care. Let’s try again and see what Rails would tell us.</p>
+
+<pre><code>$&gt; cd social_app
+$&gt; rails s
+</code></pre>
+
+<p>Perfect! Now we know the request is being passed to our engine. We now just have to define our controller.</p>
+
+<pre><code>$ cd undevise
+$ rails g controller auth
+
+# undevise/app/controllers/undevise/auth_controller.rb
+module Undevise
+  class AuthController &lt; ApplicationController
+    def index
+      render :text =&gt; 'Hello world'
+    end
+
+  end
+end
+
+# Now, visit http://localhost:3000/auth
+</code></pre>
+
+<p>Cool! We have the obligatory hello world program working. At the the risk of sounding like a broken record, remember your engine code should be namespaced. If you forget this, strange things will happen to your application and Rails will not usually complain about it.</p>
+
+<h3>Gem dependencies</h3>
+
+<p>I’m sure your idea for an engine is very far from what we have shown so far. When you generate an engine, it also creates a .gemspec file. While in your Rails app you list the gems in Gemfile, in your engine you list the gems inside the .gemspec file. This can be confusing because the engine also contains a Gemfile.</p>
+
+<pre><code>$&gt; cd undevise
+$&gt; more Gemfile
+
+source "http://rubygems.org"
+
+# Declare your gem's dependencies in undevise.gemspec.
+# Bundler will treat runtime dependencies like base dependencies, and
+# development dependencies will be added by default to the :development group.
+gemspec
+</code></pre>
+
+<p>As you can see, there is no need to list the gems your engine needs in the Gemfile. The line ‘gemspec’ makes sure the gems you listed in your .gemspec file are installed when you run bundle install.</p>
+
+<p>Now, let’s add some gems in our engine and see how it will affect our Rails app.</p>
+
+<pre><code># undevise/undevise.gemspec
+s.add_dependency "rails", "~&gt; 3.2.1"
+s.add_dependency "omniauth"
+s.add_dependency "omniauth-twitter"
+s.add_dependency "omniauth-facebook"
+
+
+$ cd social_app
+$ bundle install
+$ more Gemfile.lock
+PATH
+  remote: ../undevise
+  specs:
+    undevise (0.0.1)
+      omniauth
+      omniauth-facebook
+      omniauth-twitter
+      rails (~&gt; 3.2.1)
+</code></pre>
+
+<p>Here we can see the gems we specifed in undevise/undevise.gemspec are also included in the main Rails app.</p>
+
+<h3>Configure OmniAuth</h3>
+
+<p>If you are using omniauth directly in your app, your will configuration will definitely be in the file config/initializers/omniauth.rb. Since our engine is pretty much just another Rails app, it will also have its own config/initializers/omniauth.rb file. The only consideration with regards to the configuration is where would the Twitter or Facebook credentials be located. You definitely don’t want to embed it in your engine.</p>
+
+<p>Our solution is to store the credentials inside a config/twitter.yml file (or config/facebook.yml) inside your main Rails app. Then have our engine pull the values out of these files to configure omniauth.</p>
+
+<pre><code>$&gt; cd undevise/config
+$&gt; mkdir initializers
+$&gt; touch initializers/omniauth.rb
+
+# We have to create the initializers directory because it not created by default.
+
+# undevise/config/initializers/omniauth.rb
+providers = %w(twitter facebook).inject([]) do |providers, provider|
+  fpath = Rails.root.join('config', "#{provider}.yml")
+
+  if File.exists?(fpath)
+    config = YAML.load_file(fpath)
+    providers &lt;&lt; [ provider, config['consumer_key'], config['consumer_secret'] ]
+  end
+
+  providers
+end
+
+raise 'You have not created config/twitter.yml or config/facebook.yml' if providers.empty?
+
+Rails.application.config.middleware.use OmniAuth::Builder do
+  providers.each do |p|
+    provider *p
+  end
+end
+</code></pre>
+
+<p>Now, let’s go back to our main Rails app and start the server.</p>
+
+<pre><code>$&gt; cd social_app
+$&gt; rails s
+=&gt; Booting WEBrick
+=&gt; Rails 3.2.1 application starting in development on http://0.0.0.0:3000
+=&gt; Call with -d to detach
+=&gt; Ctrl-C to shutdown server
+Exiting
+/Users/greg/dev/tmp/ruby/engine-tutorial/undevise/config/initializers/omniauth.rb:12:in `&lt;top (required)&gt;': You have not created config/twitter.yml or config/facebook.yml (RuntimeError)
+</code></pre>
+
+<p>Oops! We forgot to create our Twitter or Facebook configuration file. In your main Rails app, go ahead and create config/twitter.yml. If you are not familiar with Twitter apps, visit their developer site at <a href="https://dev.twitter.com/">https://dev.twitter.com/</a></p>
+
+<h3>Gemfile dependencies and sub-depencies</h3>
+
+<pre><code># social_app/config/twitter.yml
+consumer_key:  'APP_CONSUMER_KEY'
+consumer_secret: 'APP_CONSUMER_SECRET'
+
+$&gt; rails s
+=&gt; Booting WEBrick
+=&gt; Rails 3.2.1 application starting in development on http://0.0.0.0:3000
+=&gt; Call with -d to detach
+=&gt; Ctrl-C to shutdown server
+Exiting
+/Users/greg/dev/tmp/ruby/engine-tutorial/undevise/config/initializers/omniauth.rb:12:in `&lt;top (required)&gt;': uninitialized constant OmniAuth (NameError)
+     from /Users/greg/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/railties-3.2.1/lib/rails/engine.rb:588:in `block (2 levels) in &lt;class:Engine&gt;'
+</code></pre>
+
+<p>The NameError occurs because during the main Rails’ app boot up, Bundler will only require dependencies listed in the Gemfile but not the sub-dependencies. As you can see from Gemfile.lock, omniauth is not a direct dependency. You could list the gems in your main app’s Gemfile but that’s defeating the purpose of isolating the gem dependencies through your engine.</p>
+
+<p>The solution right now is to require your dependencies inside your engine and the place to do that is inside lib/undevise/engine.rb</p>
+
+<pre><code># undevise/lib/undevise/engine.rb
+require 'omniauth'
+require 'omniauth-twitter'
+require 'omniauth-facebook'
+
+module Undevise
+  class Engine &lt; ::Rails::Engine
+    isolate_namespace Undevise
+  end
+end
+</code></pre>
+
+<p>After listing required dependencies inside your engine, restart your main Rails app, then visit <a href="http://localhost:3000/auth/twitter/">http://localhost:3000/auth/twitter/</a></p>
+
+<p>When you visit <a href="http://localhost:3000/auth/twitter/,">http://localhost:3000/auth/twitter/,</a> you should see the error above. The callback url is part of OmniAuth’s behaviour and should be fixed by adding a route in your engine and adding the method to handle it in your controller.</p>
+
+<pre><code># undevise/config/routes.rb
+Undevise::Engine.routes.draw do
+  root :to =&gt; 'auth#index'
+  match ':provider/callback' =&gt; 'auth#callback'
+end
+
+# undevise/app/controllers/undevise/auth_controller.rb
+module Undevise
+  class AuthController &lt; ApplicationController
+
+    def index
+      render :text =&gt; 'Hello world'
+    end
+
+    def callback
+      render :text =&gt; "Hello from #{params[:provider]}"
+    end
+
+  end
+end
+</code></pre>
+
+<p>If everything work fine, you should see a message from Twitter.</p>
+
+<p>We only scratched the surface with Rails 3 engine. Your engine, much like any normal Rails app, can have models and migrations, javascripts, css, specs, etc. If you want to dig deeper into engines, I recommend Rails 3 in Action by Ryan Bigg and Yehuda Katz. It includes a whole chapter about engines, discussion of middleware, and how tests your engine.</p>
+
+	</section>
+	<span class="post-meta">29 May 2012</span>
+
+
+    </article>
+
+  
+    <article class="post">
+      
 	
 	<header class="post-header">
 		<h2 class="post-title">
