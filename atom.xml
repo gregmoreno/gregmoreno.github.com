@@ -4,7 +4,7 @@
   <title><![CDATA[Greg Moreno]]></title>
   <link href="http:///atom.xml" rel="self"/>
   <link href="http:///"/>
-  <updated>2017-11-04T17:57:06-07:00</updated>
+  <updated>2019-03-12T22:32:07-07:00</updated>
   <id>http:///</id>
   <author>
     <name><![CDATA[Greg Moreno]]></name>
@@ -14,7 +14,47 @@
 
   
   <entry>
-    <title type="html"><![CDATA[5-bullet-sunday-morning]]></title>
+    <title type="html"><![CDATA[Schedule delays should not surprise you]]></title>
+    <link href="http:///schedule-delays-should-not-surprise-you/"/>
+    <updated>2019-03-12T22:29:30-07:00</updated>
+    <id>http:///schedule-delays-should-not-surprise-you</id>
+    <content type="html"><![CDATA[<p>When do you plan to talk about that crucial albeit uncomfortable topic? You know, that you are not going to hit your release date.</p>
+
+<p>Often, awareness about delays surfaces only when we are a couple of days before release date and our boss asked the dreaded question “Are we going to make it?”. In reality, delays don’t happen near the end - it happens numerous times in the middle.</p>
+
+<ul>
+<li>You got pulled on an unscheduled meeting. Your project is now delayed by an hour.</li>
+<li>You left the office early to buy that toy for your daughter’s 7th birthday. Add 4 more hours.</li>
+<li>You worked on that nasty bug from the previous release. Make that 3 days and 5 hours.</li>
+<li>You got sick. Now, you are delayed by a week.</li>
+<li>You procrastinated. etc. etc.</li>
+</ul>
+
+
+<p>These seemingly little things happen all the time yet we don’t consider than as big contributors to our schedule delays. Often, we attribute things outside our control like a developer quitting in the middle of the project or big requirement change midway as causes of delays.  Yet the true contributors are just hiding in plain sight and these little slips accumulated over time will become a major cause of delay.</p>
+
+<p>One of the first things you can do is to have enough granularity with your deliverables that progress is obvious over a period of just couple of days as much as possible. When your commitments span weeks and  there is no clear progress over a long period, you won’t have any idea if you are near or far to your target.  And if your job is to manage delivery, that feeling of not knowing sucks. But if you make commitments over short intervals and you failed to deliver, you know if you need to make up for a day or two, which is more manageable.  If you let a week go by without knowing what is happening, that is too long already and you could be facing a delay that is a challenge to compensate for.</p>
+
+<p>The second step is to make sure your team understands who depends on those deliverables. If Alice is working on that API that Bob needs,  and Bob is working on the shopping cart that Charlies needs to test, and Charlie needs to give the test results to Alice, every one should understand the interdependency among the individuals. This dynamic is repeated hundred times prior to hitting a milestone. When you think about it, hitting your deadline is all about making and keeping hundreds of small vital promises.</p>
+
+<p>If you keep tab of those hundred promises, delays shouldn’t surprise you. When your team failed to deliver on this week’s promises and then four weeks later you learned your project is now late, then that is a problem. Most likely, people are not talking to teach other, not aware of the impact of a broken promise, or worse, have no sense of mutual accountability.</p>
+
+<p>Every delay will cost your team some credibility points, and each one can costs more than the previous. On the bright side, there are positive things to be gained out of it. Delays are uncomfortable topic but these often trigger new insights, alternative views, and previously unimagined possibilities.  As new information comes in, you are now more closer to reality and your team can course correct towards the best results instead of blindly sticking to plans and schedules that were set when you still have a long list of unknowns.</p>
+
+<p>Flexibility is software’s greatest asset and quickly adapting to changing environments is characteristic of excellence in software development.  You can add time, subtract features, add resources, or do some combination of the three. You have heard this a million times - the famous triangle of features, resources, and time.  At the end of day you only have those 3 things to work with.</p>
+
+<p>There will be pressure to give a new end date but don’t. While it is uncomfortable knowing you already have a bad date, wait until the cause of the delay and extent are totally understood.  This is not the time to estimate how much you’ve slipped and tacking it to your current schedule — which is already proven to be wrong. This is the time to think through all the new information and possible remedies.</p>
+
+<p>Delays are commonly viewed negatively and much of it stems from our desire for things to be predictable. In reality, software development is an experiment of putting together a diverse group of people to perform a creative endeavour.  Software development, even after decades of experimenting with different practices, is still not an exact science — it’s more of an art form sprinkled with technical fairy dusts</p>
+
+<p>Every software project, no matter how successful they were, started with a large number of important things that were unknown. It is undesirable to have many unknowns but not unusual.  Given each software development project is unique with its own personality and combine that with new technologies and new approaches, you end up with high degree of uncertainty — the odds are against you.</p>
+
+<p>However, attempting to eliminate all the unknowns at the start is not only unrealistic but also a waste of your precious time. Instead, one of your primary job is to make every one embrace uncertainty and guide your organization so it thrives in an uncertain environment.  Your team’s mindset is not to follow a plan to perfection but to make the right decisions every day as the unknowns become knowns.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[5-bullet Sunday morning"]]></title>
     <link href="http:///5-bullet-sunday-morning/"/>
     <updated>2017-11-04T17:50:57-07:00</updated>
     <id>http:///5-bullet-sunday-morning</id>
@@ -86,6 +126,8 @@
 
 <p>&ldquo;A side effect of doing challenging work is that you’re pulled by excitement and pushed by confusion at the same time.&rdquo;
 - <a href="https://jamesclear.com/successful-people-start-before-they-feel-ready?__s=rg5u4ofe9tzwuyfixegg">James Clear</a></p>
+
+<p>This post also appeared at <a href="https://medium.com/@gregmoreno/5-bullet-sunday-morning-1524f4db811">Medium</a>.</p>
 ]]></content>
   </entry>
   
@@ -2038,362 +2080,6 @@ scroll_to_entry = (entry) -&gt;
 <p>That&rsquo;s it! As I&rsquo;ve mentioned before, this is not production ready. For example, the shortcut should not interfere with other actions in your page like when the user is interacting with an input field. This also assumes the current visible entry is the first one.</p>
 
 <p>This post is based from the book <a href="http://webdevelopmentrecipes.com/">Web Development Recipes</a>. If you are looking for quick reference on how to improve your project, I suggest reading the book.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[How to create a wrapper gem for service APIs - part 1]]></title>
-    <link href="http:///how-to-create-a-wrapper-gem-for-service-apis-part-1/"/>
-    <updated>2012-06-07T00:41:01-07:00</updated>
-    <id>http:///how-to-create-a-wrapper-gem-for-service-apis-part-1</id>
-    <content type="html"><![CDATA[<p>APIs are getting more and more popular as apps and services move to the cloud. Whenever you need to integrate a popular web service API into your Ruby app, 99.99% of the time there already exists a gem ready for use. That is a testament to how active Ruby developers are in supporting the community.</p>
-
-<p>Even if integrating with the popular APIs is not in your radar, you may still have a need to create an API wrapper for internal use. For example, if your Rails application has grown tremendously (congratulations!), you may eventually need to adopt a services architecture to support upcoming features and make things manageable.</p>
-
-<p>I created the <a href="https://github.com/gregmoreno/openamplify">gem for the Open Amplify API</a> as part of my exploration to data mining. When I first created it, my primary goal was simply to wrap the API. Though I still didn&rsquo;t write spaghetti code, it wasn&rsquo;t a good example of structured code either. Two years later (yep, that&rsquo;s how long I let the code rot), I decided to re-write the gem and adopt the architecture from the Twitter gem. It was a good exercise because not only I updated the gem for the newest API version, I also learned a great deal on how to write a gem.</p>
-
-<h3>Setup the project</h3>
-
-<p>We will create a wrapper for the fictitious Awesome API and thus call our gem &lsquo;awesome&rsquo;. To get things started, let&rsquo;s use bundler to set up our initial code.</p>
-
-<pre><code>$&gt; bundle gem awesome
-create awesome/Gemfile
-create awesome/Rakefile
-create awesome/LICENSE
-create awesome/README.md
-create awesome/.gitignore
-create awesome/awesome.gemspec
-create awesome/lib/awesome.rb
-create awesome/lib/awesome/version.rb
-Initializating git repo in /Users/greg/dev/code/awesome
-</code></pre>
-
-<p>This is the standard directory structure and naming convention of Ruby gems. The files Gemfile, Rakefile, and .gitignore are not necessary but they would be very useful while developing your gem.</p>
-
-<h3>Gem dependencies</h3>
-
-<p>All gem dependencies should go into awesome.gemspec and not in Gemfile. Inside your Gemfile, the line &lsquo;gemspec&rsquo; takes care of identifying the gems you needed in your local.</p>
-
-<pre><code>$&gt; more Gemfile
-source 'https://rubygems.org'
-
-# Specify your gem's dependencies in awesome.gemspec
-gemspec
-</code></pre>
-
-<h3>Versioning</h3>
-
-<p>You specify the version of your gem inside lib/awesome/version.rb</p>
-
-<pre><code>$&gt; more lib/awesome/version.rb
-module Awesome
-  VERSION = "0.0.1"
-end
-</code></pre>
-
-<p>You may be wondering how is this used by the gem. Take a peek at awesome.gemspec and you&rsquo;ll see that Awesome::VERSION is used by the .gemspec file.</p>
-
-<pre><code>$&gt; more awesome.gemspec
-require File.expand_path('../lib/awesome/version', __FILE__)
-
-Gem::Specification.new do |gem|
-gem.authors = ["Greg Moreno"]
-gem.email = ["greg.moreno@gmail.com"]
-gem.description = %q{TODO: Write a gem description}
-gem.summary = %q{TODO: Write a gem summary}
-gem.homepage = ""
-
-gem.files = `git ls-files`.split($\)
-gem.executables = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-gem.test_files = gem.files.grep(%r{^(test|spec|features)/})
-gem.name = "awesome"
-gem.require_paths = ["lib"]
-gem.version = Awesome::VERSION
-end
-</code></pre>
-
-<h3>Additional modules and classes</h3>
-
-<p>You can write all your code in the file lib/awesome.rb and it would still work. However, in the spirit of making code maintainable, it is highly recommended that you put your classes and modules under the directory lib/awesome just like what we did with lib/awesome/version.rb</p>
-
-<h3>Testing the gem</h3>
-
-<p>We will use minitest but you can always use any test framework you prefer. For our test setup, we need to do the ff:</p>
-
-<ul>
-<li>Setup our test directory manually since bundler didn&rsquo;t do this for us.</li>
-<li>Create a rake task to run our tests.</li>
-<li>Specify gem dependencies in our common test helper file.</li>
-</ul>
-
-
-<p>And the steps and code below.</p>
-
-<pre><code>$&gt; mkdir test
-$&gt; touch test/helper.rb
-$&gt; mkdir test/awesome
-$&gt; touch test/awesome/awesome_test.rb
-
-# Rakefile
-require 'bundler/gem_tasks'
-
-require 'rake/testtask'
-Rake::TestTask.new do |test|
-  test.libs &lt;&lt; 'lib' &lt;&lt; 'test'
-  test.ruby_opts &lt;&lt; "-rubygems"
-  test.pattern = 'test/**/*_test.rb'
-  test.verbose = true
-end
-
-# test/helper.rb
-require 'awesome'
-require 'minitest/spec'
-require 'minitest/autorun'
-</code></pre>
-
-<p>Now that we have our testing in place, let&rsquo;s write a simple test and see if everything works.</p>
-
-<pre><code># test/awesome/awesome_test.rb
-require 'helper'
-
-describe Awesome do
-  it 'should have a version' do
-    Awesome::VERSION.wont_be_nil
-  end
-end
-
-# Then, let's run the test
-$&gt; rake test
-(in /Users/greg/dev/code/awesome)
-/Users/greg/.rbenv/versions/1.9.2-p290/bin/ruby -I"lib:lib:test" -rubygems "/Users/greg/.rbenv/versions/1.9.2-p290/lib/ruby/1.9.1/rake/rake_test_loader.rb" "test/awesome/awesome_test.rb"
-Loaded suite /Users/greg/.rbenv/versions/1.9.2-p290/lib/ruby/1.9.1/rake/rake_test_loader
-Started
-.
-Finished in 0.000695 seconds.
-
-1 tests, 1 assertions, 0 failures, 0 errors, 0 skips
-
-Test run options: --seed 55984
-</code></pre>
-
-<p>Perfect! Now, let&rsquo;s start working on the juicy parts of our gem.</p>
-
-<h3>Configuration</h3>
-
-<p>Every webservice API would definitely require a per-user configuration and your gem should be able to support that. For example in the Twitter gem, some methods require authentication and you setup the default configuration with this:</p>
-
-<pre><code>Twitter.configure do |config|
-  config.consumer_key = YOUR_CONSUMER_KEY
-  config.consumer_secret = YOUR_CONSUMER_SECRET
-  config.oauth_token = YOUR_OAUTH_TOKEN
-  config.oauth_token_secret = YOUR_OAUTH_TOKEN_SECRET
-end
-</code></pre>
-
-<p>Every API has different options but if you are wrapping a webservice, the options often fall into two categories - connections and functional options. For example,  connection-related options include the endpoint, user agent, and authentication keys while functional options include request format (e.g. json), number of pages to return and other parameters required by specific API functions. In some APIs, the  api key is passed as a parameter to GET calls so while it may be connection-related, it is better to group it with parameter options so you can easily encode all parameters in a single call.Our Awesome API is simple and will not deal with OAuth like the Twitter gem does. For the configuration, we should be able to do this:</p>
-
-<pre><code>Awesome.api_key = 'YOUR_API_KEY'
-Awesome.format = :json
-# Other options are: user_agent, method
-</code></pre>
-
-<p>Now, let&rsquo;s write some tests. Of course, these should fail at first :)</p>
-
-<pre><code># test/awesome/configuration_test.rbrequire 'helper'
-
-describe 'configuration' do
-  describe '.api_key' do
-    it 'should return default key' do
-      Awesome.api_key.must_equal Awesome::Configuration::DEFAULT_API_KEY
-    end
-  end
-
-  describe '.format' do
-    it 'should return default format' do
-      Awesome.format.must_equal Awesome::Configuration::DEFAULT_FORMAT
-    end
-  end
-
-  describe '.user_agent' do
-    it 'should return default user agent' do
-      Awesome.user_agent.must_equal Awesome::Configuration::DEFAULT_USER_AGENT
-    end
-  end
-
-  describe '.method' do
-    it 'should return default http method' do
-      Awesome.method.must_equal Awesome::Configuration::DEFAULT_METHOD
-    end
-  end
-end
-</code></pre>
-
-<p>As I mentioned before, the best way to write your gem (or any program for that matter) is to cleary separate the functionalities into modules and classes. In our case, we will put all configuration defaults inside a module (i.e. lib/awesome/configuration.rb). We also want to provide class methods for the module Awesome which we can easily do using Ruby&rsquo;s &lsquo;extend&rsquo;.</p>
-
-<pre><code># lib/awesome/configuration.rb
-
-module Awesome
-  module Configuration
-    VALID_CONNECTION_KEYS = [:endpoint, :user_agent, :method].freeze
-    VALID_OPTIONS_KEYS = [:api_key, :format].freeze
-    VALID_CONFIG_KEYS = VALID_CONNECTION_KEYS + VALID_OPTIONS_KEYS
-
-    DEFAULT_ENDPOINT = 'http://awesome.dev/api'
-    DEFAULT_METHOD = :get
-    DEFAULT_USER_AGENT = "Awesome API Ruby Gem #{Awesome::VERSION}".freeze
-
-    DEFAULT_API_KEY = nil
-    DEFAULT_FORMAT = :json
-
-    # Build accessor methods for every config options so we can do this, for example:
-    # Awesome.format = :xml
-    attr_accessor *VALID_CONFIG_KEYS
-
-    # Make sure we have the default values set when we get 'extended'
-    def self.extended(base)
-      base.reset
-    end
-
-    def reset
-      self.endpoint = DEFAULT_ENDPOINT
-      self.method = DEFAULT_METHOD
-      self.user_agent = DEFAULT_USER_AGENT
-
-      self.api_key = DEFAULT_API_KEY
-      self.format = DEFAULT_FORMAT
-    end
-
-  end # Configuration
-end
-
-# lib/awesome.rb
-require 'awesome/version'
-require 'awesome/configuration'
-
-module Awesome
-  extend Configuration
-end
-
-$&gt; rake test
-(in /Users/greg/dev/code/awesome)
-/Users/greg/.rbenv/versions/1.9.2-p290/bin/ruby -I"lib:lib:test" -rubygems "/Users/greg/.rbenv/versions/1.9.2-p290/lib/ruby/1.9.1/rake/rake_test_loader.rb" "test/awesome/awesome_test.rb" "test/awesome/configuration_test.rb"
-Loaded suite /Users/greg/.rbenv/versions/1.9.2-p290/lib/ruby/1.9.1/rake/rake_test_loader
-Started
-.....
-Finished in 0.001600 seconds.
-
-5 tests, 5 assertions, 0 failures, 0 errors, 0 skips
-</code></pre>
-
-<p>Our gem will not be awesome if we don&rsquo;t support a &lsquo;configure&rsquo; block like what the Twitter gem does. We want to setup the configuration like this:</p>
-
-<pre><code>Awesome.configure do |config|
-  config.api_key = 'YOUR_API_KEY'
-  config.method = :post
-  config.format = :json
-end
-</code></pre>
-
-<p>Fortunately, it&rsquo;s an easy fix. We just need to add a &lsquo;configure&rsquo; method to the Configuration module. We also update our tests to make sure this new method works.</p>
-
-<pre><code># lib/awesome/configuration.rb
-def configure
-  yield self
-end
-
-# test/awesome/configuration_test.rb
-after do
-  Awesome.reset
-end
-
-describe '.configure' do
-  Awesome::Configuration::VALID_CONFIG_KEYS.each do |key|
-    it "should set the #{key}" do
-      Awesome.configure do |config|
-        config.send("#{key}=", key)
-        Awesome.send(key).must_equal key
-      end
-    end
-  end
-end
-</code></pre>
-
-<p>Before we move on, let&rsquo;s take a second look at our configuration tests. We have tests for checking default values and setting-up new ones.  What if we added a new configuration key for our gem? The &lsquo;configure&rsquo; tests will be able to handle the new key but we still have to add another test for checking the default value. And we don&rsquo;t want to right another test code, right?  More importantly, we don&rsquo;t want our tests to yield false positives. If we fail to add the &lsquo;default value&rsquo; check, our tests will still pass even though  we forgot to set a default value.Let us remove all our default value tests and replace it with code that relies on VALID_CONFIG_KEYS instead.</p>
-
-<pre><code># test/awesome/configuration_test.rb
-Awesome::Configuration::VALID_CONFIG_KEYS.each do |key|
-  describe ".#{key}" do
-    it 'should return the default value' do
-      Awesome.send(key).must_equal Awesome::Configuration.const_get("DEFAULT_#{key.upcase}")
-    end
-  end
-end
-
-$&gt; rake test
-(in /Users/greg/dev/code/awesome)
-/Users/greg/.rbenv/versions/1.9.2-p290/bin/ruby -I"lib:lib:test" -rubygems "/Users/greg/.rbenv/versions/1.9.2-p290/lib/ruby/1.9.1/rake/rake_test_loader.rb" "test/awesome/awesome_test.rb" "test/awesome/configuration_test.rb"
-Loaded suite /Users/greg/.rbenv/versions/1.9.2-p290/lib/ruby/1.9.1/rake/rake_test_loader
-Started
-...........
-Finished in 0.002935 seconds.
-
-11 tests, 11 assertions, 0 failures, 0 errors, 0 skips
-
-Test run options: --seed 21540
-</code></pre>
-
-<h3>Configuring clients</h3>
-
-<p>Our end goal is to wrap API calls that fits nicely into our application and the common approach to do that is to wrap the API calls under a &lsquo;Client&rsquo; class. Depending on the size of the API you want to support, the Client class maybe delegating the method calls to other classes and modules but from the point of view your program, the action happens inside the Client class. There are two ways to configure the Client class:</p>
-
-<ul>
-<li>It inherits the configuration values defined in the Awesome module;</li>
-<li><p>It overrides the configuration values per client</p>
-
-<p>  # Use the values defined in the Awesome module
-  client = Awesome::Client.new
-  client.make_me_awesome(&lsquo;gregmoreno&rsquo;)</p>
-
-<p>  client_xml = Awesome::Client.new :format => :xml
-  client_json = Awesome::Client.new :format => :json</p></li>
-</ul>
-
-
-<p>We are not going to show our tests in here but if you are interested, you can view the <a href="https://github.com/gregmoreno/awesome/blob/master/test/awesome/client_test.rb">test code from the github</a> repository. Instead, we show the code that handles the two scenarios for client configuration.</p>
-
-<pre><code># lib/awesome/client.rb
-
-module Awesome
-  class Client
-
-    # Define the same set of accessors as the Awesome module
-    attr_accessor *Configuration::VALID_CONFIG_KEYS
-
-    def initialize(options={})
-      # Merge the config values from the module and those passed
-      # to the client.
-      merged_options = Awesome.options.merge(options)
-
-      # Copy the merged values to this client and ignore those
-      # not part of our configuration
-      Configuration::VALID_CONFIG_KEYS.each do |key|
-        send("#{key}=", merged_options[key])
-      end
-    end
-
-  end # Client
-end
-</code></pre>
-
-<p>We also need to update our Awesome module. First, we need to require the new file  awesome/client.rb so it will be loaded when we require the gem.  Second, we need to implement a method that returns all the configuration values inside the Awesome module. Since this is still about configuration, our new method should go inside the Configuration module.</p>
-
-<pre><code># lib/awesome/configuration.rb
-def options
-  Hash[ * VALID_CONFIG_KEYS.map { |key| [key, send(key)] }.flatten ]
-end
-</code></pre>
-
-<p>We&rsquo;re finally done with the configuration part of our gem. I know it&rsquo;s a lot of work for a simple task but we managed to put a good structure in our code. Plus, we learned how to make our tests less brittle, and use Ruby&rsquo;s awesome power to make our code better.   In our next installment, we&rsquo;ll discuss requests and error handling.</p>
 ]]></content>
   </entry>
   

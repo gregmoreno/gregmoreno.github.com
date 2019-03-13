@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http:///schedule-delays-should-not-surprise-you/</loc>
+<lastmod>2019-03-12T22:29:30-07:00</lastmod>
+</url>
+<url>
 <loc>http:///5-bullet-sunday-morning/</loc>
 <lastmod>2017-11-04T17:50:57-07:00</lastmod>
 </url>
@@ -137,11 +141,5 @@
 </url>
 <url>
 <loc>http:///blog/categories/coding/</loc>
-</url>
-<url>
-<loc>http:///posts/2/</loc>
-</url>
-<url>
-<loc>http:///posts/3/</loc>
 </url>
 </urlset>
