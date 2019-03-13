@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http:///sitemap.xml 
+Sitemap: https://gregmoreno.ca/sitemap.xml 

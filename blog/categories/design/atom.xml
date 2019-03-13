@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: design | Greg Moreno]]></title>
-  <link href="http:///blog/categories/design/atom.xml" rel="self"/>
-  <link href="http:///"/>
-  <updated>2019-03-12T22:45:41-07:00</updated>
-  <id>http:///</id>
+  <link href="https://gregmoreno.ca/blog/categories/design/atom.xml" rel="self"/>
+  <link href="https://gregmoreno.ca/"/>
+  <updated>2019-03-12T23:13:42-07:00</updated>
+  <id>https://gregmoreno.ca/</id>
   <author>
     <name><![CDATA[Greg Moreno]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Beware of the usability Stockholm syndrome]]></title>
-    <link href="http:///beware-of-the-usability-stockholm-syndrome/"/>
+    <link href="https://gregmoreno.ca/beware-of-the-usability-stockholm-syndrome/"/>
     <updated>2006-12-05T12:06:30-08:00</updated>
-    <id>http:///beware-of-the-usability-stockholm-syndrome</id>
+    <id>https://gregmoreno.ca/beware-of-the-usability-stockholm-syndrome</id>
     <content type="html"><![CDATA[<p>The only way they to know if an application works well for users is to conduct usability testing. A usability test does not need to be expensive like having a laboratory where cameras are mounted in every angle and viewers are on the other side of a one-way mirror looking at monitors that track the users eye movements and heartbeat.</p>
 
 
