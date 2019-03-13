@@ -4,7 +4,7 @@
   <title><![CDATA[Greg Moreno]]></title>
   <link href="http:///atom.xml" rel="self"/>
   <link href="http:///"/>
-  <updated>2019-03-12T22:34:47-07:00</updated>
+  <updated>2019-03-12T22:35:39-07:00</updated>
   <id>http:///</id>
   <author>
     <name><![CDATA[Greg Moreno]]></name>
@@ -22,14 +22,11 @@
 
 <p>Often, awareness about delays surfaces only when we are a couple of days before release date and our boss asked the dreaded question “Are we going to make it?”. In reality, delays don’t happen near the end - it happens numerous times in the middle.</p>
 
-<ul>
-<li>You got pulled on an unscheduled meeting. Your project is now delayed by an hour.</li>
-<li>You left the office early to buy that toy for your daughter’s 7th birthday. Add 4 more hours.</li>
-<li>You worked on that nasty bug from the previous release. Make that 3 days and 5 hours.</li>
-<li>You got sick. Now, you are delayed by a week.</li>
-<li>You procrastinated. etc. etc.</li>
-</ul>
-
+<p>You got pulled on an unscheduled meeting. Your project is now delayed by an hour.
+You left the office early to buy that toy for your daughter’s 7th birthday. Add 4 more hours.
+You worked on that nasty bug from the previous release. Make that 3 days and 5 hours.
+You got sick. Now, you are delayed by a week.
+You procrastinated. etc. etc.</p>
 
 <p>These seemingly little things happen all the time yet we don’t consider than as big contributors to our schedule delays. Often, we attribute things outside our control like a developer quitting in the middle of the project or big requirement change midway as causes of delays.  Yet the true contributors are just hiding in plain sight and these little slips accumulated over time will become a major cause of delay.</p>
 
