@@ -10,11 +10,11 @@ When do you plan to talk about that crucial albeit uncomfortable topic? You know
 
 Often, awareness about delays surfaces only when we are a couple of days before release date and our boss asked the dreaded question “Are we going to make it?”. In reality, delays don’t happen near the end - it happens numerous times in the middle.
 
-* You got pulled on an unscheduled meeting. Your project is now delayed by an hour.
-* You left the office early to buy that toy for your daughter’s 7th birthday. Add 4 more hours.
-* You worked on that nasty bug from the previous release. Make that 3 days and 5 hours.
-* You got sick. Now, you are delayed by a week.
-* You procrastinated. etc. etc.
+You got pulled on an unscheduled meeting. Your project is now delayed by an hour.
+You left the office early to buy that toy for your daughter’s 7th birthday. Add 4 more hours.
+You worked on that nasty bug from the previous release. Make that 3 days and 5 hours.
+You got sick. Now, you are delayed by a week.
+You procrastinated. etc. etc.
 
 These seemingly little things happen all the time yet we don’t consider than as big contributors to our schedule delays. Often, we attribute things outside our control like a developer quitting in the middle of the project or big requirement change midway as causes of delays.  Yet the true contributors are just hiding in plain sight and these little slips accumulated over time will become a major cause of delay.
 
@@ -28,7 +28,7 @@ Every delay will cost your team some credibility points, and each one can costs 
 
 Flexibility is software’s greatest asset and quickly adapting to changing environments is characteristic of excellence in software development.  You can add time, subtract features, add resources, or do some combination of the three. You have heard this a million times - the famous triangle of features, resources, and time.  At the end of day you only have those 3 things to work with.
 
-There will be pressure to give a new end date but don’t. While it is uncomfortable knowing you already have a bad date, wait until the cause of the delay and extent are totally understood.  This is not the time to estimate how much you’ve slipped and tacking it to your current schedule — which is already proven to be wrong. This is the time to think through all the new information and possible remedies.
+There will be pressure to give a new end date but don’t give in. While it is uncomfortable knowing you already have a bad date, wait until the cause of the delay and extent are totally understood.  This is not the time to estimate how much you’ve slipped and tacking it to your current schedule which is already proven to be wrong. This is the time to think through all the new information and possible remedies.
 
 Delays are commonly viewed negatively and much of it stems from our desire for things to be predictable. In reality, software development is an experiment of putting together a diverse group of people to perform a creative endeavour.  Software development, even after decades of experimenting with different practices, is still not an exact science — it’s more of an art form sprinkled with technical fairy dusts 
 
