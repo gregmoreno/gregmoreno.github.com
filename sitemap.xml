@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>https://gregmoreno.ca/rails-vue-simple-app/</loc>
+<lastmod>2019-05-13T21:33:08-07:00</lastmod>
+</url>
+<url>
 <loc>https://gregmoreno.ca/schedule-delays-should-not-surprise-you/</loc>
 <lastmod>2019-03-12T22:29:30-07:00</lastmod>
 </url>
@@ -141,5 +145,14 @@
 </url>
 <url>
 <loc>https://gregmoreno.ca/blog/categories/coding/</loc>
+</url>
+<url>
+<loc>https://gregmoreno.ca/posts/2/</loc>
+</url>
+<url>
+<loc>https://gregmoreno.ca/posts/3/</loc>
+</url>
+<url>
+<loc>https://gregmoreno.ca/posts/4/</loc>
 </url>
 </urlset>

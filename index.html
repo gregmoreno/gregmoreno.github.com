@@ -9,7 +9,8 @@
 
 	<meta name="author" content="Greg Moreno">
 	
-	<meta name="description" content="Schedule Delays Should Not Surprise You When do you plan to talk about that crucial albeit uncomfortable topic? You know, that you are not going to &hellip;">
+	<meta name="description" content="How to Create a Simple CRUD App With Rails and Vue This tutorial was inspired by James Hibbard&rsquo;s post
+but instead of using React, I will use &hellip;">
 
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="MobileOptimized" content="320" />
@@ -51,6 +52,575 @@
 	<header class="post-header">
 		<h2 class="post-title">
 			
+			<a href="/rails-vue-simple-app/">
+			
+				How to Create a Simple CRUD App With Rails and Vue</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		<p>This tutorial was inspired by <a href="https://hibbard.eu/rails-react-crud-app/">James Hibbard&rsquo;s post</a>
+but instead of using React, I will use Vue. This is not meant to compare
+React and Vue nor to conclude which one is better though I find Vue more
+approachable. This is just my second time to use Vue so please don&rsquo;t look
+at me as an expert. This is also a learning experience for me and I hope
+you learn something, too :)</p>
+
+<p>While most of the content are based on James' post, I decided to treat Rails
+and Vue as two separate applications. The Rails application is API-only that
+serves JSON, i.e. you will not see any mention of Vue included in the codebase.
+On the other hand, the Vue application is also a pure web client and does
+everything via API calls. I will also use Vuex to centrally managed the API
+calls and the state used by the Vue components.</p>
+
+<p>In this post, I decided not to do a typical tutorial where you go about
+building the application from start to finish. Instead, I will just
+highlight the major code changes.</p>
+
+<h3>Setup</h3>
+
+<p>The tutorial was developed using the following:</p>
+
+<ul>
+<li>Ruby 2.6.1</li>
+<li>Rails 5.2.2</li>
+<li>Npm 5.6.0  (<a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm">See installation guide</a>)</li>
+<li>Vue 2.6.8 (<a href="https://vuejs.org/v2/guide/installation.html">See installation guide</a>)</li>
+</ul>
+
+
+<p>The code is available at <a href="https://github.com/gregmoreno/rails-vue-tutorial">https://github.com/gregmoreno/rails-vue-tutorial</a>.</p>
+
+<h3>Quick Guide</h3>
+
+<pre><code># Get the code
+git checkout git@github.com:gregmoreno/rails-vue-tutorial.git
+cd rails-vue-tutorial
+
+# Run Rails app
+# To view JSON localhost:3000/events
+cd rails-api
+bundle install
+rails db:setup
+rails db:seed
+rails s
+
+# Run Vue app
+# To view app localhost:8080/events
+cd vue-ui
+npm install
+npm run serve
+
+# Or using foreman to run the 2 apps
+foreman start -f Procfile.dev
+</code></pre>
+
+<p>Start here:</p>
+
+<pre><code>http://localhost:8080/events
+</code></pre>
+
+<h3>Architecture</h3>
+
+<p>The project is composed of 2 applications - a Rails application that returns <code>events</code>
+in JSON and a Vue application that handles UI interaction.
+The applications are in their respective directories.</p>
+
+<pre><code>./rails-api
+./vue-ui
+</code></pre>
+
+<h3>API Endpoints</h3>
+
+<pre><code>GET     /events      # list of events
+POST    /events      # create a new event
+PUT     /events/:id  # update an event
+DELETE  /events/:id  # delete an event
+</code></pre>
+
+<p>Each <code>event</code> has the following structure:</p>
+
+<pre><code>{
+  "id": 1,
+  "event_type": "Symposium",
+  "event_date": "2018-05-01",
+  "title": "A Social-Neuroscience Perspective on Empathy",
+  "speaker": "Albert von Bezold, Jules Cotard, Marian Diamond",
+  "host": "Alcmaeon of Croton",
+  "published": true,
+  "created_at": "2019-04-13T22:41:55.867Z",
+  "updated_at": "2019-04-13T22:41:55.867Z"
+},
+</code></pre>
+
+<h3>Rails Components</h3>
+
+<p><strong>Controller</strong></p>
+
+<p>The <code>EventsController</code> is a typical Rails controller that returns
+a JSON using <a href="https://github.com/rails/jbuilder">Jbuilder</a>. However, I
+would love to share a pattern that I often use with my Rails
+controller.</p>
+
+<pre><code>class EventsController &lt; ApplicationController
+  def index
+    load_events
+  end
+
+  def create
+    build_event
+
+    # more code follows
+  end
+
+  def update
+    load_event
+    build_event
+
+    # more code follows
+  end
+
+  def destroy
+    load_event
+    @event.destroy
+
+    # more code follows
+  end
+
+private
+
+  def event_scope
+    Event.all
+  end
+
+  def load_events
+    @events = event_scope.order(event_date: :DESC)
+  end
+
+  def load_event
+    @event ||= event_scope.find(params[:id])
+  end
+
+  def build_event
+    @event ||= event_scope.build
+    @event.attributes = event_params
+  end
+
+  def event_params
+    @event_params = params[:event]
+    @event_params ? @event_params.permit(permitted_params) : {}
+  end
+
+  def permitted_params
+    %i[
+      event_type
+      event_date
+      title
+      speaker
+      host
+      published
+    ]
+  end
+end
+</code></pre>
+
+<p>Did you notice it?</p>
+
+<p>I like separating the actions into disctinct methods even though it
+often just results to one-liners. However, this clean separation
+makes the controller easier to understand and evolve. For example,
+<code>event_scope</code> may eventually evolve to scope with <code>current_user</code>.</p>
+
+<p>Our Rail application is boring but I love it that way.
+It is all Ruby and there is no Javascript framework to worry about</p>
+
+<p>Since we have built an API on top of Rails, we need to tell our Rails
+application that requests would come from a diferent source. Otherwise,
+our Vue application will just receive errors every time it calls the API.
+If you&rsquo;re planning on serving your Vue application other than from
+<code>localhost</code>, update the <code>origins</code> parameter and restart your Rails application.</p>
+
+<pre><code># config/initializers/cors.rb
+
+Rails.application.config.middleware.insert_before 0, Rack::Cors do
+  allow do
+    origins /localhost:*/
+
+    resource '*',
+      headers: :any,
+      methods: [:get, :post, :put, :patch, :delete, :options, :head],
+      credentials: true
+  end
+end
+</code></pre>
+
+<p>Here is good introduction about <a href="https://medium.com/@Nicholson85/handling-cors-issues-in-your-rails-api-120dfbcb8a24">CORS in the context of Rails</a>
+if you like to dig deeper.</p>
+
+<h3>Vue Components</h3>
+
+<p>Components are building blocks of a Vue-based application. You might
+represent the page header as a component, or the sidebar, the list
+of events, or even just the event itself. A single page can also
+be a component composed of several components, and so on.</p>
+
+<p>Components under <code>src/views</code>, by convention, maps to URLs and
+represent the top-level page. The mapping is listed in <code>src/router.js</code>.</p>
+
+<pre><code>src/views/
+  About.vue
+  EventsView.vue
+
+src/components/
+  Event.vue
+  EventForm.vue
+  EventList.vue
+</code></pre>
+
+<p><strong>Lifecycle</strong></p>
+
+<ol>
+<li>User action is captured by a Vue component.</li>
+<li>Vue component calls a Vuex action that calls an API (via axios library).</li>
+<li>Rails handles the API and returns a JSON response.</li>
+<li>Vuex mutates a state based on the response.</li>
+<li>The Vue component updates the page based on the state changes.</li>
+</ol>
+
+
+<p>In this sequence, the Vue component has no idea about the API
+calls - it simply calls a Vuex action. The Vuex action has
+no idea about about the Vue component - it only cares about
+the API request/response and the state to be modified. The Vue
+component reacts to changes to the state.</p>
+
+<p><strong>Vuex and State Management</strong></p>
+
+<p>When building an application, you often how to deal with these three
+things:</p>
+
+<ul>
+<li>state - the source of truth</li>
+<li>view (or views) - mapping the state for the components</li>
+<li>actions - ways the state could change</li>
+</ul>
+
+
+<p>In our sample application, the state is the list of events,
+the view is the component the displays each event, and the
+actions are loading the events via the API, adding new event,
+etc.</p>
+
+<p>The beauty of Vuex (and other state management libraries like Redux)
+is it enables a clean separation between state, views, and actions
+and at the same, they work together in a harmonious way. It was
+an aha! moment when I finally I understood what it does.</p>
+
+<p><strong>Listing Events</strong></p>
+
+<p>Let&rsquo;s see how the Vue pieces fit together in the context of listing events.</p>
+
+<p>First, initialize list of events.</p>
+
+<pre><code>// src/main.js#9
+const store = initStore({
+  [states.EVENTS]: []
+});
+</code></pre>
+
+<p>Visiting the URL <code>/events</code> loads the EventsView component.
+The mapping is specified using the <a href="https://router.vuejs.org/">Vue Router</a>.</p>
+
+<pre><code>// src/router.js#11
+{
+  path: "/events",
+  name: "events",
+  component: EventsView
+}
+</code></pre>
+
+<p>After the component is loaded, invoke the action <code>GET_EVENTS</code></p>
+
+<pre><code>// src/views/EventsView.vue#63
+created() {
+  this[GET_EVENTS]();
+}
+</code></pre>
+
+<p>The <code>GET_EVENTS</code> action is just another method that calls
+the API to fetch the list of events.
+The state is then mutated with the response data.</p>
+
+<pre><code>// src/store/actions/index.js#6
+[actions.GET_EVENTS]({ state, commit }) {
+  return api
+    .getEvents()
+    .then(response =&gt; {
+      commit(mutations.SET_EVENTS, response.data);
+    })
+}
+
+// src/api.js#12
+getEvents() {
+  return axios.get("/events");
+}
+</code></pre>
+
+<p>The list events from the API call is then saved. Or, using
+the right technical term, the state is mutated.</p>
+
+<pre><code>// src/store/mutations/index.js#8
+[mutations.SET_EVENTS](state, events) {
+  state[states.EVENTS] = events;
+}
+</code></pre>
+
+<p>The component <code>EventsView</code> listens to any changes to the list of
+events. It then passes the list to another component <code>EventList</code>.</p>
+
+<pre><code>// src/views/EventsView.vue#12
+&lt;template&gt;
+  ...
+  &lt;EventList :events="events"/&gt;
+&lt;/template
+</code></pre>
+
+<p>The <code>EventList</code> component takes care of actually displaying the events.</p>
+
+<pre><code>// src/components/EventList.vue
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;div v-for="event in events" :key="event.id"&gt;
+      &lt;a&gt;
+        &lt;span&gt;&lt;/span&gt;
+        &amp;mdash;
+        &lt;span&gt;&lt;/span&gt;
+      &lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+</code></pre>
+
+<p><strong>Adding and Updating Events</strong></p>
+
+<p>Of course, our application will be useless if it can only list events.
+So, let&rsquo;s include a way to add events to our application.</p>
+
+<p>First, add an event handler when a link (or button) is clicked.</p>
+
+<pre><code>// src/views/EventsView.vue#7
+&lt;a @click="newEvent"&gt;New Event&lt;/a&gt;
+
+// src/views/EventsView.vue#90
+newEvent() {
+  this.$router.push({ name: "newEvent" });
+},
+</code></pre>
+
+<p>The <code>newEvent()</code> method pushes the path <code>/events/new</code> via the Vue router
+which we used to determine when to show the <code>EventForm</code> component.</p>
+
+<pre><code>// src/views/EventsView.vue#19
+&lt;div v-if="showEvent"&gt;
+  &lt;Event :event="event"/&gt;
+&lt;/div&gt;
+&lt;div v-else-if="showEventForm"&gt;
+  &lt;EventForm :event="event"/&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>The conditionals are just methods that checks the current path.</p>
+
+<pre><code>// src/views/EventsView.vue#73
+showEvent() {
+  return (this.$route.name == "event") &amp;&amp; (this.event !== null);
+},
+showEventForm() {
+  return (this.$route.name == "newEvent") &amp;&amp; (this.event !== null);
+}
+</code></pre>
+
+<p>The <code>EventForm</code> component receives the event selected from the <code>EventsList</code>
+component. In Vue, passing an object from a parent component to a child
+component is done via <a href="https://vuejs.org/v2/guide/components-props.html">props</a>.</p>
+
+<pre><code>// src/components/EventForm.vue#99
+props: {
+  event: {
+    type: Object,
+    required: true
+  }
+},
+</code></pre>
+
+<p>The <code>EventForm</code> component handles the saving of events whether it is part
+of adding a new event or updating an existing one sequence. The component also
+follows the state-view-actions pattern. First, we create a handler
+when the form is submitted.</p>
+
+<pre><code>// src/components/EventForm.vue#6
+&lt;form v-on:submit.prevent="saveEvent()" className="eventForm"&gt;
+  ...
+&lt;/form&gt;
+
+
+// src/components/EventForm.vue#109
+saveEvent() {
+  this[SAVE_EVENT](this.aEvent)
+    .then(() =&gt; {
+      this.$emit("eventSelected", this.aEvent);
+    });
+}
+</code></pre>
+
+<p>The <code>SAVE_EVENT</code> action is just a method that accepts an event object
+and takes care of calling the API.</p>
+
+<pre><code>// src/store/actions/index.js#13
+[actions.SAVE_EVENT]({ state, commit }, event) {
+  if (event.id) {
+    return api
+      .updateEvent(event)
+      .then(response =&gt; {
+        commit(mutations.SET_EVENT, response.data);
+      })
+  } else {
+    return api
+      .createEvent(event)
+      .then(response =&gt; {
+        commit(mutations.SET_EVENT, response.data);
+      })
+  }
+},
+</code></pre>
+
+<p>After receiving the response from the API, the list of events is updated.</p>
+
+<pre><code>// src/store/mutations/index.js#8
+[mutations.SET_EVENT](state, event) {
+  const i = state[states.EVENTS].findIndex(e =&gt; e.id == event.id);
+
+  if (i &gt;= 0) {
+    // DOM will not be updated if you modify via index.
+    state[states.EVENTS].splice(i, 1, event);
+  } else {
+    state[states.EVENTS].push(event);
+  }
+},
+</code></pre>
+
+<p>Since the <code>EventList</code> component is watching the events list object, it
+automatically updates the list when an event is added or updated.</p>
+
+<p><strong>Deleting an event</strong></p>
+
+<p>There is nothing special with deleting an event - it just follows the
+state-view-action pattern like the other scenarios.</p>
+
+<pre><code>// src/views/EventsView.vue#98
+deleteEvent(event) {
+  this[DELETE_EVENT](event)
+    .then(() =&gt; {
+      this.$router.push({ name: "events" });
+    })
+}
+
+
+// src/store/actions/index.js#28
+[actions.DELETE_EVENT]({ state, commit }, event) {
+  if (event.id) {
+    return api
+      .deleteEvent(event)
+      .then(response =&gt; {
+        commit(mutations.DELETE_EVENT, event);
+      })
+  }
+}
+
+// src/store/mutations/index.js#18
+[mutations.DELETE_EVENT](state, event) {
+  const i = state[states.EVENTS].findIndex(e =&gt; e.id == event.id);
+
+  if (i &gt;= 0) {
+    state[states.EVENTS].splice(i, 1);
+  }
+}
+</code></pre>
+
+<p><strong>Testing</strong></p>
+
+<p>I was curious how to test Vue applications so I added a simple
+unit test using Jest. If you like to use a different framework,
+the <code>vue-cli</code> create command will allow you to choose one.</p>
+
+<p>To help in our testing, we use a factory method to prepare the
+component to be tested.</p>
+
+<pre><code>// tests/unit/Event.spec.js
+import { shallowMount } from "@vue/test-utils";
+import Event from "@/components/Event";
+
+const factory = (values = {}) =&gt; {
+  return shallowMount(Event, {
+    propsData: {
+      event: { ...values }
+    }
+  });
+};
+</code></pre>
+
+<p><a href="https://vue-test-utils.vuejs.org/api/#shallowmount">shallowMount</a> loads a component and stubs the child components
+which is perfect for unit testing. It also allows you to set
+the <code>data</code> or <code>props</code> attributes of the component, for example:</p>
+
+<pre><code>describe("Event", () =&gt; {
+  it("renders the event details", () =&gt; {
+    const wrapper = factory({
+      title: "event title",
+      event_type: "symposium"
+    });
+
+    expect(wrapper.find(".test-event-type").text()).toEqual("Type: symposium");
+    expect(wrapper.find(".test-title").text()).toEqual("Title: event title");
+  });
+});
+</code></pre>
+
+<p>To run the tests:</p>
+
+<pre><code>npm run test:unit
+</code></pre>
+
+<p>Just follow the <a href="https://vuejs.org/v2/cookbook/unit-testing-vue-components.html">Vue testing guide</a> if you want to dive deeper into
+Vue testing.</p>
+
+<h3>Conclusion</h3>
+
+<p>At this point, I hope you have a good idea how the different parts of Vue works
+together. Like I said in the beginning, I&rsquo;m not an expert in Vue nor have I
+extensive experience on other Javascript frameworks like React. Though personally,
+I find Vue more approachable and I will definitely use this in my personal
+projects.</p>
+
+<p>If you are new to Vue (like I am), I highly recommend you read their list
+of <a href="https://vuejs.org/2016/02/06/common-gotchas/">beginner gotchas</a>. I
+guarantee you in will save you lots of frustrations :)</p>
+
+<p>If you are interested in comparing Vue with other frameworks, the <a href="https://medium.com/fundbox-engineering/react-vs-vue-vs-angular-163f1ae7be56">article
+by Yogev Ahuvia is a good read</a>.</p>
+
+	</section>
+	<span class="post-meta">13 May 2019</span>
+
+
+    </article>
+
+  
+    <article class="post">
+      
+	
+	<header class="post-header">
+		<h2 class="post-title">
+			
 			<a href="/schedule-delays-should-not-surprise-you/">
 			
 				Schedule Delays Should Not Surprise You</a>
@@ -67,7 +637,7 @@ You worked on that nasty bug from the previous release. Make that 3 days and 5 h
 You got sick. Now, you are delayed by a week.
 You procrastinated. etc. etc.</p>
 
-<p>These seemingly little things happen all the time yet we don’t usually consider than as contributors to our schedule delays. Often, we attribute “major” things like a developer quitting in the middle of the project or big requirement change midway as causes of delays.  Yet these little slips accumulated over time can become your major cause of delay.</p>
+<p>These seemingly little things happen all the time yet we don’t usually consider them as contributors to our schedule delays. Often, we attribute “major” things like a developer quitting in the middle of the project or big requirement change midway as causes of delays.  Yet these little slips accumulated over time can become your major cause of delay.</p>
 
 <p>One of the first things you can do is to have enough granularity with your deliverables that progress is obvious over a period of just couple of days as much as possible. When your commitments span weeks and  there is no clear progress over a long period, you won’t have any idea if you are near or far to your target.  And if your job is to manage delivery, that feeling of not knowing sucks. But if you make commitments over short intervals and you failed to deliver, you know if you need to make up for a day or two, which is more manageable.  If you let a week go by without knowing what is happening, that is too long already and you could be facing a delay that is a challenge to compensate for.</p>
 
@@ -983,173 +1553,6 @@ end
 
 	</section>
 	<span class="post-meta">24 Nov 2014</span>
-
-
-    </article>
-
-  
-    <article class="post">
-      
-	
-	<header class="post-header">
-		<h2 class="post-title">
-			
-			<a href="/rebuild-rails-part3/">
-			
-				Rebuild Rails Part 3</a>
-		</h2>
-	</header>
-	<section class="post-excerpt">
-		<p>Let&rsquo;s continue our rebuild rails series by supporting controllers. We simplify things
-by assuming a <code>controller/action</code> path format and only support <code>GET</code> request.</p>
-
-<p>We adjust our <code>.call</code> implementation to handle the new path format. We also introduce
-another method <code>#render_controller_action</code> that inspects the <code>path_info</code>
-and instantiates the right controller using Rails <code>NameController</code> convention.</p>
-
-<pre><code># lib/tracks.rb
-def self.call(env)
-  path_info = env["PATH_INFO"]
-  if  path_info == "/"
-    text = Tracks::Controller.render_default_root
-  else
-    text = Tracks::Controller.render_controller_action(env)
-  end
-
-  [200, {"Content-Type" =&gt; "text/html"}, [text] ]
-end
-
-# lib/tracks/controller.rb
-def self.render_controller_action(env)
-  path_info = env["PATH_INFO"]
-  _, controller, action, after = path_info.split("/")
-
-  controller_class_name = controller.capitalize + "Controller"
-  controller_class = Object.const_get(controller_class_name)
-  controller_class.new.send(action)
-end
-
-$ ruby spec/application_spec.rb
-Run options: --seed 55835
-# Running:
-
-.E
-
-Finished in 0.015837s, 126.2865 runs/s, 126.2865 assertions/s.
-
-  1) Error:
-CrazyApp::Application#test_0002_should respond with different path:
-NameError: uninitialized constant PostsController
-    /code/crazy/lib/tracks/controller.rb:13:in `const_get'
-</code></pre>
-
-<p>When we run the test, you see it failed on <code>PostsController</code> which is what
-we expect since we haven&rsquo;t implemented <code>PostsController</code> yet. Let&rsquo;s add the
-controller now.</p>
-
-<pre><code># app/controllers/posts_controller.rb
-class PostsController &lt; Tracks::Controller
-  def index
-    "hello from tracks /posts/index"
-  end
-end
-
-# config/application.rb
-require "./app/controllers/posts_controller"
-
-$ ruby spec/application_spec.rb
-Run options: --seed 2475
-
-# Running:
-..
-
-Finished in 0.019152s, 104.4277 runs/s, 208.8555 assertions/s.
-
-2 runs, 4 assertions, 0 failures, 0 errors, 0 skips
-</code></pre>
-
-<h3>Automatic loading</h3>
-
-<p>Our tests pass but something&rsquo;s not right. In Rails, there is no need to require
-every controller (or pretty much anything) to make it work. To support this feature in
-our framework, we need 2 things:</p>
-
-<ul>
-<li>convert PostsController to posts_controller.rb; and</li>
-<li>auto-require &lsquo;posts_controller&rsquo;</li>
-</ul>
-
-
-<p>To tie these 2 together, we tap into <code>Object.const_missing</code> so our framework would
-know if a class has been used but not yet loaded.</p>
-
-<p>We also update the <code>$LOAD_PATH</code> to include <code>app/controllers</code> folder so Ruby knows
-where to look.</p>
-
-<pre><code># lib/tracks.rb
-require File.expand_path("../tracks/helper", __FILE__)
-require File.expand_path("../tracks/object", __FILE__)
-
-# config/application.rb
-require './lib/tracks'
-$LOAD_PATH &lt;&lt; File.expand_path("../../app/controllers", __FILE__)
-
-module CrazyApp
-  class Application &lt; Tracks::Application
-  end
-end
-
-# lib/tracks/helper.rb
-module Tracks
-  module Helper
-    def self.to_underscore(string)
-      string.scan(/[A-Z][a-z]+/).
-      join('_').
-      downcase
-    end
-  end
-end
-
-# lib/tracks/object.rb
-class Object
-  def self.const_missing(c)
-    require Tracks::Helper.to_underscore(c.to_s)
-    const_get(c)
-  end
-end
-</code></pre>
-
-<p>Our implementation of <code>.to_underscore</code> is limited compared to what&rsquo;s supported in Rails.</p>
-
-<pre><code>irb(main):019:0&gt; s = "PostsController"
-=&gt; "PostsController"
-irb(main):020:0&gt; s.scan(/[A-Z][a-z]+/).join('_').downcase
-=&gt; "posts_controller"
-</code></pre>
-
-<p>Also, since we call <code>const_get</code> inside <code>const_missing</code>, you will run into serious
-trouble if your file does not contain the expected class. Try changing the name of the
-class inside <code>app/controllers/posts_controller.rb</code> into something else and you will get this
-error.</p>
-
-<pre><code>$ ruby spec/application_spec.rb
-Run options: --seed 60433
-
-# Running:
-
-.E
-Finished in 0.043152s, 46.3478 runs/s, 46.3478 assertions/s.
-
-  1) Error:
-CrazyApp::Application#test_0002_should respond with different path:
-SystemStackError: stack level too deep
-    /Users/greg/.rbenv/versions/2.0.0-p247/lib/ruby/2.0.0/forwardable.rb:174
-
-2 runs, 2 assertions, 0 failures, 1 errors, 0 skips
-</code></pre>
-
-	</section>
-	<span class="post-meta">20 Nov 2014</span>
 
 
     </article>
